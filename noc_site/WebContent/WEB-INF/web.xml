@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+	<display-name>noc</display-name>
+
+	<context-param>
+		<param-name>define_path</param-name>
+		<param-value>D:\JavaDev\noc_define\bin</param-value>
+	</context-param>
+	<context-param>
+		<param-name>biz_path</param-name>
+		<param-value>D:\JavaDev\noc_biz\bin</param-value>
+	</context-param>
+	<context-param>
+		<param-name>template_path</param-name>
+		<param-value>template</param-value>
+	</context-param>
+    <context-param>
+        <param-name>template_work_path</param-name>
+        <param-value>template_work_path</param-value>
+    </context-param>
+    <context-param>
+        <param-name>database_name</param-name>
+        <param-value>noc_biz_0_0_1</param-value>
+    </context-param>
+    <context-param>
+        <param-name>user_name</param-name>
+        <param-value>user</param-value>
+    </context-param>
+    <context-param>
+        <param-name>user_password</param-name>
+        <param-value>password</param-value>
+    </context-param>
+
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+	
+    <listener>
+        <listener-class>noc.http.InitListener</listener-class>
+    </listener>
+	
+	<servlet>
+		<description></description>
+		<display-name>NocDataServlet</display-name>
+		<servlet-name>NocDataServlet</servlet-name>
+		<servlet-class>noc.http.NocDataServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<description></description>
+		<display-name>NocDataServletConstruct</display-name>
+		<servlet-name>NocDataServletConstruct</servlet-name>
+		<servlet-class>noc.http.NocDataServletConstruct</servlet-class>
+	</servlet>
+	<servlet>
+		<description></description>
+		<display-name>NocLangDataServlet</display-name>
+		<servlet-name>NocLangDataServlet</servlet-name>
+		<servlet-class>noc.http.NocTypeServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>NocDataServlet</servlet-name>
+		<url-pattern>/data/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>NocDataServletConstruct</servlet-name>
+		<url-pattern>/debug/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>NocLangDataServlet</servlet-name>
+		<url-pattern>/noc/lang/reflect/Type/*</url-pattern>
+	</servlet-mapping>
+</web-app>

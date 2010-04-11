@@ -1,0 +1,110 @@
+<html>
+<head>
+
+<link rel='stylesheet' href='/noc/css/form.css' type='text/css'/>
+<script type="text/javascript"  src="/noc/js/prototype.js"/>
+<script type="text/javascript"  src="/noc/js/popup.js"/>
+
+<script type="text/javascript" src="/noc/js/simpletreemenu.js">
+
+/***********************************************
+* Simple Tree Menu- © Dynamic Drive DHTML code library (www.dynamicdrive.com)
+* This notice MUST stay intact for legal use
+* Visit Dynamic Drive at http://www.dynamicdrive.com/ for full source code
+***********************************************/
+
+</script>
+
+<link rel="stylesheet" type="text/css" href="/noc/css/simpletree.css" />
+
+
+<link id="typemenu" href="/noc/data/inv/Adjust/?popup" />
+</head>
+<body>
+
+<form id="dfdsfsd">
+
+<div class="mask" id="mask">&nbsp;</div>
+<div>
+<span class="item">
+	<span class="label">Employee</span>
+	<span class="input"><input name="name" id="name"/></span> 
+	<span onclick='selectItem("name");'>::</span>
+</span>
+</div>
+
+</form>
+
+
+<h4>Simple Tree Menu #1 (persist enabled):</h4>
+<div>
+<a href="javascript:ddtreemenu.flatten('treemenu1', 'expand')">Expand All</a> | <a href="javascript:ddtreemenu.flatten('treemenu1', 'contact')">Contact All</a>
+</div>
+
+<ul id="treemenu1" class="treeview">
+<li>Item 1</li>
+<li>Item 2</li>
+
+<li>Folder 1
+    <ul>
+    <li>Sub Item 1.1</li>
+    <li>Sub Item 1.2</li>
+    </ul>
+</li>
+<li>Item 3</li>
+
+<li>Folder 2
+    <ul>
+    <li>Sub Item 2.1</li>
+    <li>Folder 2.1
+        <ul>
+        <li>Sub Item 2.1.1</li>
+        <li>Sub Item 2.1.2</li>
+        </ul>
+    </li>
+</ul>
+</li>
+
+<li>Item 4</li>
+</ul>
+
+<h4>Simple Tree Menu #2 (Folder 1.1 open by default):</h4>
+<div>
+<a href="javascript:ddtreemenu.flatten('treemenu2', 'expand')">Expand All</a> | <a href="javascript:ddtreemenu.flatten('treemenu2', 'contact')">Contact All</a>
+</div>
+<ul id="treemenu2" class="treeview">
+<li>Item 1</li>
+
+<li>Folder 1
+    <ul>
+    <li>Sub Item 1.1</li>
+    <li>Folder 1.1
+        <ul rel="open">
+        <li>Sub Item 1.1.1</li>
+        <li>Sub Item 1.1.2</li>
+        <li>Folder 1.1.1
+            <ul>
+            <li>Sub item 1.1.1.1</li>
+            <li>Sub item 1.1.1.2</li>
+            <li>Sub item 1.1.1.3</li>
+            <li>Sub item 1.1.1.4</li>
+            </ul>
+        </li>
+        </ul>
+    </li>
+    </ul>
+</li>
+
+<li>Item 2</li>
+</ul>
+
+<script type="text/javascript">
+
+//ddtreemenu.createTree(treeid, enablepersist, opt_persist_in_days (default is 1))
+
+ddtreemenu.createTree("treemenu1", true)
+ddtreemenu.createTree("treemenu2", false)
+
+</script>
+</body>
+</html>
