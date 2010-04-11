@@ -267,6 +267,8 @@ public class TypePersister implements Store<Type> {
 
 		field.inline = field.inline || (type.declaringType != null && parent.name.equals(type.declaringType.name));
 
+		field.refer = !field.type.scala && !field.inline;
+		
 		return field;
 	}
 
