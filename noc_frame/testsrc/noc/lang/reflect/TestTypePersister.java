@@ -27,11 +27,12 @@ public class TestTypePersister extends TestCase {
 		// store.get("data.sales.Order");
 
 		Type p = store.get("data.TestPerson");
+		assertEquals(true, p.standalone);
 
-		assertEquals(6, store.list().size());
+		assertEquals(8, store.list().size());
 
 		int index = 0;
-		
+
 		// @Inline Code 工号;
 		Field f = p.fields.get(index++);
 		assertEquals("工号", f.name);
@@ -74,7 +75,7 @@ public class TestTypePersister extends TestCase {
 		assertEquals(false, f.inline);
 		assertEquals(true, f.refer);
 
-//		@Inline	TestCompany 上级公司;
+		// @Inline TestCompany 上级公司;
 		f = p.fields.get(index++);
 		assertEquals("上级公司", f.name);
 		assertEquals("上级公司", f.displayName);
@@ -113,7 +114,7 @@ public class TestTypePersister extends TestCase {
 		assertEquals(TestDepartment.class.getName(), f.type.name);
 		assertEquals(true, f.inline);
 		assertEquals(false, f.refer);
-		
+
 		// TestDepartment 上级部门;
 		f = p.fields.get(index++);
 		assertEquals("上级部门", f.name);
@@ -144,14 +145,16 @@ public class TestTypePersister extends TestCase {
 		assertEquals(true, f.inline);
 		assertEquals(false, f.refer);
 
-
-
+		
+		//data.TestDepartment
+		
 		p = store.get("data.TestDepartment");
 
-		assertEquals(6, store.list().size());
+		assertEquals(false, p.standalone);
+		
 		index = 0;
-//
-//		Code 代码;
+		//
+		// Code 代码;
 		f = p.fields.get(index++);
 		assertEquals("代码", f.name);
 		assertEquals("代码", f.displayName);
@@ -161,18 +164,18 @@ public class TestTypePersister extends TestCase {
 		assertEquals(Code.class.getName(), f.type.name);
 		assertEquals(false, f.inline);
 		assertEquals(false, f.refer);
-//		Literal 名称;
-//		TestDepartment 所属;
-//		Status 状态;
-		
-		
+		// Literal 名称;
+		// TestDepartment 所属;
+		// Status 状态;
 
+		//data.TestDepartment
 		p = store.get("data.TestCompany");
 
-		assertEquals(6, store.list().size());
+		assertEquals(true, p.standalone);
+		
 		index = 0;
 
-//		Name 名称;
+		// Name 名称;
 		f = p.fields.get(index++);
 		assertEquals("名称", f.name);
 		assertEquals("名称", f.displayName);
@@ -182,11 +185,24 @@ public class TestTypePersister extends TestCase {
 		assertEquals(Name.class.getName(), f.type.name);
 		assertEquals(false, f.inline);
 		assertEquals(false, f.refer);
+
+		
+		// Name 简称;
+		// Status 状态;
+		// List<TestCompany> 子公司;
+
+		
+
+		p = store.get("data.TestPerson$Contact");
+		assertEquals(false, p.standalone);
+
+		p = store.get("data.TestDepartment$ContactHasnotKey");
+		assertEquals(false, p.standalone);
+		
+		p = store.get("data.TestDepartment$ContactHasKey");
+		assertEquals(true, p.standalone);
 		
 		
-//		Name 简称;
-//		Status 状态;
-//		List<TestCompany> 子公司;	
 		
 		//		
 		//

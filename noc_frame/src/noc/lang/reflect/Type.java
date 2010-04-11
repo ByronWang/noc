@@ -12,6 +12,7 @@ import noc.annotation.Inline;
 	String name;
 	boolean scala;
 	boolean frameType;
+	boolean standalone;
 	Field primaryKeyField;
 	final List<Field> keyFields;
 	
@@ -85,6 +86,14 @@ import noc.annotation.Inline;
 
 	public void setPrimaryKeyField(Field primaryKeyField) {
 		this.primaryKeyField = primaryKeyField;
+	}
+
+	public boolean isStandalone() {
+		return standalone;
+	}
+
+	public void setStandalone(boolean standalone) {
+		this.standalone = standalone;
 	}
 
 }

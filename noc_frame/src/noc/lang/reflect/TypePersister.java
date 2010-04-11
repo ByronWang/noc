@@ -22,6 +22,7 @@ import noc.annotation.DisplayName;
 import noc.annotation.FrameType;
 import noc.annotation.Inline;
 import noc.annotation.PrimaryKey;
+import noc.annotation.Standalone;
 import noc.frame.Store;
 import noc.lang.Bool;
 import noc.lang.Name;
@@ -253,10 +254,17 @@ public class TypePersister implements Store<Type> {
 			type.primaryKeyField = type.keyFields.get(0);
 			type.keyFields.clear();
 			type.primaryKeyField.primaryKey = true;
-		} else if (type.keyFields.size() > 1) {			
-			type.primaryKeyField =  new Field("primaryKey", "主键", scalas.get(Name.class.getName()));
+		} else if (type.keyFields.size() > 1) {
+			type.primaryKeyField = new Field("primaryKey", "主键", scalas.get(Name.class.getName()));
 			type.primaryKeyField.primaryKey = true;
 		}
+
+		type.standalone = true;
+		type.standalone = type.standalone && clz.getAnnotation(Inline.class) == null;
+		type.standalone = type.standalone && type.declaringType == null;
+		type.standalone = type.standalone || clz.getAnnotation(Standalone.class) != null;		
+		type.standalone = type.standalone && type.primaryKeyField != null;
+		type.standalone = type.standalone && !type.scala;
 
 		return type;
 	}
