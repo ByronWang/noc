@@ -14,7 +14,8 @@ public class VOImp implements Vo {
 
 	private String keyValue = null;
 
-	public VOImp() {}
+	public VOImp() {
+	}
 
 	public VOImp(String keyValue, Object... params) {
 		this.keyValue = keyValue;
@@ -76,7 +77,8 @@ public class VOImp implements Vo {
 	}
 
 	@Override public String S(String name) {
-		return ((VScalar) this.get(name)).getValue().toString();
+		VScalar v = (VScalar) this.get(name);
+		return v != null ? v.getValue().toString() : null;
 	}
 
 	@Override public Vol L(String name) {
