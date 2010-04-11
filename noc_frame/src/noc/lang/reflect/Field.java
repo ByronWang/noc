@@ -12,6 +12,7 @@ import noc.annotation.FrameType;
 	boolean inline = false;
 	boolean refer = false;
 	boolean catalog = false;
+	boolean key = false;
 	boolean primaryKey = false;
 
 	public Field(String name, String displayName, Type type) {
@@ -32,6 +33,14 @@ import noc.annotation.FrameType;
 		this.catalog = catalog;
 		this.inline = inline;
 		this.refer = !type.scala && !inline;
+	}
+
+	public boolean isKey() {
+		return key;
+	}
+
+	public void setKey(boolean key) {
+		this.key = key;
 	}
 
 	public boolean isArray() {

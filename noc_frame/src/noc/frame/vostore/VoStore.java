@@ -18,7 +18,7 @@ public class VoStore implements Store<Vo> {
 
 	public VoStore(Type clz) {
 		this.clz = clz;
-		keyName = clz.getKeyField().getName();
+		keyName = clz.getPrimaryKeyField().getName();
 		if(keyName==null){
 			keyName = "primaryKey";
 		}

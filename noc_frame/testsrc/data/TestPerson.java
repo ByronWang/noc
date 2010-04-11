@@ -10,7 +10,7 @@ import noc.lang.Literal;
 import noc.lang.Name;
 
 public class TestPerson {
-	@Inline Code 工号;
+	@PrimaryKey @Inline Code 工号;
 	@PrimaryKey @DisplayName("姓名") Name 名称;
 	Literal[] 其他名称;
 	

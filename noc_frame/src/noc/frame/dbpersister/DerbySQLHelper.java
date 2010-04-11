@@ -34,8 +34,8 @@ public class DerbySQLHelper {
 					// TODO fs.add(f.getName() + "_" +
 					// f.getType().getKeyField().getName());
 				} else if (f.isRefer()) {
-					if (f.getType().getKeyField() != null) {
-						fs.add(f.getName() + "_" + f.getType().getKeyField().getName());
+					if (f.getType().getPrimaryKeyField() != null) {
+						fs.add(f.getName() + "_" + f.getType().getPrimaryKeyField().getName());
 					} else {
 						fs.add(f.getName() + "_" + "key");
 					}
@@ -50,7 +50,7 @@ public class DerbySQLHelper {
 				sbq.append("?,");
 			}
 
-			keyfield = clz.getKeyField().getName();
+			keyfield = clz.getPrimaryKeyField().getName();
 			columns = fs.toArray(new String[0]);
 			fieldlist_comma = sb.substring(0, sb.length() - 1);
 			fieldlist_questions = sbq.substring(0, sbq.length() - 1);

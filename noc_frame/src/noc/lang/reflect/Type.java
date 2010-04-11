@@ -12,10 +12,10 @@ import noc.annotation.Inline;
 	String name;
 	boolean scala;
 	boolean frameType;
-	Field keyField;
+	Field primaryKeyField;
 	final List<Field> keyFields;
 	
-	@Inline final List<Field> fields;
+	final @Inline List<Field> fields;
 	Type declaringType;
 
 	public Type(String name, String displayName, boolean scala, boolean frameType, Type declaringType) {
@@ -51,34 +51,8 @@ import noc.annotation.Inline;
 	}
 
 
-	public Field getKeyField() {
-		if (scala) {
-			throw new UnsupportedOperationException(this.toString());
-		}
-
-		if (keyField != null) {
-			return keyField;
-		}
-
-		constructKeys();
-
-		return keyField;
-	}
-
-	protected void constructKeys() {
-		for (int i = 0; i < fields.size(); i++) {
-			if (fields.get(i).primaryKey) {
-				keyFields.add(fields.get(i));
-			}
-		}
-
-		if (keyFields.size() == 1) {
-			keyField = keyFields.get(0);
-		} else if (keyFields.size() > 1) {
-
-		} else if (keyFields.size() == 1) {
-
-		}
+	public Field getPrimaryKeyField() {
+		return primaryKeyField;
 	}
 
 	public boolean isFrameType() {
@@ -109,8 +83,8 @@ import noc.annotation.Inline;
 		this.declaringType = declaringType;
 	}
 
-	public void setKeyField(Field keyField) {
-		this.keyField = keyField;
+	public void setPrimaryKeyField(Field primaryKeyField) {
+		this.primaryKeyField = primaryKeyField;
 	}
 
 }

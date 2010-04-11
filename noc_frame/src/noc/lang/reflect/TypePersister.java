@@ -81,8 +81,7 @@ public class TypePersister implements Store<Type> {
 			assert (path.endsWith(".jar"));
 
 			File f = new File(path);
-			if (!f.exists())
-				return;
+			if (!f.exists()) return;
 
 			JarFile jf = new JarFile(path);
 			Enumeration<JarEntry> en = jf.entries();
@@ -118,8 +117,7 @@ public class TypePersister implements Store<Type> {
 
 	public void loadFolder(File root, File d) {
 		try {
-			if (!d.exists() || !d.isDirectory())
-				return;
+			if (!d.exists() || !d.isDirectory()) return;
 
 			for (File f : d.listFiles()) {
 				if (f.isFile() && f.getName().endsWith(".class")) {
@@ -193,6 +191,73 @@ public class TypePersister implements Store<Type> {
 			fs.add(decorateField(type, cfs[i]));
 		}
 
+		do {
+
+			// Find Annotationed Primary Keys
+			type.keyFields.clear();
+
+			for (int i = 0; i < cfs.length; i++) {
+				if ((an = cfs[i].getAnnotation(PrimaryKey.class)) != null) {
+					fs.get(i).key = true;
+					type.keyFields.add(fs.get(i));
+				}
+			}
+
+			if (type.keyFields.size() > 0) {
+				break;
+			}
+
+			// Autowire By Type
+			an = PrimaryKey.class.getAnnotation(AutoWireByType.class);
+			AutoWireByType au = (AutoWireByType) an;
+			if (an != null) {
+				boolean succeed = false;
+				for (int i = 0; i < cfs.length; i++) {
+					fs.get(i).primaryKey = false;
+
+					for (Class<?> c : au.value()) {
+						if (c.getName().equalsIgnoreCase(fs.get(i).type.name)) {
+							fs.get(i).key = true;
+							type.keyFields.add(fs.get(i));
+							succeed = true;
+							break;
+						}
+					}
+					if (succeed) break;
+				}
+
+				if (succeed) break;
+
+			}
+
+			// Autowire By Name
+			for (int i = 0; i < cfs.length; i++) {
+				an = cfs[i].getAnnotation(AutoWireByName.class);
+				if (an != null) {
+					AutoWireByName aname = (AutoWireByName) an;
+					if (aname.value().indexOf(cfs[i].getName() + ";") >= 0) {
+						fs.get(i).key = true;
+						type.keyFields.add(fs.get(i));
+						break;
+					}
+				}
+
+				if (type.keyFields.size() > 0) {
+					break;
+				}
+			}
+
+		} while (false);
+
+		if (type.keyFields.size() == 1) {
+			type.primaryKeyField = type.keyFields.get(0);
+			type.keyFields.clear();
+			type.primaryKeyField.primaryKey = true;
+		} else if (type.keyFields.size() > 1) {			
+			type.primaryKeyField =  new Field("primaryKey", "主键", scalas.get(Name.class.getName()));
+			type.primaryKeyField.primaryKey = true;
+		}
+
 		return type;
 	}
 
@@ -258,7 +323,8 @@ public class TypePersister implements Store<Type> {
 		field.array = array;
 
 		// Handle primaryKey
-		field.primaryKey = type.scala && check(ctField, actualClass, PrimaryKey.class);
+		// field.primaryKey = type.scala && check(ctField, actualClass,
+		// PrimaryKey.class);
 		field.inline = !type.scala && check(ctField, actualClass, Inline.class);
 		field.catalog = type.scala && check(ctField, actualClass, Catalog.class);
 
@@ -269,7 +335,7 @@ public class TypePersister implements Store<Type> {
 		field.inline = field.inline || (type.declaringType != null && parent.name.equals(type.declaringType.name));
 
 		field.refer = !field.type.scala && !field.inline;
-		
+
 		return field;
 	}
 
@@ -285,13 +351,13 @@ public class TypePersister implements Store<Type> {
 				succeed = true;
 			}
 		}
-		
+
 		an = anClz.getAnnotation(AutoWireByType.class);
 		if (an != null) {
 			AutoWireByType au = (AutoWireByType) an;
-			for(Class<?> c : au.value()){
-				if(c.getName().equalsIgnoreCase(ctType.getName())){
-					succeed = true;					
+			for (Class<?> c : au.value()) {
+				if (c.getName().equalsIgnoreCase(ctType.getName())) {
+					succeed = true;
 				}
 			}
 		}
@@ -316,8 +382,7 @@ public class TypePersister implements Store<Type> {
 		pos++;
 
 		int start = pos;
-		while (sig.charAt(++pos) != '<')
-			;
+		while (sig.charAt(++pos) != '<');
 
 		String typename = sig.substring(start, pos).replace('/', '.');
 
@@ -326,14 +391,12 @@ public class TypePersister implements Store<Type> {
 
 		do {
 			String pam;
-			if (sig.charAt(pos) != 'L')
-				break;
+			if (sig.charAt(pos) != 'L') break;
 
 			pos++;
 
 			start = pos;
-			while (sig.charAt(++pos) != ';')
-				;
+			while (sig.charAt(++pos) != ';');
 
 			pam = sig.substring(start, pos).replace('/', '.');
 			params.add(pam);

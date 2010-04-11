@@ -36,7 +36,8 @@ public class TestTypePersister extends TestCase {
 		Field f = p.fields.get(index++);
 		assertEquals("工号", f.name);
 		assertEquals("工号", f.displayName);
-		assertEquals(true, f.primaryKey);
+		assertEquals(true, f.key);
+		assertEquals(false, f.primaryKey);
 		assertEquals(false, f.array);
 		assertEquals(Code.class.getName(), f.type.name);
 		assertEquals(false, f.inline);
@@ -46,7 +47,8 @@ public class TestTypePersister extends TestCase {
 		f = p.fields.get(index++);
 		assertEquals("名称", f.name);
 		assertEquals("姓名", f.displayName);
-		assertEquals(true, f.primaryKey);
+		assertEquals(true, f.key);
+		assertEquals(false, f.primaryKey);
 		assertEquals(false, f.array);
 		assertEquals(Name.class.getName(), f.type.name);
 		assertEquals(false, f.inline);
@@ -142,6 +144,50 @@ public class TestTypePersister extends TestCase {
 		assertEquals(true, f.inline);
 		assertEquals(false, f.refer);
 
+
+
+		p = store.get("data.TestDepartment");
+
+		assertEquals(6, store.list().size());
+		index = 0;
+//
+//		Code 代码;
+		f = p.fields.get(index++);
+		assertEquals("代码", f.name);
+		assertEquals("代码", f.displayName);
+		assertEquals(true, f.key);
+		assertEquals(true, f.primaryKey);
+		assertEquals(false, f.array);
+		assertEquals(Code.class.getName(), f.type.name);
+		assertEquals(false, f.inline);
+		assertEquals(false, f.refer);
+//		Literal 名称;
+//		TestDepartment 所属;
+//		Status 状态;
+		
+		
+
+		p = store.get("data.TestCompany");
+
+		assertEquals(6, store.list().size());
+		index = 0;
+
+//		Name 名称;
+		f = p.fields.get(index++);
+		assertEquals("名称", f.name);
+		assertEquals("名称", f.displayName);
+		assertEquals(true, f.key);
+		assertEquals(true, f.primaryKey);
+		assertEquals(false, f.array);
+		assertEquals(Name.class.getName(), f.type.name);
+		assertEquals(false, f.inline);
+		assertEquals(false, f.refer);
+		
+		
+//		Name 简称;
+//		Status 状态;
+//		List<TestCompany> 子公司;	
+		
 		//		
 		//
 		// int i = 0;
