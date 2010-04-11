@@ -2,20 +2,26 @@ package noc.lang.reflect;
 
 import noc.annotation.FrameType;
 
+@FrameType public class Field {
+	String displayName;
 
-@FrameType
-public class Field {
-	final String displayName;
-	final String name;
-	final Type type;
+	String name;
+	Type type;
+
+	boolean array = false;
+	boolean inline = false;
+	boolean refer = false;
+	boolean catalog = false;
+	boolean primaryKey = false;
+
+	public Field(String name, String displayName, Type type) {
+		super();
+		this.name = name;
+		this.displayName = displayName;
+		this.type = type;
+	}
 	
-	final boolean array;
-	final boolean inline;
-	final boolean refer;
-	final boolean catalog;
-	final boolean primaryKey;
-
-	public Field(String name, String displayName,Type type, boolean primaryKey,boolean catalog, boolean list,
+	public Field(String name, String displayName, Type type, boolean primaryKey, boolean catalog, boolean list,
 			boolean inline) {
 		super();
 		this.name = name;
@@ -54,6 +60,42 @@ public class Field {
 
 	public boolean isPrimaryKey() {
 		return primaryKey;
+	}
+
+	public boolean isCatalog() {
+		return catalog;
+	}
+
+	public void setCatalog(boolean catalog) {
+		this.catalog = catalog;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	public void setArray(boolean array) {
+		this.array = array;
+	}
+
+	public void setInline(boolean inline) {
+		this.inline = inline;
+	}
+
+	public void setRefer(boolean refer) {
+		this.refer = refer;
+	}
+
+	public void setPrimaryKey(boolean primaryKey) {
+		this.primaryKey = primaryKey;
 	}
 
 }

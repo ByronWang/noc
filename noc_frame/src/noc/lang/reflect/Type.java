@@ -9,13 +9,13 @@ import noc.annotation.Inline;
 @FrameType
 public class Type {
 
-	final String displayName;
-	final String name;
-	final boolean scala;
-	final boolean frameType;
+	String displayName;
+	String name;
+	boolean scala;
+	boolean frameType;
 	@Inline
-	final List<Field> fields;
-	final Type declaringType;
+	List<Field> fields;
+	Type declaringType;
 
 	public Type(String name, String displayName,  List<Field> fields,boolean scala,boolean frameType, Type declaringType) {
 		super();
@@ -82,5 +82,41 @@ public class Type {
 		}			
 	}
 	
-	//static final Field defaultKeyField = new Field("primaryKey", "key", null, true, false, false, true);
+
+	public boolean isFrameType() {
+		return frameType;
+	}
+
+	public void setFrameType(boolean frameType) {
+		this.frameType = frameType;
+	}
+
+	public List<Field> getKeyFields() {
+		return keyFields;
+	}
+
+	public void setKeyFields(List<Field> keyFields) {
+		this.keyFields = keyFields;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setScala(boolean scala) {
+		this.scala = scala;
+	}
+
+	public void setDeclaringType(Type declaringType) {
+		this.declaringType = declaringType;
+	}
+
+	public void setKeyField(Field keyField) {
+		this.keyField = keyField;
+	}
+
 }

@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import data.AttrRuler;
-
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
@@ -23,10 +21,10 @@ import noc.annotation.DisplayName;
 import noc.annotation.FrameType;
 import noc.annotation.Inline;
 import noc.annotation.PrimaryKey;
-import noc.annotation.WireType;
 import noc.frame.Store;
 import noc.lang.Bool;
 import noc.lang.Name;
+import data.AttrRuler;
 
 public class TypePersister implements Store<Type> {
 
@@ -138,8 +136,7 @@ public class TypePersister implements Store<Type> {
 		}
 	}
 
-	@Override
-	public Type get(String name) {
+	@Override public Type get(String name) {
 		try {
 			Type type = types.get(name);
 			if (type == null) {
@@ -167,7 +164,8 @@ public class TypePersister implements Store<Type> {
 		// Handle isScala
 		boolean isScala = false;
 		isScala = clz.isPrimitive() ? true : isScala;
-		isScala = clz.getPackageName() != null && clz.getPackageName().equals("noc.lang") ? true : isScala;
+		isScala = clz.getPackageName() != null && clz.getPackageName().equals(Name.class.getPackage().getName()) ? true
+				: isScala;
 		isScala = clz.getPackageName() != null && clz.getPackageName().startsWith("java") ? true : isScala;
 
 		if (isScala) {
@@ -181,7 +179,7 @@ public class TypePersister implements Store<Type> {
 		if (declaringClazz != null) {
 			declaringType = this.get(declaringClazz.getName());
 		}
-		
+
 		// Construct type
 		CtField[] cfs = clz.getFields();
 		List<Field> fs = new ArrayList<Field>();
@@ -189,21 +187,23 @@ public class TypePersister implements Store<Type> {
 
 		types.put(name, type);
 		type = types.get(name);
+		
 		for (int i = 0; i < cfs.length; i++) {
 			fs.add(decorateField(type, cfs[i]));
 		}
 
+		
 		return type;
 	}
 
 	// TODO
-	protected Type getWithScalas(String typeName, CtClass clz) {
+	protected Type getWithScalas(String typeName, CtClass ctType) {
 		try {
 			Type type = scalas.get(typeName);
 			type = type == null ? types.get(typeName) : type;
-			if (type == null) {
-				type = decorateType(clz);
-			}
+			 if (type == null) {
+			 type = decorateType(ctType);
+			 }
 			return type;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -213,10 +213,10 @@ public class TypePersister implements Store<Type> {
 	protected Field decorateField(Type parent, CtField ctField) throws ClassNotFoundException, NotFoundException {
 		Object an = null;
 
-		if(ctField.getName().equals("this$0")){
-			System.out.println(ctField.getName());
+		if (ctField.getName().equals("this$0")) {
+			System.out.println(parent.getName() + " -> " +  ctField.getName());
 		}
-		
+
 		String name = ctField.getName();
 
 		/* Handle displayName */
@@ -232,47 +232,48 @@ public class TypePersister implements Store<Type> {
 		boolean array = false;
 
 		/* construct field */
-		if (typeClazz.getName().equals(java.util.List.class.getName())) {// Generic
-			// field
+		CtClass actualClass;
+
+		if (typeClazz.isArray()) {
 			array = true;
-			type = decorateActualTypeArguments(ctField)[0];
-		} else if (typeClazz.getName().equals(noc.lang.List.class.getName())) {// Generic
-			// field
+			actualClass = typeClazz.getComponentType();
+		} else if (typeClazz.getName().equals(java.util.List.class.getName())
+				|| typeClazz.getName().equals(noc.lang.List.class.getName())) {
+			// Generic field
 			array = true;
-			type = decorateActualTypeArguments(ctField)[0];
-		} else if (typeClazz.isArray()) {
-			array = true;
-			type = getWithScalas(typeClazz.getComponentType().getName(), typeClazz.getComponentType());
+			actualClass = pool.get(decorateActualTypeArguments(ctField).get(0));
 		} else {
-			type = getWithScalas(typeClazz.getName(), typeClazz);
+			actualClass = typeClazz;
 		}
 
-		an = ctField.getAnnotation(WireType.class);
-		if (an != null) {
-			type = getWithScalas(((WireType) an).value().getName(), null);
+		if (actualClass.getName().equalsIgnoreCase(parent.getName())) {
+			type = parent;
+		} else {
+			type = getWithScalas(actualClass.getName(),actualClass);
 		}
 
 		assert type != null;
 
-		/* Handle primaryKey */
-		boolean primaryKey = type.scala && check(ctField, PrimaryKey.class);
+		Field field = new Field(name, displayName, type);
+		field.setArray(array);
+
+		// Handle primaryKey
+		field.setPrimaryKey(type.scala && check(ctField, actualClass, PrimaryKey.class));
+		field.setInline(!type.scala && check(ctField, actualClass, Inline.class));
+		field.setCatalog(type.scala && check(ctField, actualClass, Catalog.class));
 
 		// boolean required = check(ctField, Data.Required.class);
 		// boolean basicInfo = check(ctField, Data.BasicInfo.class);
 		// boolean detailInfo = check(ctField, Data.DetailInfo.class);
-		boolean inline = check(ctField, Inline.class);
-		boolean catalog = check(ctField, Catalog.class);
 
-		inline = type.getDeclaringType() != null && parent.getName().equals(type.getDeclaringType().getName()) ? true
-				: inline;
+		field.setInline(field.inline
+				|| (type.getDeclaringType() != null && parent.getName().equals(type.getDeclaringType().getName())));
 
-		/* construct field */
-		return new Field(name, displayName, type, primaryKey, catalog, array, inline);
-
+		return field;
 	}
 
-	protected boolean check(CtField ctField, Class<? extends Annotation> anClz) throws ClassNotFoundException,
-			NotFoundException {
+	protected boolean check(CtField ctField, CtClass ctType, Class<? extends Annotation> anClz)
+			throws ClassNotFoundException, NotFoundException {
 		boolean succeed = false;
 		Annotation an = null;
 
@@ -284,18 +285,18 @@ public class TypePersister implements Store<Type> {
 			}
 		}
 
-		succeed = ctField.getType().getAnnotation(anClz) != null ? true : succeed;
+		succeed = ctType.getAnnotation(anClz) != null ? true : succeed;
 		succeed = ctField.getAnnotation(anClz) != null ? true : succeed;
 
 		return succeed;
 	}
 
-	protected Type[] decorateActualTypeArguments(CtField v) {
+	protected ArrayList<String> decorateActualTypeArguments(CtField v) {
 		SignatureAttribute s = (SignatureAttribute) v.getFieldInfo().getAttribute(SignatureAttribute.tag);
 		assert s != null;
 
 		String sig = s.getSignature();
-		ArrayList<Type> params = new ArrayList<Type>();
+		ArrayList<String> params = new ArrayList<String>();
 
 		int pos = 0;
 
@@ -324,15 +325,14 @@ public class TypePersister implements Store<Type> {
 				;
 
 			pam = sig.substring(start, pos).replace('/', '.');
-			params.add(this.get(pam));
+			params.add(pam);
 			pos++;
 		} while (sig.charAt(pos) != '>');
 
-		return params.toArray(new Type[0]);
+		return params;
 	}
 
-	@Override
-	public List<Type> list() {
+	@Override public List<Type> list() {
 		ArrayList<Type> types = new ArrayList<Type>();
 		for (Type type : this.types.values()) {
 			types.add(type);
@@ -348,8 +348,7 @@ public class TypePersister implements Store<Type> {
 		return types;
 	}
 
-	@Override
-	public Type put(Type v) {
+	@Override public Type put(Type v) {
 		throw new UnsupportedOperationException(v.toString());
 	}
 
