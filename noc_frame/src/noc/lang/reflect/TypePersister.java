@@ -169,7 +169,7 @@ public class TypePersister implements Store<Type> {
 		isScala = clz.getPackageName() != null && clz.getPackageName().startsWith("java") ? true : isScala;
 
 		if (isScala) {
-			Type type = new Type(name, displayName, new ArrayList<Field>(0), isScala, frameType, null);
+			Type type = new Type(name, displayName, isScala, frameType, null);
 			scalas.put(name, type);
 			return type;
 		}
@@ -182,17 +182,16 @@ public class TypePersister implements Store<Type> {
 
 		// Construct type
 		CtField[] cfs = clz.getFields();
-		List<Field> fs = new ArrayList<Field>();
-		Type type = new Type(name, displayName, fs, isScala, frameType, declaringType);
+		Type type = new Type(name, displayName, isScala, frameType, declaringType);
 
 		types.put(name, type);
 		type = types.get(name);
-		
+
+		List<Field> fs = type.fields;
 		for (int i = 0; i < cfs.length; i++) {
 			fs.add(decorateField(type, cfs[i]));
 		}
 
-		
 		return type;
 	}
 
@@ -201,9 +200,9 @@ public class TypePersister implements Store<Type> {
 		try {
 			Type type = scalas.get(typeName);
 			type = type == null ? types.get(typeName) : type;
-			 if (type == null) {
-			 type = decorateType(ctType);
-			 }
+			if (type == null) {
+				type = decorateType(ctType);
+			}
 			return type;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -214,7 +213,7 @@ public class TypePersister implements Store<Type> {
 		Object an = null;
 
 		if (ctField.getName().equals("this$0")) {
-			System.out.println(parent.getName() + " -> " +  ctField.getName());
+			System.out.println(parent.getName() + " -> " + ctField.getName());
 		}
 
 		String name = ctField.getName();
@@ -249,7 +248,7 @@ public class TypePersister implements Store<Type> {
 		if (actualClass.getName().equalsIgnoreCase(parent.getName())) {
 			type = parent;
 		} else {
-			type = getWithScalas(actualClass.getName(),actualClass);
+			type = getWithScalas(actualClass.getName(), actualClass);
 		}
 
 		assert type != null;
