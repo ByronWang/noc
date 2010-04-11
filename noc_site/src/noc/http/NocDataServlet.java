@@ -51,8 +51,7 @@ public class NocDataServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			request.setCharacterEncoding("UTF-8");
 
@@ -99,8 +98,7 @@ public class NocDataServlet extends HttpServlet {
 					response.sendError(400);
 					return;
 				}
-				doGetObejctHtml(path, template, typeName, path.substring(last + 1), request,
-						response);
+				doGetObejctHtml(path, template, typeName, path.substring(last + 1), request, response);
 			}
 
 			PrintObejct.print(response);
@@ -109,9 +107,8 @@ public class NocDataServlet extends HttpServlet {
 		}
 	}
 
-	protected void doGetTypeHtml(String urlPath, Template temp, String typename,
-			HttpServletRequest request, HttpServletResponse response)
-			throws UnsupportedEncodingException, TemplateException, IOException {
+	protected void doGetTypeHtml(String urlPath, Template temp, String typename, HttpServletRequest request,
+			HttpServletResponse response) throws UnsupportedEncodingException, TemplateException, IOException {
 		response.setContentType("text/html; charset=UTF-8");
 		Store<?> store = fact.getStore(typename);
 		List<?> list = store.list();
@@ -125,8 +122,8 @@ public class NocDataServlet extends HttpServlet {
 	}
 
 	protected void doGetNewObejctHtml(String urlPath, Template temp, String typename, String key,
-			HttpServletRequest request, HttpServletResponse response)
-			throws UnsupportedEncodingException, TemplateException, IOException {
+			HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException,
+			TemplateException, IOException {
 		response.setContentType("text/html; charset=UTF-8");
 		Map<String, Object> root = new HashMap<String, Object>();
 		root.put("data", new DefaultModel(key));
@@ -139,8 +136,8 @@ public class NocDataServlet extends HttpServlet {
 	}
 
 	protected void doGetObejctHtml(String urlPath, Template temp, String typename, String key,
-			HttpServletRequest request, HttpServletResponse response)
-			throws UnsupportedEncodingException, TemplateException, IOException {
+			HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException,
+			TemplateException, IOException {
 		response.setContentType("text/html; charset=UTF-8");
 
 		Map<String, Object> root = new HashMap<String, Object>();
@@ -187,8 +184,7 @@ public class NocDataServlet extends HttpServlet {
 
 			v = store.put(v);
 
-			String toPath = request.getContextPath() + path.substring(0, last) + "/"
-					+ URLEncoder.encode(key, "UTF-8");
+			String toPath = request.getContextPath() + path.substring(0, last) + "/" + URLEncoder.encode(key, "UTF-8");
 			System.out.println("Redrectto > " + toPath);
 			response.sendRedirect(toPath);
 
@@ -202,8 +198,8 @@ public class NocDataServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	@SuppressWarnings("unchecked") protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	@SuppressWarnings("unchecked") protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		try {
 			PrintObejct.print(request);
@@ -246,26 +242,58 @@ public class NocDataServlet extends HttpServlet {
 			} else if (f.getType().isScala()) {
 				String key = f.getName();
 				if (params.containsKey(key)) {
-					String[] va = (String[]) params.get(key);
-					v.put(key, va[0]);
+					String value = ((String[]) params.get(key))[0];
+					if (f.isKey() && v.S(key) != null) {
+						if (value.equals(v.S(key))) {
+							throw new RuntimeException("Primary key not match");
+						}
+					} else {
+						v.put(key, value);
+					}
 				}
 			} else if (f.isInline()) {
-				// TODO fs.add(f.getName() + "_" + f.getType().getKeyField().getName());	
+				// TODO fs.add(f.getName() + "_" +
+				// f.getType().getKeyField().getName());
 			} else if (f.isRefer()) {
-				if(f.getType().getPrimaryKeyField() != null){
+				if (f.getType().getPrimaryKeyField() != null) {
 					String key = f.getName() + "_" + f.getType().getPrimaryKeyField().getName();
 					if (params.containsKey(key)) {
 						String[] va = (String[]) params.get(key);
 						v.put(key, va[0]);
-					}					
-				}else{
+					}
+				} else {
 					String key = f.getName() + "_" + "key";
 					if (params.containsKey(key)) {
 						String[] va = (String[]) params.get(key);
 						v.put(key, va[0]);
-					}				
+					}
 				}
 			}
+		}
+
+		if (type.getKeyFields().size() > 1) {
+			String primaryKeyNewValue = "";
+
+			String primaryKeyName = type.getPrimaryKeyField().getName();
+			String primaryKeyValue = type.getPrimaryKeyField().getName();
+
+			for (Field f : type.getKeyFields()) {
+				if (params.containsKey(f.getName())) {
+					throw new RuntimeException("Not key field value");
+				}
+				primaryKeyNewValue += "_" + ((String[]) params.get(f.getName()))[0];
+			}
+			primaryKeyNewValue = primaryKeyNewValue.substring(1);
+
+			if (params.containsKey(primaryKeyName)
+					&& !(primaryKeyValue = ((String[]) params.get(primaryKeyName))[0]).equals("")) {
+				if ( primaryKeyValue.equals(primaryKeyNewValue)) {
+					throw new RuntimeException("Primary key not match");
+				}
+			} else {
+				v.put(primaryKeyName, primaryKeyNewValue);
+			}
+
 		}
 	}
 
