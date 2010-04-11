@@ -212,9 +212,9 @@ public class TypePersister implements Store<Type> {
 	protected Field decorateField(Type parent, CtField ctField) throws ClassNotFoundException, NotFoundException {
 		Object an = null;
 
-		if (ctField.getName().equals("this$0")) {
-			System.out.println(parent.getName() + " -> " + ctField.getName());
-		}
+//		if (ctField.getName().equals("this$0")) {
+//			System.out.println(parent.getName() + " -> " + ctField.getName());
+//		}
 
 		String name = ctField.getName();
 
