@@ -16,6 +16,7 @@ import javassist.CtField;
 import javassist.NotFoundException;
 import javassist.bytecode.SignatureAttribute;
 import noc.annotation.AutoWireByName;
+import noc.annotation.AutoWireByType;
 import noc.annotation.Catalog;
 import noc.annotation.DisplayName;
 import noc.annotation.FrameType;
@@ -282,6 +283,16 @@ public class TypePersister implements Store<Type> {
 			AutoWireByName au = (AutoWireByName) an;
 			if (au.value().indexOf(ctField.getName() + ";") >= 0) {
 				succeed = true;
+			}
+		}
+		
+		an = anClz.getAnnotation(AutoWireByType.class);
+		if (an != null) {
+			AutoWireByType au = (AutoWireByType) an;
+			for(Class<?> c : au.value()){
+				if(c.getName().equalsIgnoreCase(ctType.getName())){
+					succeed = true;					
+				}
 			}
 		}
 

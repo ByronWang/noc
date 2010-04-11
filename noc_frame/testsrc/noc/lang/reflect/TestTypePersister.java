@@ -1,7 +1,6 @@
 package noc.lang.reflect;
 
 import junit.framework.TestCase;
-import noc.annotation.Inline;
 import noc.lang.Code;
 import noc.lang.Literal;
 import noc.lang.Name;
@@ -37,7 +36,7 @@ public class TestTypePersister extends TestCase {
 		Field f = p.fields.get(index++);
 		assertEquals("工号", f.name);
 		assertEquals("工号", f.displayName);
-		assertEquals(false, f.primaryKey);
+		assertEquals(true, f.primaryKey);
 		assertEquals(false, f.array);
 		assertEquals(Code.class.getName(), f.type.name);
 		assertEquals(false, f.inline);
