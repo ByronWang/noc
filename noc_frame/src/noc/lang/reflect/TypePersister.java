@@ -212,9 +212,9 @@ public class TypePersister implements Store<Type> {
 	protected Field decorateField(Type parent, CtField ctField) throws ClassNotFoundException, NotFoundException {
 		Object an = null;
 
-//		if (ctField.getName().equals("this$0")) {
-//			System.out.println(parent.getName() + " -> " + ctField.getName());
-//		}
+		// if (ctField.getName().equals("this$0")) {
+		// System.out.println(parent.getName() + " -> " + ctField.getName());
+		// }
 
 		String name = ctField.getName();
 
@@ -245,7 +245,7 @@ public class TypePersister implements Store<Type> {
 			actualClass = typeClazz;
 		}
 
-		if (actualClass.getName().equalsIgnoreCase(parent.getName())) {
+		if (actualClass.getName().equalsIgnoreCase(parent.name)) {
 			type = parent;
 		} else {
 			type = getWithScalas(actualClass.getName(), actualClass);
@@ -254,19 +254,18 @@ public class TypePersister implements Store<Type> {
 		assert type != null;
 
 		Field field = new Field(name, displayName, type);
-		field.setArray(array);
+		field.array = array;
 
 		// Handle primaryKey
-		field.setPrimaryKey(type.scala && check(ctField, actualClass, PrimaryKey.class));
-		field.setInline(!type.scala && check(ctField, actualClass, Inline.class));
-		field.setCatalog(type.scala && check(ctField, actualClass, Catalog.class));
+		field.primaryKey = type.scala && check(ctField, actualClass, PrimaryKey.class);
+		field.inline = !type.scala && check(ctField, actualClass, Inline.class);
+		field.catalog = type.scala && check(ctField, actualClass, Catalog.class);
 
 		// boolean required = check(ctField, Data.Required.class);
 		// boolean basicInfo = check(ctField, Data.BasicInfo.class);
 		// boolean detailInfo = check(ctField, Data.DetailInfo.class);
 
-		field.setInline(field.inline
-				|| (type.getDeclaringType() != null && parent.getName().equals(type.getDeclaringType().getName())));
+		field.inline = field.inline || (type.declaringType != null && parent.name.equals(type.declaringType.name));
 
 		return field;
 	}

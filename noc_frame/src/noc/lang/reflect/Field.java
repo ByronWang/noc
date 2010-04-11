@@ -31,7 +31,7 @@ import noc.annotation.FrameType;
 		this.array = list;
 		this.catalog = catalog;
 		this.inline = inline;
-		this.refer = !type.isScala() && !inline;
+		this.refer = !type.scala && !inline;
 	}
 
 	public boolean isArray() {
