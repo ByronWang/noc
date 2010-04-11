@@ -223,7 +223,7 @@ public class NocDataServlet extends HttpServlet {
 				v = store.put(v);
 
 				String toPath = request.getContextPath() + path
-						+ URLEncoder.encode(v.S(type.getKeyField().getName()), "UTF-8");
+						+ URLEncoder.encode(v.S(type.getPrimaryKeyField().getName()), "UTF-8");
 
 				System.out.println("Redrectto > " + toPath);
 				response.sendRedirect(toPath);
@@ -241,8 +241,6 @@ public class NocDataServlet extends HttpServlet {
 	public void putAll(Map<?, ?> params, Vo v, Type type) {
 
 		for (Field f : type.getFields()) {
-			
-			
 			if (f.isArray()) {
 				// TODO
 			} else if (f.getType().isScala()) {
@@ -254,8 +252,8 @@ public class NocDataServlet extends HttpServlet {
 			} else if (f.isInline()) {
 				// TODO fs.add(f.getName() + "_" + f.getType().getKeyField().getName());	
 			} else if (f.isRefer()) {
-				if(f.getType().getKeyField() != null){
-					String key = f.getName() + "_" + f.getType().getKeyField().getName();
+				if(f.getType().getPrimaryKeyField() != null){
+					String key = f.getName() + "_" + f.getType().getPrimaryKeyField().getName();
 					if (params.containsKey(key)) {
 						String[] va = (String[]) params.get(key);
 						v.put(key, va[0]);
