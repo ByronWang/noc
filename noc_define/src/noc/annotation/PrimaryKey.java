@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME) 
 @Target( { FIELD }) 
-@AutoWireByName("key;id;code;name;ID;Name;NAME姓名;名称;Code;CODE;") 
+@AutoWireByName("key;id;code;name;ID;Name;NAME;姓名;名称;Code;CODE;") 
 public @interface PrimaryKey {}
