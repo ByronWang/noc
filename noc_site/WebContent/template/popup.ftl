@@ -9,11 +9,11 @@
     
     <tbody>
     
-    <#list list?sort_by("${type.keyField.name}") as data>
+    <#list list?sort_by("${type.primaryKeyField.name}") as data>
     <tr>
     [#list type.fields as inf ][#if inf.type.scala && inf.primaryKey]
-        <td><a href="#"  onclick="returnValue('${r"${data."+ type.keyField.name + "}"}')">${r"${data."+ inf.name + "}"}</a></td>
+        <td><a href="#"  onclick="returnValue('${r"${data."+ type.primaryKeyField.name + "}"}')">${r"${data."+ inf.name + "}"}</a></td>
         [/#if] [/#list]</tr>   
-    </#list>     
+	</#list>
     </tbody>
 </table>

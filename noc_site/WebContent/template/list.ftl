@@ -31,8 +31,8 @@
 			[#elseif inf.type.scala][#t]
 			<th scope="col"> ${inf.displayName} </th>
 			[#elseif inf.inline][#t]
-			[#elseif inf.refer][#if inf.type.keyField??][#t]
-			<th scope="col"> ${inf.displayName}.${inf.type.keyField.displayName} </th>
+			[#elseif inf.refer][#if inf.type.primaryKeyField??][#t]
+			<th scope="col"> ${inf.displayName}${inf.type.primaryKeyField.displayName} </th>
 			[/#if][/#if][#t]
 			[/#list][#t]
 		</tr>
@@ -40,13 +40,13 @@
 	
 	
 	<tbody>
-		<#list list?sort_by("${type.keyField.name}") as data>${r"<#" + "t>"}
+		<#list list?sort_by("${type.primaryKeyField.name}") as data>${r"<#" + "t>"}
 		<tr>
 		[#list type.fields as inf ][#t]
 			[#if inf.array][#t]
 			[#elseif inf.type.scala][#t]
 			<td> [#rt]
-				[#if inf.name == type.keyField.name][#t]
+				[#if inf.name == type.primaryKeyField.name][#t]
 				<a href="${r"${data."+ inf.name + "}"}">${r"${data."+ inf.name + "}"}</a>[#t]
 				[#else][#t]
 					[#if inf.type.name == "noc.lang.Bool"][#t]

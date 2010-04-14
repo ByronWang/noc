@@ -18,9 +18,9 @@ import noc.frame.vo.Vo;
 import noc.frame.vo.imp.VOImp;
 import noc.freemarker.DefaultModel;
 import noc.freemarker.FlexModel;
-import noc.lang.reflect.Field;
 import noc.lang.reflect.Type;
 import util.PrintObejct;
+import util.VoHelper;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
@@ -180,7 +180,7 @@ public class NocDataServlet extends HttpServlet {
 
 			String key = path.substring(last + 1);
 			Vo v = store.get(key);
-			putAll(request.getParameterMap(), v, fact.getTypeStore().get(typeName));
+			VoHelper.putAll(request.getParameterMap(), v, fact.getTypeStore().get(typeName));
 
 			v = store.put(v);
 
@@ -215,7 +215,7 @@ public class NocDataServlet extends HttpServlet {
 				Type type = fact.getTypeStore().get(typeName);
 
 				Vo v = new VOImp();
-				putAll(request.getParameterMap(), v, type);
+				v = VoHelper.putAll(request.getParameterMap(), v, type);
 				v = store.put(v);
 
 				String toPath = request.getContextPath() + path
@@ -234,67 +234,6 @@ public class NocDataServlet extends HttpServlet {
 		}
 	}
 
-	public void putAll(Map<?, ?> params, Vo v, Type type) {
 
-		for (Field f : type.getFields()) {
-			if (f.isArray()) {
-				// TODO
-			} else if (f.getType().isScala()) {
-				String key = f.getName();
-				if (params.containsKey(key)) {
-					String value = ((String[]) params.get(key))[0];
-					if (f.isKey() && v.S(key) != null) {
-						if (value.equals(v.S(key))) {
-							throw new RuntimeException("Primary key not match");
-						}
-					} else {
-						v.put(key, value);
-					}
-				}
-			} else if (f.isInline()) {
-				// TODO fs.add(f.getName() + "_" +
-				// f.getType().getKeyField().getName());
-			} else if (f.isRefer()) {
-				if (f.getType().getPrimaryKeyField() != null) {
-					String key = f.getName() + "_" + f.getType().getPrimaryKeyField().getName();
-					if (params.containsKey(key)) {
-						String[] va = (String[]) params.get(key);
-						v.put(key, va[0]);
-					}
-				} else {
-					String key = f.getName() + "_" + "key";
-					if (params.containsKey(key)) {
-						String[] va = (String[]) params.get(key);
-						v.put(key, va[0]);
-					}
-				}
-			}
-		}
-
-		if (type.getKeyFields().size() > 1) {
-			String primaryKeyNewValue = "";
-
-			String primaryKeyName = type.getPrimaryKeyField().getName();
-			String primaryKeyValue = type.getPrimaryKeyField().getName();
-
-			for (Field f : type.getKeyFields()) {
-				if (params.containsKey(f.getName())) {
-					throw new RuntimeException("Not key field value");
-				}
-				primaryKeyNewValue += "_" + ((String[]) params.get(f.getName()))[0];
-			}
-			primaryKeyNewValue = primaryKeyNewValue.substring(1);
-
-			if (params.containsKey(primaryKeyName)
-					&& !(primaryKeyValue = ((String[]) params.get(primaryKeyName))[0]).equals("")) {
-				if ( primaryKeyValue.equals(primaryKeyNewValue)) {
-					throw new RuntimeException("Primary key not match");
-				}
-			} else {
-				v.put(primaryKeyName, primaryKeyNewValue);
-			}
-
-		}
-	}
 
 }
