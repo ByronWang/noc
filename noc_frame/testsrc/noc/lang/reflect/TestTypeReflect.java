@@ -33,91 +33,99 @@ public class TestTypeReflect extends TestCase {
 		final String newline = "\n";
 		final String indent = "\t";
 
-		if(!p.primaryKeyField.isKey()){
+		if (!p.primaryKeyField.isKey()) {
 			sb.append(p.getPrimaryKeyField().getName());
 			sb.append(":hide");
 			sb.append(newline);
 		}
-		
-		for (Field f : p.getFields()) {
-			if (f.array && f.inline) {
-				sb.append(f.displayName);
-				sb.append(":");
-				sb.append("inline list");
-				sb.append(newline);
-				sb.append(indent);
-				for (Field fin : f.type.fields) {
-					sb.append(fin.name);
-					sb.append(" : ");
-				}
-				sb.append(newline);
-			} else if (f.array && f.refer) {
-				sb.append(f.displayName);
-				sb.append(":");
-				sb.append("list");
-				sb.append(newline);
-				sb.append(indent);
-				sb.append(f.displayName);
-				sb.append("_");
-				sb.append(f.type.primaryKeyField.name);
-				sb.append(newline);
-			} else if (f.array) {
-				sb.append(f.displayName);
-				sb.append(":");
-				sb.append("list");
-				sb.append(newline);
-				sb.append(indent);
-				sb.append(f.displayName);
-				sb.append(newline);
-			} else if (f.inline) {
-				sb.append(f.displayName);
-				sb.append(":");
-				sb.append("inline");
-				sb.append(newline);
-				for (Field fin : f.type.fields) {
-					sb.append(indent);
-					sb.append(fin.name);
-					sb.append(newline);
-				}
-			} else if (f.refer) {
-				sb.append(f.displayName);
-				sb.append(f.type.primaryKeyField.name);
-				if (!f.type.primaryKeyField.key) {
-					sb.append(": hide");
-					sb.append(newline);
 
-					for (Field fin : f.type.keyFields) {
-						sb.append(f.displayName);
-						sb.append("");
+		for (Field f : p.getFields()) {
+			if (f.array) {
+				if (f.inline) {
+					sb.append(f.displayName);
+					sb.append(":");
+					sb.append("inline list");
+					sb.append(newline);
+					sb.append(indent);
+					for (Field fin : f.type.fields) {
+						sb.append(fin.name);
+						sb.append(" : ");
+					}
+					sb.append(newline);
+				} else if (f.refer) {
+					sb.append(f.displayName);
+					sb.append(":");
+					sb.append("list");
+					sb.append(newline);
+					sb.append(indent);
+					sb.append(f.displayName);
+					sb.append("_");
+					sb.append(f.type.primaryKeyField.name);
+					sb.append(newline);
+				} else if (f.type.scala) {
+					sb.append(f.displayName);
+					sb.append(":");
+					sb.append("list");
+					sb.append(newline);
+					sb.append(indent);
+					sb.append(f.displayName);
+					sb.append(newline);
+				} else {
+
+				}
+
+			} else {
+				if (f.inline) {
+
+					sb.append(f.displayName);
+					sb.append(":");
+					sb.append("inline");
+					sb.append(newline);
+					for (Field fin : f.type.fields) {
+						sb.append(indent);
 						sb.append(fin.name);
 						sb.append(newline);
 					}
-				} else {
-					sb.append(": ref");
+				} else if (f.refer) {
+					sb.append(f.displayName);
+					sb.append(f.type.primaryKeyField.name);
+					if (!f.type.primaryKeyField.key) {
+						sb.append(": hide");
+						sb.append(newline);
+
+						for (Field fin : f.type.keyFields) {
+							sb.append(f.displayName);
+							sb.append("");
+							sb.append(fin.name);
+							sb.append(newline);
+						}
+					} else {
+						sb.append(": ref");
+						sb.append(newline);
+					}
+				} else if (f.type.scala) {
+					sb.append(f.displayName);
+					if (f.key) {
+						sb.append(": readonly");
+					}
 					sb.append(newline);
+				}else{
+					
 				}
-			} else if (f.type.scala) {
-				sb.append(f.displayName);
-				if (f.key) {
-					sb.append(": readonly");
-				}
-				sb.append(newline);
 			}
 		}
 		System.out.println(sb.toString());
 
 	}
 
-	
-	
-//	
-//	if (f.array && f.inline) {
-//	} else if (f.array && f.refer) {
-//	} else if (f.array) {
-//	} else if (f.inline) {
-//	} else if (f.refer) {
-//	} else if (f.type.scala) {
-//	}
+	//	
+	// if (f.array && f.inline) {
+	// } else if (f.array && f.refer) {
+	// } else if (f.array) {
+	// } else if (f.inline) {
+	// } else if (f.refer) {
+	// } else if (f.type.scala) {
+	// }
 	public void testSetValue() {
 		Vo v = new VOImp();
 
