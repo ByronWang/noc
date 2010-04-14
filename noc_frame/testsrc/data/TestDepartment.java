@@ -11,22 +11,22 @@ import noc.lang.Status;
 @DisplayName("部门")
 @Inline
 public class TestDepartment {
-	Code 代码;
-	Literal 名称;
-	TestDepartment 所属;
-	Status 状态;
+	public Code 代码;
+	public Literal 名称;
+	public TestDepartment 所属;
+	public Status 状态;
 
-	ContactHasnotKey 联系方式HasnotKey;
-	ContactHasKey 联系方式HasKey;
+	public ContactHasnotKey 联系方式HasnotKey;
+	public ContactHasKey 联系方式HasKey;
 	@Standalone
-	class ContactHasnotKey {
+	public class ContactHasnotKey {
 		Attr 公司电话;
 		Attr 传真;
 		Attr 手机;
 		Attr EMail;
 	}
 	@Standalone
-	class ContactHasKey {
+	public class ContactHasKey {
 		Code 公司电话;
 		Attr 传真;
 		Attr 手机;

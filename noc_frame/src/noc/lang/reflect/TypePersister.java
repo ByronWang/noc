@@ -254,9 +254,11 @@ public class TypePersister implements Store<Type> {
 			type.primaryKeyField = type.keyFields.get(0);
 			type.keyFields.clear();
 			type.primaryKeyField.primaryKey = true;
+			type.primaryKeyField.key = true;
 		} else if (type.keyFields.size() > 1) {
 			type.primaryKeyField = new Field("primaryKey", "主键", scalas.get(Name.class.getName()));
 			type.primaryKeyField.primaryKey = true;
+			type.primaryKeyField.key = false;
 		}
 
 		type.standalone = true;

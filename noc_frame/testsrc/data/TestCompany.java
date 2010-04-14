@@ -7,8 +7,8 @@ import noc.lang.Status;
 
 @DisplayName("公司")
 public class TestCompany {
-	Name 名称;
-	Name 简称;
-	Status 状态;
-	List<TestCompany> 子公司;	
+	public Name 名称;
+	public Name 简称;
+	public Status 状态;
+	public List<TestCompany> 子公司;	
 }
