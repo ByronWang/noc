@@ -79,8 +79,8 @@
 				[@object type=f.type parent="data." + f.name /]
 			[#elseif f.refer]
 				[@label field=f /] [#t]
-					[#if f.type.keyField??][#t]
-					[#assign  fieldName = f.name + "_" + f.type.keyField.name /][#t]
+					[#if f.type.primaryKeyField??][#t]
+					[#assign  fieldName = f.name + "_" + f.type.primaryKeyField.name /][#t]
 					[#else][#t]
 					[#assign  fieldName = f.name + "_" + "key" /][#t]
 					[/#if][#t]			
@@ -101,7 +101,7 @@
 [@body title=type.displayName]
 <a style="float:right;position:absolute;right:0px;top:0px;" href="/noc/noc/lang/reflect/Type/${type.name}">Type</a>
 
-<form name="form1" method="${r"${_method!}"}" action="${r"${_action!}"}" title="Hello Title">
+<form name="form1" method="POST" action="${contextPath}${r"${urlPath!}"}/${type.name?replace(".", "/")}/${r"${data."+ type.primaryKeyField.name + "!}"}" title="Hello Title">
 	[@object type=type parent="data" /]	
 	[@submit/]
 </form>
