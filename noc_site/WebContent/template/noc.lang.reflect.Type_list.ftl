@@ -19,14 +19,13 @@
 	
 	
 	<tbody>
-		<#list list?sort_by("name") as data><#t><#if !data.declaringType??>
+		<#list data?sort_by("name") as item><#t><#if !item.declaringType??>
 		<tr>
-			<td> ${data.displayName}</td>
-			<td> <a href="${data.name}">${data.name}</a></td>
-			<td> <#if data.scala>True<#else>false</#if></td>
-		</tr>   
-		</#if>
-	</#list>	
+			<td> ${item.displayName}</td>
+			<td> <a href="${item.name}">${item.name}</a></td>
+			<td> <#if item.scala>True<#else>false</#if></td>
+		</tr>
+		</#if></#list>	
 	</tbody>
 </table>
 

@@ -55,15 +55,15 @@
 	</servlet>
 	<servlet>
 		<description></description>
-		<display-name>NocDataServletConstruct</display-name>
-		<servlet-name>NocDataServletConstruct</servlet-name>
-		<servlet-class>noc.http.NocDataServletConstruct</servlet-class>
+		<display-name>NocDebugServlet</display-name>
+		<servlet-name>NocDebugServlet</servlet-name>
+		<servlet-class>noc.http.NocDebugServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<description></description>
-		<display-name>NocLangDataServlet</display-name>
-		<servlet-name>NocLangDataServlet</servlet-name>
-		<servlet-class>noc.http.NocTypeServlet</servlet-class>
+		<display-name>NocTypeServlet</display-name>
+		<servlet-name>NocTypeServlet</servlet-name>
+		<servlet-class>noc.http.NocDataServlet</servlet-class>
 	</servlet>
 	
 	<servlet-mapping>
@@ -71,11 +71,11 @@
 		<url-pattern>/data/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>NocDataServletConstruct</servlet-name>
+		<servlet-name>NocDebugServlet</servlet-name>
 		<url-pattern>/debug/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>NocLangDataServlet</servlet-name>
+		<servlet-name>NocTypeServlet</servlet-name>
 		<url-pattern>/noc/lang/reflect/Type/*</url-pattern>
 	</servlet-mapping>
 </web-app>

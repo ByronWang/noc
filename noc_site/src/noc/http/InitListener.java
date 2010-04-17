@@ -24,7 +24,7 @@ public class InitListener implements ServletContextListener {
 		System.out.println("IN__Listner__contextInitialized");
 		final ServletContext context = arg0.getServletContext();
 
-		context.setAttribute("fact", new Fact(context));
+		context.setAttribute("fact", new Fact(context,true));
 
 		PrintObejct.print(arg0);
 	}

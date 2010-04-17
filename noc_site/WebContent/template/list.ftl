@@ -40,19 +40,19 @@
 	
 	
 	<tbody>
-		<#list list?sort_by("${type.primaryKeyField.name}") as data>${r"<#" + "t>"}
+		<#list data?sort_by("${type.primaryKeyField.name}") as item>${r"<#" + "t>"}
 		<tr>
 		[#list type.fields as inf ][#t]
 			[#if inf.array][#t]
 			[#elseif inf.type.scala][#t]
 			<td> [#rt]
 				[#if inf.name == type.primaryKeyField.name][#t]
-				<a href="${r"${data."+ inf.name + "}"}">${r"${data."+ inf.name + "}"}</a>[#t]
+				<a href="${r"${item."+ inf.name + "}"}">${r"${item."+ inf.name + "}"}</a>[#t]
 				[#else][#t]
 					[#if inf.type.name == "noc.lang.Bool"][#t]
-			<#if data.${inf.name}>True<#else>false</#if>[#t]
+			<#if item.${inf.name}>True<#else>false</#if>[#t]
 					[#else][#t]
-				${r"${data."+ inf.name + "}"}[#t]
+				${r"${item."+ inf.name + "}"}[#t]
 					[/#if][#t]
 				[/#if][#t]
 			</td>[#lt]
@@ -62,9 +62,9 @@
 				[#if inf.type.keyField??][#t]  
 					[#assign  fieldName = inf.name + "_" + inf.type.keyField.name /][#t]			
 					[#if inf.type.keyField.name == "noc.lang.Bool"][#t]
-				<#if data.${fieldName}>True<#else>false</#if>[#t]
+				<#if item.${fieldName}>True<#else>false</#if>[#t]
 					[#else][#t]
-				${r"${data."+ fieldName + "}"}[#t]
+				${r"${item."+ fieldName + "}"}[#t]
 					[/#if][#t]
 				[/#if][#t]
 			</td>[#lt]

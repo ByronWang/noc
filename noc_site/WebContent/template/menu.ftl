@@ -12,10 +12,10 @@
 </head><body class="nav">
 <div class="navbox"> 
 <ul class="nav">
-    <#list list as data><li>
-        <a href="${r"${data."+ type.keyField.name + "}"}">${r"${data."+ type.keyField.name + "}"}</a>
+    <#list data as item><li>
+        <a href="${r"${item."+ type.primaryKeyField.name + "}"}">${r"${item."+ type.primaryKeyField.name + "}"}</a>
        </li>
-    </#list>  
+    </#list> 
 </ul>   
 </div>
 </body></html>

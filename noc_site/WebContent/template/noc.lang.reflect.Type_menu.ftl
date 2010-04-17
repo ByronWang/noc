@@ -2,8 +2,8 @@
 <link rel='stylesheet' href='/noc/css/form.css' type='text/css'/>
 </head><body class="nav" >
 <div class="navbox" > 
-<ul class="nav"><#list list?sort_by("name") as data><#if !data.declaringType?? && data.standalone>
-<li><a href="${contextPath}/${data.name?replace(".","/")}/" target="oEdit">${data.displayName}</a></li>
+<ul class="nav"><#list data?sort_by("name") as item><#if item.standalone>
+<li><a href="${contextPath}/${item.name?replace(".","/")}/" target="oEdit">${item.displayName}</a></li>
 </#if>
 </#list></ul>   
 </div >
