@@ -187,11 +187,11 @@ public class Fact {
 		}
 
 		public Template getEditTemplate() {
-			return fact.getTemplate(typeName, "type");
+			return fact.getTemplate(typeName, "edit");
 		}
 
 		public Template getNewTemplate() {
-			return fact.getTemplate(typeName, "type");
+			return fact.getTemplate(typeName, "edit");
 		}
 
 		public Template getMenuTemplate() {
@@ -213,8 +213,8 @@ public class Fact {
 						typeStore.get(typeName), 
 						getStore(typeName), 
 						getTemplate(typeName,"list"), 
-						getTemplate(typeName, "type"), 
-						getTemplate(typeName, "type"), 
+						getTemplate(typeName, "edit"), 
+						getTemplate(typeName, "edit"), 
 						getTemplate(typeName, "menu"), 
 						getTemplate(typeName, "popup"));
 			}
