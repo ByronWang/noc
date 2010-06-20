@@ -35,10 +35,6 @@ public class VoStore implements Store<Vo> {
 	}
 
 	@Override public List<Vo> list() {
-		ArrayList<Vo> values = new ArrayList<Vo>();
-		for(Vo v : map.values()){
-			values.add(v);
-		}
-		return values;
+		return new ArrayList<Vo>(map.values());
 	}
 }
