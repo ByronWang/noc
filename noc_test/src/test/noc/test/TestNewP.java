@@ -40,7 +40,7 @@ public class TestNewP {
 			v.put("离职日期","离职日期");
 			v.put("成本中心","成本中心");
 
-			v = store.put(v);
+			v = store.update(v);
 			
 			
 			v = store.get("工号");
