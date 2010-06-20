@@ -21,12 +21,12 @@ public class VoPersisiterStore extends VoStore {
 		if (t == null) {
 			t = persister.get(key);
 		}
-		super.put(t);
+		super.update(t);
 		return super.get(key);
 	}
 
-	@Override public Vo put(Vo v) {
-		super.put(v);
+	@Override public Vo update(Vo v) {
+		super.update(v);
 		return persister.update(v);
 	}
 

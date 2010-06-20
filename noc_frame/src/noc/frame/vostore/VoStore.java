@@ -28,7 +28,7 @@ public class VoStore implements Store<Vo> {
 		return map.get(key);
 	}
 
-	@Override public Vo put(Vo v) {
+	@Override public Vo update(Vo v) {
 		String keyValue = v.S(keyName);
 		map.put(keyValue, v);
 		return map.get(keyValue);

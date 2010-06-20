@@ -1,33 +1,25 @@
 package noc.frame;
 
-import java.util.List;
 
-public interface Persister<T> {
-	
-	 void prepare();
+public interface Persister<T> extends Store<T>{
 
-	 void drop();
+	void prepare();
+	void drop();
 
-//	 void insert(T value);
 
-//	 void insert(List<T> values);
+	// void insert(T value);
 
-	 T update(T value);
+	// void insert(List<T> values);
 
-//	 void update(List<T> values);
+	// T find(String key);
 
-	 void delete(T value);
+	// void update(List<T> values);
 
-//	 void clear();
+	// void delete(T value);
 
-//	 void delete(List<T> values);
+	// void clear();
 
-	T get(String key);
-	
-	T find(String key);
-
-	List<T> list();
-
-//	List<T> query(String key);
+	// void delete(List<T> values);
+	// List<T> query(String key);
 
 }

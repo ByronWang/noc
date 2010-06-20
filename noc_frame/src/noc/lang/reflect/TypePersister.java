@@ -432,7 +432,7 @@ public class TypePersister implements Store<Type> {
 		return types;
 	}
 
-	@Override public Type put(Type v) {
+	@Override public Type update(Type v) {
 		throw new UnsupportedOperationException(v.toString());
 	}
 

@@ -60,7 +60,7 @@ public class PersisterDBVoImp implements Persister<Vo> {
 		KEY_FIELD = builder.getKeyField();
 	}
 
-	@Override public void prepare() {
+	public void prepare() {
 		try {
 			Statement st = conn.createStatement();
 
@@ -174,7 +174,7 @@ public class PersisterDBVoImp implements Persister<Vo> {
 		}
 	}
 
-	@Override public void delete(Vo value) {
+	public void delete(Vo value) {
 		try {
 			PreparedStatement p = conn.prepareStatement(SQL_DELETE);
 			p.setString(1, this.KEY_FIELD);
@@ -263,7 +263,7 @@ public class PersisterDBVoImp implements Persister<Vo> {
 		}
 	}
 
-	@Override public Vo find(String key) {
+	public Vo find(String key) {
 		Vo v = null;
 		PreparedStatement p = null;
 		ResultSet res = null;
