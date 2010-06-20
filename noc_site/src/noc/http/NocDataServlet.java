@@ -142,7 +142,7 @@ public class NocDataServlet extends HttpServlet {
 			
 			Vo v = store.get(key);
 			VoHelper.putAll(request.getParameterMap(), v, rule.getType());
-			v = store.put(v);
+			v = store.update(v);
 
 			doGet(request, response);
 		} catch (Exception e) {
@@ -167,7 +167,7 @@ public class NocDataServlet extends HttpServlet {
 
 				Store<Vo> store = (Store<Vo>) rule.getStore();
 				Vo v = VoHelper.putAll(request.getParameterMap(), new VOImp(), rule.getType());
-				v = store.put(v);
+				v = store.update(v);
 
 				String toPath = request.getContextPath() + rule.typeName.replace('.', '/')
 						+ URLEncoder.encode(v.S(rule.getType().getPrimaryKeyField().getName()), "UTF-8");
