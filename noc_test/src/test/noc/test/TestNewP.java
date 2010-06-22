@@ -1,7 +1,7 @@
 package noc.test;
 import noc.frame.Persister;
 import noc.frame.Store;
-import noc.frame.dbpersister.DbConfiguration;
+import noc.frame.dbpersister.DerbyConfiguration;
 import noc.frame.vo.Vo;
 import noc.frame.vo.imp.VOImp;
 import noc.frame.vostore.VoPersisiterStore;
@@ -21,7 +21,7 @@ public class TestNewP {
 			Type de =typeStore.get("data.master.Employee");
 
 
-			DbConfiguration conf = new DbConfiguration("testdb","user","password");
+			DerbyConfiguration conf = new DerbyConfiguration("testdb","user","password");
 			conf.init();
 			Persister<Vo> p = conf.getPersister(Vo.class, de);
 			p.prepare();			
