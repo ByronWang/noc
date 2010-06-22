@@ -8,7 +8,7 @@ import javax.servlet.ServletContext;
 
 import noc.frame.Persister;
 import noc.frame.Store;
-import noc.frame.dbpersister.DbConfiguration;
+import noc.frame.dbpersister.DerbyConfiguration;
 import noc.frame.vo.Vo;
 import noc.frame.vostore.VoPersisiterStore;
 import noc.lang.reflect.Type;
@@ -35,7 +35,7 @@ public class Fact {
 	private TypePersister typeStore;
 	private Configuration templateEngine;
 
-	private DbConfiguration dbEngine;
+	private DerbyConfiguration dbEngine;
 	private Map<String, Store<?>> stores;
 	private Map<String, Rule> rules;
 	// Extension
@@ -69,7 +69,7 @@ public class Fact {
 			templateEngine.setSharedVariable("contextPath", context.getContextPath());
 			templateEngine.setObjectWrapper(new DefaultObjectWrapper());
 
-			dbEngine = new DbConfiguration(context.getInitParameter(DATABASE_NAME),
+			dbEngine = new DerbyConfiguration(context.getInitParameter(DATABASE_NAME),
 					context.getInitParameter(USER_NAME), context.getInitParameter(USER_PASSWORD));
 			dbEngine.init();
 
