@@ -12,13 +12,10 @@ import noc.frame.vo.Vol;
 public class VOImp implements Vo {
 	ArrayList<VOEntry> values = new ArrayList<VOEntry>(20);
 
-	private String keyValue = null;
-
 	public VOImp() {
 	}
 
 	public VOImp(String keyValue, Object... params) {
-		this.keyValue = keyValue;
 		for (int i = 0; i < params.length; i += 2) {
 			if (params[i + 1] instanceof V) {
 				this.values.add(new VOEntryImp((String) params[i], (V) params[i + 1]));
@@ -38,10 +35,6 @@ public class VOImp implements Vo {
 	}
 
 	@Override public void put(String name, V v) {
-		if ("name".equals(name) || "id".equals(name) || keyValue == null) {
-			keyValue = name;
-		}
-
 		for (VOEntry e : values) {
 			if (name.equals(e.getKey())) {
 				e.setValue(v);
@@ -85,9 +78,9 @@ public class VOImp implements Vo {
 		return (Vol) this.get(name);
 	}
 
-	@Override public void add(V v) {
-		throw new UnsupportedOperationException();
-	}
+//	@Override public void add(V v) {
+//		throw new UnsupportedOperationException();
+//	}
 
 	@Override public void put(String name, String value) {
 		this.put(name, new VScalarImp(value));

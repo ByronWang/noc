@@ -17,5 +17,5 @@ public interface Vo  extends V{
 	Iterable<V> values();
 	
 	
-	void add(V v);
+	//void add(V v);
 }
