@@ -7,13 +7,13 @@ import java.sql.SQLException;
 import noc.frame.Persister;
 import noc.lang.reflect.Type;
 
-public class DbConfiguration {
+public class DerbyConfiguration {
 
 	final String databaseName;
 	final String userName;
 	final String userPassword;
 
-	public DbConfiguration(String dbName, String userName, String userPassword) {
+	public DerbyConfiguration(String dbName, String userName, String userPassword) {
 		this.databaseName = dbName;
 		this.userName = userName;
 		this.userPassword = userPassword;
