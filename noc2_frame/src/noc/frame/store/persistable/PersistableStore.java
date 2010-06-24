@@ -5,19 +5,19 @@ import java.util.List;
 import noc.frame.FindableList;
 import noc.frame.Persister;
 import noc.frame.Provider;
-import noc.frame.Referable;
 import noc.frame.Store;
+import noc.frame.Vo;
 import noc.frame.store.AbstractStore;
 
-public class PersistableStore<V extends Referable> extends AbstractStore<V> {
-	Persister<V> persister;
+public class PersistableStore extends AbstractStore {
+	Persister<Vo> persister;
 
-	public PersistableStore(Provider<Store<V>> provider) {
+	public PersistableStore(Provider<Store<Vo>> provider) {
 		super(provider);
-		datas = new FindableList<String, V>();
+		datas = new FindableList<String, Vo>();
 	}
 
-	public AbstractStore<V> setPersistre(Persister<V> persister) {
+	public AbstractStore setPersistre(Persister<Vo> persister) {
 		this.persister = persister;
 		this.persister.refer(this);
 		return this;
@@ -27,8 +27,8 @@ public class PersistableStore<V extends Referable> extends AbstractStore<V> {
 		super.setup();
 		persister.setup();
 
-		List<V> vList = persister.list();
-		for (V v : vList) {
+		List<Vo> vList = persister.list();
+		for (Vo v : vList) {
 			super.datas.put(v.getReferID(), v);
 		}
 	}
@@ -37,8 +37,8 @@ public class PersistableStore<V extends Referable> extends AbstractStore<V> {
 
 	}
 
-	@Override public V get(String key) {
-		V v = super.get(key);
+	@Override public Vo get(String key) {
+		Vo v = super.get(key);
 		if (v != null) {
 			return v;
 		}
@@ -49,11 +49,11 @@ public class PersistableStore<V extends Referable> extends AbstractStore<V> {
 		return super.get(key);
 	}
 
-	@Override public List<V> list() {
+	@Override public List<Vo> list() {
 		return super.list();
 	}
 
-	@Override public V update(V v) {
+	@Override public Vo update(Vo v) {
 		v = persister.update(v);
 		return super.update(v);
 	}

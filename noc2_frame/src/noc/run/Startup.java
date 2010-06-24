@@ -6,10 +6,11 @@ import noc.frame.FreeVo;
 import noc.frame.Provider;
 import noc.frame.Store;
 import noc.frame.Vo;
+import noc.frame.provider.FacadeStoreProvider;
 
 public class Startup {
 	public static void main(String[] args) {
-		Provider<Store<Vo>> storeProvider= new FacadeStoreProvider<Vo>();
+		Provider<Store<Vo>> storeProvider= new FacadeStoreProvider();
 		storeProvider.setup();
 
 		Store<Vo> personStore = storeProvider.get("Person");

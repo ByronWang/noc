@@ -12,12 +12,12 @@ import java.util.List;
 import java.util.Map;
 
 import noc.frame.FreeVo;
-import noc.frame.Store;
 import noc.frame.Vo;
 import noc.frame.lang.Type;
 import noc.frame.persister.AbstractPersister;
+import sun.security.util.Debug;
 
-public class TablePersister<T> extends AbstractPersister<T> {
+public class TablePersister extends AbstractPersister {
 	private final Connection conn;
 
 	final Type clazz;
@@ -116,16 +116,16 @@ public class TablePersister<T> extends AbstractPersister<T> {
 		}
 	}
 
-//	@Override public Vo update(Vo value) {
-//		String key = ((Vo) value).getString(KEY_FIELD);
-//		Vo v = this.find(key);
-//		if (v == null) {
-//			this.doInsert(value);
-//		} else {
-//			this.doUpdate(value);
-//		}
-//		return (Vo) this.get(key);
-//	}
+	@Override public Vo update(Vo value) {
+		String key = ((Vo) value).getString(KEY_FIELD);
+		Vo v = this.find(key);
+		if (v == null) {
+			this.doInsert(value);
+		} else {
+			this.doUpdate(value);
+		}
+		return (Vo) this.get(key);
+	}
 
 	protected void doUpdate(Vo value) {
 		try {
@@ -176,83 +176,79 @@ public class TablePersister<T> extends AbstractPersister<T> {
 		}
 	}
 
-//	@Override public Vo get(String key) {
-//		Vo v = null;
-//		PreparedStatement p = null;
-//		ResultSet res = null;
-//
-//		try {
-//
-//			Debug.println("SQL_GET", SQL_GET);
-//
-//			p = conn.prepareStatement(SQL_GET);
-//			p.setString(1, key);
-//			res = p.executeQuery();
-//			if (!res.next()) {
-//				throw new RuntimeException("Can not find record key:" + key);
-//			}
-//
-//			v = new FreeVo();
-//
-//			for (int i = 0; i < fields.length; i++) {
-//				v.put(fields[i], res.getString(i + 1));
-//			}
-//
-//			if (res.next()) {
-//				throw new RuntimeException("find double record for key:" + key);
-//			}
-//
-//			Debug.println("==", SQL_GET);
-//			Debug.println("==", key + ">" + v.toString());
-//			return v;
-//		} catch (SQLException e) {
-//			throw new RuntimeException(e);
-//		} finally {
-//			try {
-//				if (res != null)
-//					res.close();
-//				if (p != null)
-//					p.close();
-//			} catch (SQLException e) {
-//				throw new RuntimeException(e);
-//			}
-//		}
-//	}
-//
-//	@Override public List<Vo> list() {
-//		PreparedStatement p = null;
-//		ResultSet res = null;
-//
-//		ArrayList<Vo> vl = new ArrayList<Vo>();
-//
-//		try {
-//
-//			p = conn.prepareStatement(SQL_LIST);
-//			res = p.executeQuery();
-//
-//			while (res.next()) {
-//				Vo v = new FreeVo();
-//				for (int i = 0; i < fields.length; i++) {
-//					v.put(fields[i], res.getString(i + 1));
-//				}
-//				vl.add(v);
-//			}
-//
-//			return (List<Vo>) vl;
-//		} catch (SQLException e) {
-//			Debug.println("SQL", SQL_LIST);
-//			throw new RuntimeException(e);
-//		} finally {
-//			try {
-//				if (res != null)
-//					res.close();
-//				if (p != null)
-//					p.close();
-//			} catch (SQLException e) {
-//				throw new RuntimeException(e);
-//			}
-//		}
-//	}
+	@Override public Vo get(String key) {
+		Vo v = null;
+		PreparedStatement p = null;
+		ResultSet res = null;
+
+		try {
+
+			Debug.println("SQL_GET", SQL_GET);
+
+			p = conn.prepareStatement(SQL_GET);
+			p.setString(1, key);
+			res = p.executeQuery();
+			if (!res.next()) {
+				throw new RuntimeException("Can not find record key:" + key);
+			}
+
+			v = new FreeVo();
+
+			for (int i = 0; i < fields.length; i++) {
+				v.put(fields[i], res.getString(i + 1));
+			}
+
+			if (res.next()) {
+				throw new RuntimeException("find double record for key:" + key);
+			}
+
+			Debug.println("==", SQL_GET);
+			Debug.println("==", key + ">" + v.toString());
+			return v;
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} finally {
+			try {
+				if (res != null) res.close();
+				if (p != null) p.close();
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
+	@Override public List<Vo> list() {
+		PreparedStatement p = null;
+		ResultSet res = null;
+
+		ArrayList<Vo> vl = new ArrayList<Vo>();
+
+		try {
+
+			p = conn.prepareStatement(SQL_LIST);
+			res = p.executeQuery();
+
+			while (res.next()) {
+				Vo v = new FreeVo();
+				for (int i = 0; i < fields.length; i++) {
+					v.put(fields[i], res.getString(i + 1));
+				}
+				vl.add(v);
+			}
+
+			return (List<Vo>) vl;
+		} catch (SQLException e) {
+			Debug.println("SQL", SQL_LIST);
+			throw new RuntimeException(e);
+		} finally {
+			try {
+				if (res != null) res.close();
+				if (p != null) p.close();
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
 
 	public Vo find(String key) {
 		Vo v = null;
@@ -279,10 +275,8 @@ public class TablePersister<T> extends AbstractPersister<T> {
 			throw new RuntimeException(e);
 		} finally {
 			try {
-				if (res != null)
-					res.close();
-				if (p != null)
-					p.close();
+				if (res != null) res.close();
+				if (p != null) p.close();
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			}
@@ -291,26 +285,7 @@ public class TablePersister<T> extends AbstractPersister<T> {
 
 	@Override public void invalidate() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	@Override public void refer(Store<T> store) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override public T get(String key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override public List<T> list() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override public T update(T value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

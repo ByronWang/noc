@@ -4,16 +4,17 @@ import java.util.ArrayList;
 
 import noc.frame.Persister;
 import noc.frame.Store;
+import noc.frame.Vo;
 
-public abstract class AbstractPersister<T> implements Persister<T>{
-	ArrayList<Store<T>> refby  = new ArrayList<Store<T>>();
+public abstract class AbstractPersister implements Persister<Vo>{
+	ArrayList<Store<Vo>> refby  = new ArrayList<Store<Vo>>();
 	
-	public void refer(Store<T> store){
+	public void refer(Store<Vo> store){
 		refby.add(store);
 	}
 	
 	public void invalidate(){
-		for(Store<T> store:refby){
+		for(Store<Vo> store:refby){
 			store.invalidate();
 		}
 	}

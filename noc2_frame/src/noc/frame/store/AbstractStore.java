@@ -4,26 +4,26 @@ import java.util.List;
 
 import noc.frame.FindableList;
 import noc.frame.Provider;
-import noc.frame.Referable;
 import noc.frame.Store;
+import noc.frame.Vo;
 
-public abstract class AbstractStore<V extends Referable> implements Store<V> {
-	protected Provider<Store<V>> provider;
-	protected FindableList<String, V> datas = null;
+public abstract class AbstractStore implements Store<Vo> {
+	protected Provider<Store<Vo>> provider;
+	protected FindableList<String, Vo> datas = null;
 
-	public AbstractStore(Provider<Store<V>> provider) {
+	public AbstractStore(Provider<Store<Vo>> provider) {
 		this.provider = provider;
 	}
 
-	@Override public V get(String key) {
+	@Override public Vo get(String key) {
 		return datas.get(key);
 	}
 
-	@Override public List<V> list() {
+	@Override public List<Vo> list() {
 		return datas.getValues();
 	}
 
-	@Override public V update(V v) {
+	@Override public Vo update(Vo v) {
 		datas.put(v.getReferID(), v);
 		return datas.get(v.getReferID());
 	}

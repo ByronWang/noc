@@ -1,11 +1,14 @@
-package noc.frame.persister.filesystem;
+package noc.frame.provider;
 
 import java.io.File;
 
 import noc.frame.Persister;
-import noc.frame.Referable;
+import noc.frame.Vo;
+import noc.frame.persister.filesystem.CsvFilePersister;
+import noc.frame.persister.filesystem.PropertiesFilePersister;
+import noc.frame.persister.filesystem.XmlFilePersister;
 
-public class LocalFileSystemPersisterProvider<V extends Referable> extends FileSystemPersisterProvider<V> {
+public class LocalFileSystemPersisterProvider extends FileSystemPersisterProvider {
 	String pathName;
 	File path;
 
@@ -19,14 +22,14 @@ public class LocalFileSystemPersisterProvider<V extends Referable> extends FileS
 		path = new File(pathName);
 	}
 
-	@Override protected Persister<V> find(String key) {
+	@Override protected Persister<Vo> find(String key) {
 		File file;
 		if ((file = new File(path, key + CsvFilePersister.EXT)).exists()) {
-			return new CsvFilePersister<V>(file);
+			return new CsvFilePersister(file);
 		} else if ((file = new File(path, key + PropertiesFilePersister.EXT)).exists()) {
-			return new PropertiesFilePersister<V>(file);
+			return new PropertiesFilePersister(file);
 		} else if ((file = new File(path, key + XmlFilePersister.EXT)).exists()) {
-			return new XmlFilePersister<V>(file);
+			return new XmlFilePersister(file);
 		}
 		return null;
 	}

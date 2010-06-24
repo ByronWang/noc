@@ -1,13 +1,14 @@
-package noc.frame.persister.db;
+package noc.frame.provider;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import noc.frame.Persister;
-import noc.frame.persister.AbstractPersisterProvider;
+import noc.frame.Vo;
+import noc.frame.persister.db.TablePersister;
 
-public abstract class DbPersisterProvider<V> extends AbstractPersisterProvider<V> {
+public abstract class DbPersisterProvider extends AbstractPersisterProvider {
 
 	protected final String driverName;
 	protected final String url;// "jdbc:derby:" + this.databaseName +
@@ -54,8 +55,8 @@ public abstract class DbPersisterProvider<V> extends AbstractPersisterProvider<V
 		}
 	}
 
-	@Override protected Persister<V> find(String key) {
-		return new TablePersister<V>(null, conn);
+	@Override protected Persister<Vo> find(String key) {
+		return new TablePersister(null, conn);
 	}
 
 }

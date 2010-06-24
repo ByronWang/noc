@@ -1,8 +1,7 @@
-package noc.frame.persister.db.derby;
+package noc.frame.provider;
 
-import noc.frame.persister.db.DbPersisterProvider;
 
-public class DerbyPersisterProvider<V> extends DbPersisterProvider<V> {
+public class DerbyPersisterProvider extends DbPersisterProvider {
 
 	final static String DRIVER_NAME = "org.apache.derby.jdbc.EmbeddedDriver";
 

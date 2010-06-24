@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import noc.frame.FreeVo;
-import noc.frame.Referable;
+import noc.frame.Vo;
 
-public class CsvFilePersister<T extends Referable> extends FilePersister<T> {
+public class CsvFilePersister extends FilePersister {
 
-	final static String EXT = ".csv";
+	public final static String EXT = ".csv";
 	final static String SEPERATOR = ",";
 
 	ArrayList<String> fields = new ArrayList<String>();
@@ -41,14 +41,13 @@ public class CsvFilePersister<T extends Referable> extends FilePersister<T> {
 
 	}
 
-	@Override public T get(String key) {
+	@Override public Vo get(String key) {
 	
 		return null;
 	}
 
-	@SuppressWarnings("unchecked") 
-	@Override public List<T> list() {
-		ArrayList<FreeVo> voList = new ArrayList<FreeVo>();
+	@Override public List<Vo> list() {
+		ArrayList<Vo> voList = new ArrayList<Vo>();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			br.readLine(); // ignore HEAD
@@ -71,10 +70,10 @@ public class CsvFilePersister<T extends Referable> extends FilePersister<T> {
 			throw new RuntimeException(e);
 		}
 		
-		return (List<T>)voList;
+		return (List<Vo>)voList;
 	}
 
-	@Override public T update(T value) {
+	@Override public Vo update(Vo value) {
 		if (value instanceof FreeVo) {
 			try {
 				FreeVo freeVo = (FreeVo) value;
