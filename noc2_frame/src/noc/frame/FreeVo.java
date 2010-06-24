@@ -2,7 +2,7 @@ package noc.frame;
 
 import java.util.List;
 
-public class FreeVo extends FindableList<String, Object> implements Vo {
+public class FreeVo extends ListMap<String, Object> implements Vo {
 
 	@SuppressWarnings("unchecked") 
 	@Override public List<Vo> getVoList(String fieldName) {

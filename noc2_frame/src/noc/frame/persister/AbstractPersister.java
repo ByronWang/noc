@@ -1,22 +1,25 @@
 package noc.frame.persister;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import noc.frame.Persister;
-import noc.frame.Store;
 import noc.frame.Vo;
 
 public abstract class AbstractPersister implements Persister<Vo>{
-	ArrayList<Store<Vo>> refby  = new ArrayList<Store<Vo>>();
-	
-	public void refer(Store<Vo> store){
-		refby.add(store);
+
+	@Override public Vo get(String key) {
+		// TODO Auto-generated method stub
+		return null;
 	}
-	
-	public void invalidate(){
-		for(Store<Vo> store:refby){
-			store.invalidate();
-		}
+
+	@Override public List<Vo> list() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override public Vo update(Vo value) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override public void cleanup() {
@@ -28,5 +31,5 @@ public abstract class AbstractPersister implements Persister<Vo>{
 		// TODO Auto-generated method stub
 		
 	}
-	
+
 }

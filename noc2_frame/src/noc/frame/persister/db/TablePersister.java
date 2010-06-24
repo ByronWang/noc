@@ -283,9 +283,15 @@ public class TablePersister extends AbstractPersister {
 		}
 	}
 
-	@Override public void invalidate() {
-		// TODO Auto-generated method stub
 
+	@Override public void cleanup() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override public void setup() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

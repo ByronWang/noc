@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class FindableList<K, V> {
+public class ListMap<K, V> {
 	ArrayList<Entry<K, V>> entries = new ArrayList<Entry<K, V>>();
 
 	public void put(K key, V value) {

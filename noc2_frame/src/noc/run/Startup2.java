@@ -9,7 +9,7 @@ import noc.frame.store.persistable.PersistableStore;
 public class Startup2 {
 	public static void main(String[] args) {
 
-		PersistableStore s = new PersistableStore(null);
+		PersistableStore s = new PersistableStore();
 		CsvFilePersister p = new CsvFilePersister(new File("d:\\Person.csv"));
 
 		s.setPersistre(p);

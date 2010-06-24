@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import noc.frame.ListMap;
 import noc.frame.FreeVo;
 import noc.frame.Vo;
 
@@ -17,21 +18,34 @@ public class CsvFilePersister extends FilePersister {
 	public final static String EXT = ".csv";
 	final static String SEPERATOR = ",";
 
-	ArrayList<String> fields = new ArrayList<String>();
-
+	List<String> headers = new ArrayList<String>();
+	
+	ListMap<String, Vo> voList ;
+	
 	public CsvFilePersister(File file) {
 		super(file);
 	}
 
 	@Override public void setup() {
-		super.setup();
-
+		voList = new ListMap<String, Vo>();
+		
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file));
-			String[] sa = br.readLine().split(SEPERATOR);
-			for (int i = 0; i < sa.length; i++) {
-				fields.add(sa[i]);
+			String str = null;
+			
+			str = br.readLine();
+			
+			if(str==null){
+				throw new RuntimeException();
 			}
+			
+			headers = toHeaders(str);
+
+			while ((str = br.readLine()) != null) {
+				Vo vo = toObject(str);				
+				voList.put(vo.getReferID(),vo);
+			}
+			
 			br.close();
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
@@ -42,8 +56,26 @@ public class CsvFilePersister extends FilePersister {
 	}
 
 	@Override public Vo get(String key) {
-	
-		return null;
+		throw new UnsupportedOperationException();
+	}
+
+	protected List<String> toHeaders(String str) {
+		List<String> hs = new ArrayList<String>();
+		String[] sa = str.split(SEPERATOR);
+		for (int i = 0; i < sa.length; i++) {
+			hs.add(sa[i]);
+		}
+		return hs;
+	}
+
+	protected Vo toObject(String str) {
+		FreeVo vo = new FreeVo();
+
+		String[] sa = str.split(SEPERATOR);
+		for (int i = 0; i < sa.length; i++) {
+			vo.put(headers.get(i), sa[i]);
+		}
+		return vo;
 	}
 
 	@Override public List<Vo> list() {
@@ -51,26 +83,20 @@ public class CsvFilePersister extends FilePersister {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			br.readLine(); // ignore HEAD
-			
+
 			String str = null;
-			while((str=br.readLine())!=null){
-				FreeVo freeVo = new FreeVo();
-				
-				String[] sa = str.split(SEPERATOR);
-				for (int i = 0; i < sa.length; i++) {
-					freeVo.put(fields.get(i), sa[i]);
-				}
-				voList.add(freeVo);
+			while ((str = br.readLine()) != null) {
+				voList.add(toObject(str));
 			}
-			
+
 			br.close();
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		
-		return (List<Vo>)voList;
+
+		return (List<Vo>) voList;
 	}
 
 	@Override public Vo update(Vo value) {
@@ -80,26 +106,26 @@ public class CsvFilePersister extends FilePersister {
 
 				for (String key : freeVo.getKeys()) {
 					boolean find = false;
-					for (int i = 0; i < fields.size(); i++) {
-						if (key.equals(fields.get(i))) {
+					for (int i = 0; i < headers.size(); i++) {
+						if (key.equals(headers.get(i))) {
 							find = true;
 							break;
 						}
 					}
 
 					if (find) continue;
-					fields.add(key);
+					headers.add(key);
 				}
 
 				FileWriter fw = new FileWriter(file);
 
-				for (int i = 0; i < fields.size(); i++) {
-					fw.write(fields.get(i) + ",");
+				for (int i = 0; i < headers.size(); i++) {
+					fw.write(headers.get(i) + ",");
 				}
 				fw.write("\r\n");
 
-				for (int i = 0; i < fields.size(); i++) {
-					fw.write(freeVo.get(fields.get(i)).toString() + ",");
+				for (int i = 0; i < headers.size(); i++) {
+					fw.write(freeVo.get(headers.get(i)).toString() + ",");
 				}
 
 				fw.close();
@@ -114,6 +140,10 @@ public class CsvFilePersister extends FilePersister {
 	@Override public String toString() {
 		// TODO Auto-generated method stub
 		return "CSV File[" + super.file.getAbsolutePath() + "]";
+	}
+
+	@Override public void cleanup() {
+		
 	}
 
 }

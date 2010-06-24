@@ -30,7 +30,7 @@ public class PersisterStoreProvider extends AbstractProvider<Store<Vo>> {
 		PersistableStore ps = null;
 		Persister<Vo> persister = persisterProvider.get(key);
 		if (persister != null) {
-			ps = new PersistableStore(this);
+			ps = new PersistableStore();
 			ps.setPersistre(persister);
 			ps.setup();
 		}

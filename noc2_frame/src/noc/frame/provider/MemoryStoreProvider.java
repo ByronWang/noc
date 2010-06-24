@@ -9,8 +9,8 @@ public class MemoryStoreProvider extends AbstractProvider<Store<Vo>> {
 	public MemoryStoreProvider() {
 	}
 
-	@Override protected Store<Vo> find(String key) {
-		return new MemoryStore(this,key);
+	@Override protected Store<Vo> find(String typeName) {
+		return new MemoryStore(typeName);
 	}
 
 }
