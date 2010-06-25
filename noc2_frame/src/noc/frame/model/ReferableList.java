@@ -1,7 +1,8 @@
-package noc.frame;
+package noc.frame.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class ReferableList<V extends Referable> {
 	List<V> entries = new ArrayList<V>();

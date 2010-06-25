@@ -1,10 +1,9 @@
 package noc.frame.provider;
 
-import noc.frame.BufferedProvider;
 import noc.frame.Persister;
 import noc.frame.Provider;
 import noc.frame.Store;
-import noc.frame.Vo;
+import noc.frame.model.Vo;
 import noc.frame.store.PersistableStore;
 
 public class PersisterStoreProvider extends BufferedProvider<Store<Vo>> {

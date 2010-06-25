@@ -1,6 +1,7 @@
-package noc.frame;
+package noc.frame.model;
 
 import java.util.List;
+
 
 public interface Vo extends Referable {
 

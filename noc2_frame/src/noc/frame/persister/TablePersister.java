@@ -11,10 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import noc.frame.FreeVo;
 import noc.frame.Persister;
-import noc.frame.Vo;
 import noc.frame.lang.Type;
+import noc.frame.model.FreeVo;
+import noc.frame.model.Vo;
 import noc.frame.persister.db.derby.DerbySQLHelper;
 import sun.security.util.Debug;
 

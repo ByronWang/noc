@@ -9,10 +9,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import noc.frame.FreeVo;
-import noc.frame.ListMap;
 import noc.frame.Persister;
-import noc.frame.Vo;
+import noc.frame.model.FreeVo;
+import noc.frame.model.ListMap;
+import noc.frame.model.Vo;
 
 public class CsvFilePersister  implements Persister<Vo> {
 

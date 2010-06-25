@@ -2,9 +2,9 @@ package noc.frame.persister;
 
 import java.io.File;
 
-import noc.frame.BufferedProvider;
 import noc.frame.Persister;
-import noc.frame.Vo;
+import noc.frame.model.Vo;
+import noc.frame.provider.BufferedProvider;
 
 public class LocalFileSystemPersisterProvider extends BufferedProvider<Persister<Vo>>  {
 	String pathName;

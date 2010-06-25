@@ -2,9 +2,9 @@ package noc.frame.store;
 
 import java.util.List;
 
-import noc.frame.ReferableList;
 import noc.frame.Store;
-import noc.frame.Vo;
+import noc.frame.model.ReferableList;
+import noc.frame.model.Vo;
 
 public class MemoryStore implements Store<Vo> {
 	String type = null;

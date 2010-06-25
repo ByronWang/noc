@@ -1,7 +1,9 @@
-package noc.frame;
+package noc.frame.provider;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import noc.frame.Provider;
 
 public abstract class BufferedProvider<T> implements Provider<T> {
 	protected Map<String, T> items;

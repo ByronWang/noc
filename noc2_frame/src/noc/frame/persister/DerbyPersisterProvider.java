@@ -4,9 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import noc.frame.BufferedProvider;
 import noc.frame.Persister;
-import noc.frame.Vo;
+import noc.frame.model.Vo;
+import noc.frame.provider.BufferedProvider;
 
 
 public class DerbyPersisterProvider extends BufferedProvider<Persister<Vo>>  {

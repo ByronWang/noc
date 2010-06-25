@@ -1,9 +1,11 @@
-package noc.frame;
+package noc.frame.provider;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
+
+import noc.frame.Provider;
 
 public class FacadeProvider<T> extends BufferedProvider<T> {
 

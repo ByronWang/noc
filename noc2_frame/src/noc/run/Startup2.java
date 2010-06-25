@@ -2,7 +2,7 @@ package noc.run;
 
 import java.io.File;
 
-import noc.frame.Vo;
+import noc.frame.model.Vo;
 import noc.frame.persister.CsvFilePersister;
 import noc.frame.store.PersistableStore;
 
