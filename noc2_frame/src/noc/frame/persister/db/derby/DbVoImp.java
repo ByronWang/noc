@@ -1,4 +1,4 @@
-package noc.frame.persister.db;
+package noc.frame.persister.db.derby;
 
 import noc.frame.FreeVo;
 import noc.frame.Vo;

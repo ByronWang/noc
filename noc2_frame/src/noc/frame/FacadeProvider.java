@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-public abstract class AbstractFacadeProvider<T> extends AbstractProvider<T> {
+public class FacadeProvider<T> extends BufferedProvider<T> {
 
 	ArrayList<Entry<Pattern, Provider<T>>> providers = new ArrayList<Entry<Pattern, Provider<T>>>();
 

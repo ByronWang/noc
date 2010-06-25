@@ -1,13 +1,13 @@
 package noc.frame.provider;
 
-import noc.frame.AbstractProvider;
+import noc.frame.BufferedProvider;
 import noc.frame.Persister;
 import noc.frame.Provider;
 import noc.frame.Store;
 import noc.frame.Vo;
-import noc.frame.store.persistable.PersistableStore;
+import noc.frame.store.PersistableStore;
 
-public class PersisterStoreProvider extends AbstractProvider<Store<Vo>> {
+public class PersisterStoreProvider extends BufferedProvider<Store<Vo>> {
 	Provider<Persister<Vo>> persisterProvider = null;
 
 	public PersisterStoreProvider(Provider<Persister<Vo>> persisterProvider) {

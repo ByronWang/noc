@@ -1,4 +1,4 @@
-package noc.frame.persister.filesystem;
+package noc.frame.persister;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,11 +9,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import noc.frame.ListMap;
 import noc.frame.FreeVo;
+import noc.frame.ListMap;
+import noc.frame.Persister;
 import noc.frame.Vo;
 
-public class CsvFilePersister extends FilePersister {
+public class CsvFilePersister  implements Persister<Vo> {
 
 	public final static String EXT = ".csv";
 	final static String SEPERATOR = ",";
@@ -21,9 +22,10 @@ public class CsvFilePersister extends FilePersister {
 	List<String> headers = new ArrayList<String>();
 	
 	ListMap<String, Vo> voList ;
+	protected File file;
 	
 	public CsvFilePersister(File file) {
-		super(file);
+		this.file = file;
 	}
 
 	@Override public void setup() {
@@ -139,7 +141,7 @@ public class CsvFilePersister extends FilePersister {
 
 	@Override public String toString() {
 		// TODO Auto-generated method stub
-		return "CSV File[" + super.file.getAbsolutePath() + "]";
+		return "CSV File[" + this.file.getAbsolutePath() + "]";
 	}
 
 	@Override public void cleanup() {

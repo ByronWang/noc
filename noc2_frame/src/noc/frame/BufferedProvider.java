@@ -3,10 +3,10 @@ package noc.frame;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AbstractProvider<T> implements Provider<T> {
+public abstract class BufferedProvider<T> implements Provider<T> {
 	protected Map<String, T> items;
 
-	public AbstractProvider() {
+	public BufferedProvider() {
 		items = new HashMap<String, T>();
 	}
 

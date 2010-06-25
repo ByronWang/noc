@@ -1,28 +1,36 @@
-package noc.frame.provider;
+package noc.frame.persister;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import noc.frame.BufferedProvider;
 import noc.frame.Persister;
 import noc.frame.Vo;
-import noc.frame.persister.db.TablePersister;
 
-public abstract class DbPersisterProvider extends AbstractPersisterProvider {
 
+public class DerbyPersisterProvider extends BufferedProvider<Persister<Vo>>  {
+
+	final static String DRIVER_NAME = "org.apache.derby.jdbc.EmbeddedDriver";
 	protected final String driverName;
-	protected final String url;// "jdbc:derby:" + this.databaseName +
-	// ";create=true"
+	protected final String url;
 	protected final String userName;
 	protected final String userPassword;
-
 	protected Connection conn;
-
-	public DbPersisterProvider(String driverName, String url, String userName, String userPassword) {
+	
+	public DerbyPersisterProvider(String driverName, String url, String userName, String userPassword) {
 		this.driverName = driverName;
 		this.url = url;
 		this.userName = userName;
 		this.userPassword = userPassword;
+	}
+	
+	public DerbyPersisterProvider(String url, String userName, String userPassword) {
+		this(DRIVER_NAME, url, userName, userPassword);
+	}
+
+	public DerbyPersisterProvider(String databaseName) {
+		this(DRIVER_NAME, "jdbc:derby:" + databaseName + ";create=true", "test", "test");
 	}
 
 	@Override public void setup() {
@@ -35,7 +43,7 @@ public abstract class DbPersisterProvider extends AbstractPersisterProvider {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-
+	
 	}
 
 	@Override public void cleanup() {
@@ -47,7 +55,7 @@ public abstract class DbPersisterProvider extends AbstractPersisterProvider {
 			System.out.println("== Database disconnect");
 		} catch (SQLException e) {
 		}
-
+	
 		try { // perform a clean shutdown
 			DriverManager.getConnection("jdbc:derby:;shutdown=true");
 			System.out.println("== Database shut down normally");
@@ -58,5 +66,4 @@ public abstract class DbPersisterProvider extends AbstractPersisterProvider {
 	@Override protected Persister<Vo> find(String key) {
 		return new TablePersister(null, conn);
 	}
-
 }

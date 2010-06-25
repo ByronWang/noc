@@ -1,4 +1,4 @@
-package noc.frame.persister.db;
+package noc.frame.persister.db.derby;
 
 import java.util.ArrayList;
 import java.util.List;

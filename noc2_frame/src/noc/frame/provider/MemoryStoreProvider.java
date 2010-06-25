@@ -1,11 +1,11 @@
 package noc.frame.provider;
 
-import noc.frame.AbstractProvider;
+import noc.frame.BufferedProvider;
 import noc.frame.Store;
 import noc.frame.Vo;
-import noc.frame.store.memory.MemoryStore;
+import noc.frame.store.MemoryStore;
 
-public class MemoryStoreProvider extends AbstractProvider<Store<Vo>> {
+public class MemoryStoreProvider extends BufferedProvider<Store<Vo>> {
 	public MemoryStoreProvider() {
 	}
 

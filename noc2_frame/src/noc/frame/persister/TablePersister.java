@@ -1,4 +1,4 @@
-package noc.frame.persister.db;
+package noc.frame.persister;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,12 +12,13 @@ import java.util.List;
 import java.util.Map;
 
 import noc.frame.FreeVo;
+import noc.frame.Persister;
 import noc.frame.Vo;
 import noc.frame.lang.Type;
-import noc.frame.persister.AbstractPersister;
+import noc.frame.persister.db.derby.DerbySQLHelper;
 import sun.security.util.Debug;
 
-public class TablePersister extends AbstractPersister {
+public class TablePersister implements Persister<Vo> {
 	private final Connection conn;
 
 	final Type clazz;

@@ -45,10 +45,6 @@ public class ReferableList<V extends Referable> {
 		return entries;
 	}
 
-	public List<V> list() {
-		return entries;
-	}
-
 	public int size() {
 		return entries.size();
 	}
