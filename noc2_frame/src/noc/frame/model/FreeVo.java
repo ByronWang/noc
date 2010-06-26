@@ -1,6 +1,7 @@
 package noc.frame.model;
 
 import java.util.List;
+import java.util.Map.Entry;
 
 public class FreeVo extends ListMap<String, Object> implements Vo {
 
@@ -30,6 +31,13 @@ public class FreeVo extends ListMap<String, Object> implements Vo {
 	}
 	
 	@Override public String toString() {
-		return super.toString() + "[" +  this.getReferID()+ "]";
+		String s = "";
+		for(Entry<String, Object> e : this.entries){
+			s += e.getKey() + ":" + e.getValue() ;
+			s += ", ";
+		}
+		
+		
+		return super.toString() + "{" + s.substring(0, s.length()-2) + "}";
 	}
 }

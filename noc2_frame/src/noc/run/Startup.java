@@ -1,55 +1,89 @@
 package noc.run;
 
-import java.util.List;
-
 import noc.frame.Persister;
 import noc.frame.Store;
+import noc.frame.lang.Field;
+import noc.frame.lang.Type;
 import noc.frame.model.FreeVo;
 import noc.frame.model.Vo;
-import noc.frame.provider.FacadeProvider;
-import noc.frame.provider.LocalFileSystemPersisterProvider;
-import noc.frame.provider.MemoryStoreProvider;
-import noc.frame.provider.PersisterStoreProvider;
+import noc.frame.persister.TablePersister;
+import noc.frame.provider.DerbyPersisterProvider;
+import noc.frame.store.MemoryStore;
 
 public class Startup {
 	public static void main(String[] args) {
 
-		FacadeProvider<Persister<Vo>> facadeP = new FacadeProvider<Persister<Vo>>();
+		Store<Type> types = new MemoryStore<Type>();
+		Type stringType = new Type("String", "String", true, true, null);
 
-		facadeP.register(".*", new LocalFileSystemPersisterProvider("d:\\"));
-		// this.register(".*", new DerbyPersisterProvider("TestDb001"));
+		Type personType = new Type("Person", "员工", false, false, null);
+		personType.getFields().add(new Field("Name", "姓名", stringType, true, false, false, false));
+		personType.getFields().add(new Field("Age", "年龄", stringType));
+		personType.getFields().add(new Field("Sex", "性别", stringType));
+		personType.getFields().add(new Field("Height", "身高", stringType));
+		personType.getFields().add(new Field("Fad", "身高", stringType));
+		personType.getFields().add(new Field("Weight", "体重", stringType));
+		personType.setPrimaryKeyField(personType.getFields().get(0));
+		types.update(personType);
 
-		FacadeProvider<Store<Vo>> storeProvider = new FacadeProvider<Store<Vo>>();
+		DerbyPersisterProvider dp = new DerbyPersisterProvider(types, "tedsfst1");
+		dp.setup();
 
-		storeProvider.register(".*", new MemoryStoreProvider());
-		storeProvider.register(".*", new PersisterStoreProvider(facadeP));
-
+		Persister<Vo> personPersister = dp.get("Person");
 		
-		storeProvider.setup();
+		((TablePersister)personPersister).prepare();
 
-		Store<Vo> personStore = storeProvider.get("Person");
+		Vo person = new FreeVo();
+		person.put("Name", "Wangshilian");
 
-		Vo vo = new FreeVo();
-		vo.put("name", "wangshilian");
-		vo.put("nakename", "nakename");
-		vo.put("de", "de");
-		// freeStore.update(vo);
+		person = personPersister.update(person);
+		
+		person = personPersister.get(person.getReferID());
+		
+		System.out.println(person);
 
-		// vo = freeStore.get("wangshilian");
+		dp.cleanup();
+		
+		//		
+		//		
+		// persisterProvider.register("noc[.]frame[.].*", new
+		// LocalFileSystemPersisterProvider("d:\\"));
+		// persisterProvider.register(".*", new
+		// DerbyPersisterProvider("TestDb001"));
 		//
-		// System.out.println(vo.get("name"));
-		// System.out.println(vo.get("nakename"));
-		// System.out.println(vo.get("de"));
-
-		// personStore.update(vo);
-
-		List<Vo> voList = personStore.list();
-		for (Vo v : voList) {
-			System.out.println(v);
-		}
-
-		System.out.println(personStore);
-
-		storeProvider.cleanup();
+		// FacadeProvider<Store<Vo>> storeProvider = new
+		// FacadeProvider<Store<Vo>>();
+		//
+		// storeProvider.register(".*", new MemoryStoreProvider());
+		// storeProvider.register(".*", new
+		// PersisterStoreProvider(persisterProvider));
+		//
+		//		
+		// storeProvider.setup();
+		//
+		// Store<Vo> personStore = storeProvider.get("Person");
+		//
+		// Vo vo = new FreeVo();
+		// vo.put("name", "wangshilian");
+		// vo.put("nakename", "nakename");
+		// vo.put("de", "de");
+		// // freeStore.update(vo);
+		//
+		// // vo = freeStore.get("wangshilian");
+		// //
+		// // System.out.println(vo.get("name"));
+		// // System.out.println(vo.get("nakename"));
+		// // System.out.println(vo.get("de"));
+		//
+		// // personStore.update(vo);
+		//
+		// List<Vo> voList = personStore.list();
+		// for (Vo v : voList) {
+		// System.out.println(v);
+		// }
+		//
+		// System.out.println(personStore);
+		//
+		// storeProvider.cleanup();
 	}
 }

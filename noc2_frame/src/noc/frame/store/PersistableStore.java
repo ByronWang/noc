@@ -4,14 +4,14 @@ import java.util.List;
 
 import noc.frame.Persister;
 import noc.frame.Store;
+import noc.frame.model.Referable;
 import noc.frame.model.ReferableList;
-import noc.frame.model.Vo;
 
-public class PersistableStore  implements Store<Vo> {
-	Persister<Vo> persister;
-	ReferableList<Vo> datas = new ReferableList<Vo>();
+public class PersistableStore<T extends Referable>  implements Store<T> {
+	Persister<T> persister;
+	ReferableList<T> datas = new ReferableList<T>();
 
-	public Store<Vo> setPersistre(Persister<Vo> persister) {
+	public Store<T> setPersistre(Persister<T> persister) {
 		this.persister = persister;
 		return this;
 	}
@@ -19,8 +19,8 @@ public class PersistableStore  implements Store<Vo> {
 	@Override public void setup() {
 		persister.setup();
 
-		List<Vo> vList = persister.list();
-		for (Vo v : vList) {
+		List<T> vList = persister.list();
+		for (T v : vList) {
 			datas.put(v);
 		}
 	}
@@ -32,15 +32,15 @@ public class PersistableStore  implements Store<Vo> {
 	@Override public void cleanup() {
 		
 	}
-	@Override public Vo get(String key) {
+	@Override public T get(String key) {
 		return datas.get(key);
 	}
 
-	@Override public List<Vo> list() {
+	@Override public List<T> list() {
 		return datas.getValues();
 	}
 
-	@Override public Vo update(Vo v) {
+	@Override public T update(T v) {
 		
 		// TODO Auto-generated method stub
 		return null;

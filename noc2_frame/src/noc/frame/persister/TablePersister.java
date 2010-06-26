@@ -16,12 +16,11 @@ import noc.frame.lang.Type;
 import noc.frame.model.FreeVo;
 import noc.frame.model.Vo;
 import noc.frame.persister.db.derby.DerbySQLHelper;
-import sun.security.util.Debug;
 
 public class TablePersister implements Persister<Vo> {
 	private final Connection conn;
 
-	final Type clazz;
+	final Type type;
 	final String tableName;
 	final String SQL_DROP;
 	final String SQL_CREATE;
@@ -39,11 +38,30 @@ public class TablePersister implements Persister<Vo> {
 	final String[] fields;
 	DerbySQLHelper builder;
 
-	public TablePersister(Type clazz, Connection conn) {
-		this.clazz = clazz;
+	SimpleHelper<Vo> helper = new SimpleHelper<Vo>() {
+
+		@Override int fillParameter(PreparedStatement prepareStatement, Vo v) throws SQLException {
+			int i = 0;
+			for (; i < fields.length; i++) {
+				prepareStatement.setString(i + 1, v.getString(fields[i]));
+			}
+			return i;
+		}
+
+		@Override Vo fillObject(ResultSet resultSet) throws SQLException {
+			FreeVo v = new FreeVo();
+			for (int i = 0; i < fields.length; i++) {
+				v.put(fields[i], resultSet.getString(i + 1));
+			}
+			return v;
+		}
+	};
+
+	public TablePersister(Type type, Connection conn) {
+		this.type = type;
 		this.conn = conn;
 
-		builder = DerbySQLHelper.builder(clazz);
+		builder = DerbySQLHelper.builder(type);
 		this.tableName = builder.getTableName();
 
 		SQL_DROP = builder.builderDrop();
@@ -119,7 +137,8 @@ public class TablePersister implements Persister<Vo> {
 
 	@Override public Vo update(Vo value) {
 		String key = ((Vo) value).getString(KEY_FIELD);
-		Vo v = this.find(key);
+		Vo v = this.get(key);
+
 		if (v == null) {
 			this.doInsert(value);
 		} else {
@@ -129,170 +148,33 @@ public class TablePersister implements Persister<Vo> {
 	}
 
 	protected void doUpdate(Vo value) {
-		try {
-			Vo v = (Vo) value;
-			PreparedStatement p = conn.prepareStatement(SQL_UPDATE);
-
-			for (int i = 0; i < fields.length; i++) {
-				System.out.println(fields[i] + " : " + v.getString(fields[i]));
-				p.setString(i + 1, v.getString(fields[i]));
-			}
-
-			p.setString(fields.length + 1, v.getString(this.KEY_FIELD));
-
-			p.execute();
-
-			conn.commit();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		helper.execute(conn, SQL_UPDATE, value, value.getReferID());
 	}
 
 	protected void doInsert(Vo value) {
-		try {
-
-			Vo v = (Vo) value;
-			PreparedStatement p = conn.prepareStatement(SQL_INSERT);
-
-			for (int i = 0; i < fields.length; i++) {
-				p.setString(i + 1, v.getString(fields[i]));
-			}
-
-			p.execute();
-
-			conn.commit();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		helper.execute(conn, SQL_INSERT, value);
 	}
 
 	public void delete(Vo value) {
-		try {
-			PreparedStatement p = conn.prepareStatement(SQL_DELETE);
-			p.setString(1, this.KEY_FIELD);
-			p.execute();
-			conn.commit();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		helper.execute(conn, SQL_DELETE, value, value.getReferID());
 	}
 
 	@Override public Vo get(String key) {
-		Vo v = null;
-		PreparedStatement p = null;
-		ResultSet res = null;
-
-		try {
-
-			Debug.println("SQL_GET", SQL_GET);
-
-			p = conn.prepareStatement(SQL_GET);
-			p.setString(1, key);
-			res = p.executeQuery();
-			if (!res.next()) {
-				throw new RuntimeException("Can not find record key:" + key);
-			}
-
-			v = new FreeVo();
-
-			for (int i = 0; i < fields.length; i++) {
-				v.put(fields[i], res.getString(i + 1));
-			}
-
-			if (res.next()) {
-				throw new RuntimeException("find double record for key:" + key);
-			}
-
-			Debug.println("==", SQL_GET);
-			Debug.println("==", key + ">" + v.toString());
-			return v;
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			try {
-				if (res != null) res.close();
-				if (p != null) p.close();
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-		}
+		return helper.get(conn, SQL_GET, key);
 	}
 
 	@Override public List<Vo> list() {
-		PreparedStatement p = null;
-		ResultSet res = null;
-
-		ArrayList<Vo> vl = new ArrayList<Vo>();
-
-		try {
-
-			p = conn.prepareStatement(SQL_LIST);
-			res = p.executeQuery();
-
-			while (res.next()) {
-				Vo v = new FreeVo();
-				for (int i = 0; i < fields.length; i++) {
-					v.put(fields[i], res.getString(i + 1));
-				}
-				vl.add(v);
-			}
-
-			return (List<Vo>) vl;
-		} catch (SQLException e) {
-			Debug.println("SQL", SQL_LIST);
-			throw new RuntimeException(e);
-		} finally {
-			try {
-				if (res != null) res.close();
-				if (p != null) p.close();
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-		}
+		return helper.query(conn, SQL_LIST);
 	}
-
-	public Vo find(String key) {
-		Vo v = null;
-		PreparedStatement p = null;
-		ResultSet res = null;
-
-		try {
-
-			p = conn.prepareStatement(SQL_GET);
-			p.setString(1, key);
-			res = p.executeQuery();
-			if (!res.next()) {
-				return null;
-			}
-
-			v = new FreeVo();
-
-			for (int i = 0; i < fields.length; i++) {
-				v.put(fields[i], res.getString(i + 1));
-			}
-
-			return (Vo) v;
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			try {
-				if (res != null) res.close();
-				if (p != null) p.close();
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
-
 
 	@Override public void cleanup() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override public void setup() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

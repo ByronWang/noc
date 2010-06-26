@@ -26,10 +26,10 @@ public class PersisterStoreProvider extends BufferedProvider<Store<Vo>> {
 	}
 
 	@Override protected Store<Vo> find(String key) {
-		PersistableStore ps = null;
+		PersistableStore<Vo> ps = null;
 		Persister<Vo> persister = persisterProvider.get(key);
 		if (persister != null) {
-			ps = new PersistableStore();
+			ps = new PersistableStore<Vo>();
 			ps.setPersistre(persister);
 			ps.setup();
 		}

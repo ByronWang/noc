@@ -23,6 +23,10 @@ public abstract class BufferedProvider<T> implements Provider<T> {
 		return item;
 	}
 
+	@Override public void register(String name, T t) {
+		items.put(name, t);
+	}
+
 	protected abstract T find(String key);
 
 	@Override public void cleanup() {
