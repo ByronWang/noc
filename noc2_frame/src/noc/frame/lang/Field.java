@@ -1,16 +1,110 @@
 package noc.frame.lang;
 
+import noc.frame.lang.annotation.FrameType;
 
-public interface Field {
+@FrameType public class Field {
+	String displayName;
 
-	boolean isArray();
+	String name;
+	Type type;
 
-	Type getType();
+	boolean array = false;
+	boolean inline = false;
+	boolean refer = false;
+	boolean catalog = false;
+	boolean key = false;
+	boolean primaryKey = false;
 
-	boolean isInline();
+	public Field(String name, String displayName, Type type) {
+		super();
+		this.name = name;
+		this.displayName = displayName;
+		this.type = type;
+	}
+	
+	public Field(String name, String displayName, Type type, boolean primaryKey, boolean catalog, boolean list,
+			boolean inline) {
+		super();
+		this.name = name;
+		this.displayName = displayName;
+		this.primaryKey = primaryKey;
+		this.type = type;
+		this.array = list;
+		this.catalog = catalog;
+		this.inline = inline;
+		this.refer = !type.scala && !inline;
+	}
 
-	boolean isRefer();
+	public boolean isKey() {
+		return key;
+	}
 
-	String getName();
+	public void setKey(boolean key) {
+		this.key = key;
+	}
+
+	public boolean isArray() {
+		return array;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public boolean isInline() {
+		return inline;
+	}
+
+	public boolean isRefer() {
+		return refer;
+	}
+
+	public boolean isPrimaryKey() {
+		return primaryKey;
+	}
+
+	public boolean isCatalog() {
+		return catalog;
+	}
+
+	public void setCatalog(boolean catalog) {
+		this.catalog = catalog;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	public void setArray(boolean array) {
+		this.array = array;
+	}
+
+	public void setInline(boolean inline) {
+		this.inline = inline;
+	}
+
+	public void setRefer(boolean refer) {
+		this.refer = refer;
+	}
+
+	public void setPrimaryKey(boolean primaryKey) {
+		this.primaryKey = primaryKey;
+	}
 
 }
