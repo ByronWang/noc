@@ -117,7 +117,6 @@
 <html><head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<link rel='stylesheet' href='/noc/css/form.css' type='text/css'/>
-	<link rel='stylesheet' href='/noc/css/form.css' type='text/css'/>
 	<script type="text/javascript"  src="/noc/js/prototype.js"/>
 	<script type="text/javascript"  src="/noc/js/popup.js" />
 	
