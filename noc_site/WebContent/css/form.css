@@ -6,8 +6,6 @@
 table {
 	font: normal 0.9em/ 140% verdana, arial, helvetica, sans-serif;
 	color: #777777; /*this is orange: FFAA00;*/
-	background: transparent url(./images/kapton_reflect.png) bottom right
-		no-repeat;
 	text-align: center;
 	border-collapse: collapse;
 	border: 1px solid #FFAA00;
@@ -19,8 +17,6 @@ table a,td a,th a {
 	text-decoration: none;
 	color: #9c1111;
 	display: block;
-	background: transparent url(./images/links_orange.gif) no-repeat 0%
-		50%;
 	padding-left: 15px;
 }
 
@@ -29,17 +25,6 @@ table a:visited {
 	color: #9c1111;
 }
 
-table a:hover,table a:active {
-	color: #777777;
-	text-decoration: underline;
-}
-
-table tbody tr:hover td,table tbody tr:focus td,table tbody tr:hover th,table tbody tr:focus th
-	{
-	background: #fff;
-	vertical-align: top;
-	color: #FFCA5E;
-}
 
 table thead th {
 	font: bold 16px/ 16px Calibri, trebuchet MS, Helvetica, sans-serif;
@@ -84,41 +69,15 @@ table tfoot th {
 
 
 /* START  <<  For tranparent */
-
-
 table thead th {
 	padding: 0.3em;
-			  background-color: #FFFFFF;
-  background-color: rgba(255, 170,0, 0.4);  /* FF3+, Saf3+, Opera 10.10+, Chrome */
-    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#99B4B490',endColorstr='#99B4B490'); /* IE6,IE7 */
-        -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#99B4B490',endColorstr='#99B4B490')"; /* IE8 */
-	
 }
-table,table tbody,table tbody tr,td,th{
-	background: transparent;
-}
-
-
 /* END  >>   For transparent */
 
 form,h1,div.action,table.list {	
 	padding: 10px;	
 	margin: 20px;
 	
-		    box-shadow: 3px 3px 4px #555;
-    -moz-box-shadow: 3px 3px 4px #555;
-    -webkit-box-shadow: 3px 3px 4px #555;
-    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#000000');
-    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#000000')";
-
-	background-color: #FFFFFF;
-	background-color: rgba(250, 250,240, 0.7);  /* FF3+, Saf3+, Opera 10.10+, Chrome */
-    	      filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#99B4B490',endColorstr='#99B4B490'); /* IE6,IE7 */
-          -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#99B4B490',endColorstr='#99B4B490')"; /* IE8 */
-          
-     -moz-border-radius: 5px; /* FF1+ */
-  -webkit-border-radius: 5px; /* Saf3+, Chrome */
-          border-radius: 5px; /* Opera 10.5, IE 9 */
 }
 
 
@@ -126,11 +85,6 @@ h1{
 	/*margin-left: 1em;*/	
 	padding: 0.2em 1em;
 	width:12em;
-	
-	background-color: #FFFFFF;
-	background-color: rgba(250, 250,240, 0.7);  /* FF3+, Saf3+, Opera 10.10+, Chrome */
-			  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#99B4B490',endColorstr='#99B4B490'); /* IE6,IE7 */
-		  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#99B4B490',endColorstr='#99B4B490')"; /* IE8 */
 }
 
 form{
@@ -177,139 +131,18 @@ li label{
 	margin-right: .2em;	 
 }
 
-h1,li label{	
-	text-shadow: 2px 2px 3px #888888; 
-}
-
 li label:after{
 	content: " :";
 }
 li input{
-    /*background-image: url(./images/border.gif);;
-    background-repeat: no-repeat;     
-    background-position: left top; */
     background: transparent; 
     border:1px solid #d5dee9;   
     margin-left: 3px;  
     padding:3px;   
-    
-    	  background-color: #FFFFFF;
-  background-color: rgba(250, 250,240, 0.5);  /* FF3+, Saf3+, Opera 10.10+, Chrome */
-    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#99B4B490',endColorstr='#99B4B490'); /* IE6,IE7 */
-        -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#99B4B490',endColorstr='#99B4B490')"; /* IE8 */
-      
- 
-}
-li a{
-}
 
+}
 
 li table{
 	clear:left;
 	top:20px;
-}
-
-
-
-/* Style for popup */
-div.popup{  
-   position: absolute;
-    z-index: 800;       
-    padding: 1em .4em;
-    
-    box-shadow: 3px 3px 4px #000;
-    -moz-box-shadow: 3px 3px 4px #000;
-    -webkit-box-shadow: 3px 3px 4px #000;
-    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#000000');
-    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#000000')";
-    
-    /*display:block;*/
-    
-    min-height: 7em;
-    min-width: 10em;
-    
-    
-     -moz-border-radius: 12px; /* FF1+ */
-  -webkit-border-radius: 12px; /* Saf3+, Chrome */
-          border-radius: 12px; /* Opera 10.5, IE 9 */
-                  
-  background-color: #FFFFFF;
-  background-color: rgba(250, 250,240, 0.4);  /* FF3+, Saf3+, Opera 10.10+, Chrome */
-    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#99B4B490',endColorstr='#99B4B490'); /* IE6,IE7 */
-        -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#99B4B490',endColorstr='#99B4B490')"; /* IE8 */
-
-}
-
-table.popup{
-	width: 12em;
-	display: block;
-	background: transparent;
-}
-
-table.popup caption{
-	display: none;
-}
-table.popup tr{
-	background: transparent;
-}
-
-table.popup a{
-	background: transparent;
-	color: black;
-}
-
-body{
-    background: url("/noc/css/images/nssl0013.jpg") repeat-y fixed;
-	background-size: 100%;
-	background-color: yellow;
-	padding: 10px;
-}
-
-
-
-
-
-div.navbox {
-    position: relative;
-    float: left;
-    top:-50px;
-    /*width: 201px;add for backgroud space*/
-    background: -webkit-gradient(linear, left top, left bottom, from(#ccc), to(#fff));    
-}
- 
-ul.nav {
-    list-style: none;
-    display: block;
-    width: 200px;
-    position: relative;
-    top: 10px;
-    left: 10px;
-    padding: 60px 0 60px 0;
-    background: url(./images/shad2.png) no-repeat;
-    -webkit-background-size: 50% 100%;
-}
- 
-ul.nav li {
-    margin: 5px 0 0 0;
-}
- 
-ul.nav li a {
-    overflow: hidden;
-    
-    -webkit-transition: all 0.3s ease-out;
-    background: #cbcbcb url(./images/border.png) no-repeat;
-    color: #174867;
-    padding: 7px 15px 7px 15px;
-    -webkit-border-top-right-radius: 10px;
-    -webkit-border-bottom-right-radius: 10px;
-    width: 100px;
-    display: block;
-    text-decoration: none;
-    -webkit-box-shadow: 2px 2px 4px #888;
-}
- 
-ul.nav li a:hover {
-    background: #ebebeb url(./images/border.png) no-repeat;
-    color: #67a5cd;
-    padding: 7px 15px 7px 30px;
 }
