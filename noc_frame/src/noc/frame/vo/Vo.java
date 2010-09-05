@@ -10,6 +10,8 @@ public interface Vo  extends V{
 	Vo O(String name);
 	Vol L(String name); 
 	
+	String getIndentify();
+	
 	Iterator<VOEntry> iterator();
 	
 	int size();

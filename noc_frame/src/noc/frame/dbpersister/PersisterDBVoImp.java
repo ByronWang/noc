@@ -12,15 +12,15 @@ import java.util.List;
 import java.util.Map;
 
 import noc.frame.Persister;
+import noc.frame.dbpersister.DerbySQLHelper.Column;
 import noc.frame.vo.Vo;
 import noc.frame.vo.imp.VOImp;
 import noc.lang.reflect.Type;
-import sun.security.util.Debug;
 
 public class PersisterDBVoImp implements Persister<Vo> {
 	private final Connection conn;
 
-	final Type clazz;
+	final Type type;
 	final String tableName;
 	final String SQL_DROP;
 	final String SQL_CREATE;
@@ -33,16 +33,34 @@ public class PersisterDBVoImp implements Persister<Vo> {
 	final String SQL_LIST;
 	final String SQL_COUNT;
 
-	final String KEY_FIELD;
-
-	final String[] fields;
+	final Column[] fields;
+	final Column[] keyColumns;
 	DerbySQLHelper builder;
 
-	public PersisterDBVoImp(Type clazz, Connection conn) {
-		this.clazz = clazz;
+	SimpleHelper<Vo> helper = new SimpleHelper<Vo>() {
+
+		@Override int fillParameter(PreparedStatement prepareStatement, Vo v) throws SQLException {
+			int i = 0;
+			for (; i < fields.length; i++) {
+				prepareStatement.setString(i + 1, v.S(fields[i].name));
+			}
+			return i;
+		}
+
+		@Override Vo fillObject(ResultSet resultSet) throws SQLException {
+			Vo v = new VOImp(type);
+			for (int i = 0; i < fields.length; i++) {
+				v.put(fields[i].name, resultSet.getString(i + 1));
+			}
+			return v;
+		}
+	};
+
+	public PersisterDBVoImp(Type type, Connection conn) {
+		this.type = type;
 		this.conn = conn;
 
-		builder = DerbySQLHelper.builder(clazz);
+		builder = DerbySQLHelper.builder(type);
 		this.tableName = builder.getTableName();
 
 		SQL_DROP = builder.builderDrop();
@@ -57,7 +75,8 @@ public class PersisterDBVoImp implements Persister<Vo> {
 		fields = builder.builderColumns();
 		SQL_COUNT = builder.builderCount();
 		SQL_LIST = builder.builderList();
-		KEY_FIELD = builder.getKeyField();
+		
+		keyColumns = builder.keyColumns;
 	}
 
 	public void prepare() {
@@ -81,9 +100,9 @@ public class PersisterDBVoImp implements Persister<Vo> {
 				}
 
 				ArrayList<String> noCol = new ArrayList<String>();
-				for (String f : fields) {
-					if (!cols.containsKey(f.toUpperCase())) {
-						noCol.add(f);
+				for (Column f : fields) {
+					if (!cols.containsKey(f.name.toUpperCase())) {
+						noCol.add(f.name);
 					}
 				}
 
@@ -116,185 +135,49 @@ public class PersisterDBVoImp implements Persister<Vo> {
 		}
 	}
 
-	@Override public void drop() {
-		try {
-			conn.createStatement().execute(SQL_DROP);
-			conn.commit();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	@Override public Vo update(Vo value) {
-		String key = ((Vo) value).S(KEY_FIELD);
-		Vo v = this.find(key);
+		String[] keys = new String[keyColumns.length];
+		for(int i=0;i<keyColumns.length;i++){
+			keys[i] = value.S(keyColumns[i].name);
+		}
+		Vo v = this.get(keys);
+
 		if (v == null) {
 			this.doInsert(value);
 		} else {
 			this.doUpdate(value);
 		}
-		return (Vo) this.get(key);
+		return (Vo) this.get(keys);
 	}
 
 	protected void doUpdate(Vo value) {
-		try {
-			Vo v = (Vo) value;
-			PreparedStatement p = conn.prepareStatement(SQL_UPDATE);
-
-			for (int i = 0; i < fields.length; i++) {
-				System.out.println(fields[i] + " : " + v.S(fields[i]));
-				p.setString(i + 1, v.S(fields[i]));
-			}
-
-			p.setString(fields.length + 1, v.S(this.KEY_FIELD));
-
-			p.execute();
-
-			conn.commit();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+//		helper.execute(conn, SQL_UPDATE, value);
 	}
 
 	protected void doInsert(Vo value) {
-		try {
-
-			Vo v = (Vo) value;
-			PreparedStatement p = conn.prepareStatement(SQL_INSERT);
-
-			for (int i = 0; i < fields.length; i++) {
-				p.setString(i + 1, v.S(fields[i]));
-			}
-
-			p.execute();
-
-			conn.commit();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		helper.execute(conn, SQL_INSERT, value);
 	}
 
 	public void delete(Vo value) {
-		try {
-			PreparedStatement p = conn.prepareStatement(SQL_DELETE);
-			p.setString(1, this.KEY_FIELD);
-			p.execute();
-			conn.commit();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		helper.execute(conn, SQL_DELETE, value);
 	}
 
-	@Override public Vo get(String key) {
-		Vo v = null;
-		PreparedStatement p = null;
-		ResultSet res = null;
-
-		try {
-
-			Debug.println("SQL_GET", SQL_GET);
-
-			p = conn.prepareStatement(SQL_GET);
-			p.setString(1, key);
-			res = p.executeQuery();
-			if (!res.next()) {
-				throw new RuntimeException("Can not find record key:" + key);
-			}
-
-			v = new VOImp();
-
-			for (int i = 0; i < fields.length; i++) {
-				v.put(fields[i], res.getString(i + 1));
-			}
-
-			if (res.next()) {
-				throw new RuntimeException("find double record for key:" + key);
-			}
-
-			Debug.println("==", SQL_GET);
-			Debug.println("==", key + ">" + v.toString());
-			return v;
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			try {
-				if (res != null)
-					res.close();
-				if (p != null)
-					p.close();
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-		}
+	public Vo get(Object... keys) {
+		return helper.get(conn, SQL_GET, keys);
 	}
 
 	@Override public List<Vo> list() {
-		PreparedStatement p = null;
-		ResultSet res = null;
-
-		ArrayList<Vo> vl = new ArrayList<Vo>();
-
-		try {
-
-			p = conn.prepareStatement(SQL_LIST);
-			res = p.executeQuery();
-
-			while (res.next()) {
-				Vo v = new VOImp();
-				for (int i = 0; i < fields.length; i++) {
-					v.put(fields[i], res.getString(i + 1));
-				}
-				vl.add(v);
-			}
-
-			return (List<Vo>) vl;
-		} catch (SQLException e) {
-			Debug.println("SQL", SQL_LIST);
-			throw new RuntimeException(e);
-		} finally {
-			try {
-				if (res != null)
-					res.close();
-				if (p != null)
-					p.close();
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-		}
+		return helper.query(conn, SQL_LIST);
 	}
 
-	public Vo find(String key) {
-		Vo v = null;
-		PreparedStatement p = null;
-		ResultSet res = null;
-
-		try {
-
-			p = conn.prepareStatement(SQL_GET);
-			p.setString(1, key);
-			res = p.executeQuery();
-			if (!res.next()) {
-				return null;
-			}
-
-			v = new VOImp();
-
-			for (int i = 0; i < fields.length; i++) {
-				v.put(fields[i], res.getString(i + 1));
-			}
-
-			return (Vo) v;
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			try {
-				if (res != null)
-					res.close();
-				if (p != null)
-					p.close();
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-		}
+	@Override public void drop() {
+		// TODO Auto-generated method stub
+		
 	}
+
+	@Override public Vo get(String key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

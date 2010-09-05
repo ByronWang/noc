@@ -20,64 +20,60 @@ public class TestTypeReflect extends TestCase {
 	@Override protected void tearDown() throws Exception {
 	}
 
-	public void testLoad() {
-
-		// store.loadFolder("..\\noc_Biz\\bin");
-		//
-		// store.get("data.sales.Order");
-
-		Type p = store.get("data.TestPerson");
+	protected void showType(Type type) {
 
 		StringBuffer sb = new StringBuffer();
 
 		final String newline = "\n";
 		final String indent = "\t";
 
-		if (!p.primaryKeyField.isKey()) {
-			sb.append(p.getPrimaryKeyField().getName());
-			sb.append(":hide");
-			sb.append(newline);
-		}
-
-		for (Field f : p.getFields()) {
+		for (Field f : type.getFields()) {
 			if (f.array) {
-				if (f.inline) {
-					sb.append(f.displayName);
+				if (f.refer == Field.Inline) {
+					sb.append(f.name);
 					sb.append(":");
 					sb.append("inline list");
 					sb.append(newline);
-					sb.append(indent);
 					for (Field fin : f.type.fields) {
+						sb.append(indent);
 						sb.append(fin.name);
-						sb.append(" : ");
+						sb.append(indent);
+						sb.append("< ");
+						sb.append(fin.type.name);
+						sb.append(newline);
 					}
 					sb.append(newline);
-				} else if (f.refer) {
-					sb.append(f.displayName);
+				} else if (f.refer == Field.Reference || f.refer == Field.Cascade) {
+					sb.append(f.name);
+					sb.append(":");
+					sb.append("list");
+					sb.append(newline);
+					for (Field fin : f.type.fields) {
+						if (fin.key) {
+							sb.append(indent);
+							sb.append(f.name);
+							sb.append("");
+							sb.append(fin.name);
+							sb.append(newline);
+						}
+					}
+					sb.append(newline);
+				} else if (f.refer == Field.Scala) {
+					sb.append(f.name);
 					sb.append(":");
 					sb.append("list");
 					sb.append(newline);
 					sb.append(indent);
-					sb.append(f.displayName);
-					sb.append("_");
-					sb.append(f.type.primaryKeyField.name);
-					sb.append(newline);
-				} else if (f.type.scala) {
-					sb.append(f.displayName);
-					sb.append(":");
-					sb.append("list");
-					sb.append(newline);
-					sb.append(indent);
-					sb.append(f.displayName);
+					sb.append(f.name);
 					sb.append(newline);
 				} else {
 
 				}
 
 			} else {
-				if (f.inline) {
+				if (f.refer == Field.Inline) {
 
-					sb.append(f.displayName);
+					sb.append(f.name);
 					sb.append(":");
 					sb.append("inline");
 					sb.append(newline);
@@ -86,36 +82,49 @@ public class TestTypeReflect extends TestCase {
 						sb.append(fin.name);
 						sb.append(newline);
 					}
-				} else if (f.refer) {
-					sb.append(f.displayName);
-					sb.append(f.type.primaryKeyField.name);
-					if (!f.type.primaryKeyField.key) {
-						sb.append(": hide");
-						sb.append(newline);
+				} else if (f.refer == Field.Reference || f.refer == Field.Cascade) {
+					sb.append(f.name);
 
-						for (Field fin : f.type.keyFields) {
-							sb.append(f.displayName);
+					sb.append(": hide");
+					sb.append(newline);
+
+					for (Field fin : f.type.fields) {
+						if (fin.key) {
+							sb.append(indent);
+							sb.append(f.name);
 							sb.append("");
 							sb.append(fin.name);
 							sb.append(newline);
 						}
-					} else {
-						sb.append(": ref");
-						sb.append(newline);
 					}
-				} else if (f.type.scala) {
-					sb.append(f.displayName);
+				} else if (f.refer == Field.Scala) {
+					sb.append(f.name);
 					if (f.key) {
 						sb.append(": readonly");
 					}
+					sb.append(indent);
+					sb.append("< ");
+					sb.append(f.type.name);
 					sb.append(newline);
-				}else{
-					
+				} else {
+
 				}
 			}
 		}
 		System.out.println(sb.toString());
 
+	}
+
+//	public void testPerson() {
+//
+//		Type p = store.get("data.TestPerson");
+//		showType(p);
+//	}
+	
+	public void testType() {
+
+		Type p = store.get("noc.lang.reflect.Type");
+		showType(p);
 	}
 
 	//	
@@ -127,9 +136,10 @@ public class TestTypeReflect extends TestCase {
 	// } else if (f.type.scala) {
 	// }
 	public void testSetValue() {
-		Vo v = new VOImp();
 
 		Type person = store.get("data.TestPerson");
+		
+		Vo v = new VOImp(person);
 
 		Map<String, String[]> params = new HashMap<String, String[]>();
 

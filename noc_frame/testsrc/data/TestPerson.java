@@ -1,8 +1,8 @@
 package data;
 
-import noc.annotation.DisplayName;
 import noc.annotation.Inline;
 import noc.annotation.PrimaryKey;
+import noc.annotation.DisplayName;
 import noc.lang.Attr;
 import noc.lang.Code;
 import noc.lang.List;
@@ -10,7 +10,7 @@ import noc.lang.Literal;
 import noc.lang.Name;
 
 public class TestPerson {
-	public @PrimaryKey @Inline Code 工号;
+	public @PrimaryKey Code 工号;
 	public @PrimaryKey @DisplayName("姓名") Name 名称;
 	public Literal[] 其他名称;
 	

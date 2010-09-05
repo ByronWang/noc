@@ -8,7 +8,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/noc_define"/>
-	<classpathentry exported="true" kind="lib" path="lib/javassist.jar">
+	<classpathentry exported="true" kind="lib" path="lib/javassist.jar" sourcepath="E:/JavaDev/_InstallBinary/javassist-3.11.0/src/main">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
 		</attributes>

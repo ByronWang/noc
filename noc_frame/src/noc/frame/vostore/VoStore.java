@@ -12,16 +12,11 @@ import noc.lang.reflect.Type;
 public class VoStore implements Store<Vo> {
 	Map<String, Vo> map = new Hashtable<String, Vo>();
 
-	protected Type clz;
-	protected String keyName;
+	protected Type type;
 //	protected String keyPropName;
 
-	public VoStore(Type clz) {
-		this.clz = clz;
-		keyName = clz.getPrimaryKeyField().getName();
-		if(keyName==null){
-			keyName = "primaryKey";
-		}
+	public VoStore(Type type) {
+		this.type = type;
 	}
 
 	@Override public Vo get(String key) {
@@ -29,9 +24,8 @@ public class VoStore implements Store<Vo> {
 	}
 
 	@Override public Vo update(Vo v) {
-		String keyValue = v.S(keyName);
-		map.put(keyValue, v);
-		return map.get(keyValue);
+		map.put(v.getIndentify(), v);
+		return map.get(v.getIndentify());
 	}
 
 	@Override public List<Vo> list() {

@@ -10,62 +10,85 @@ public class DerbySQLHelper {
 
 	Type clz;
 
-	final String keyfield;
-	final String[] columns;
+	class Column {
+		Column(String name, boolean key) {
+			this.name = name;
+			this.key = key;
+		}
+
+		String name;
+		boolean key;
+	}
+
+	final Column[] columns;
+	final Column[] keyColumns;
 	final String tableName;
 	final String fieldlist_comma;
 	final String fieldlist_questions;
+	final String wherekeys;
 
-	DerbySQLHelper(Type clz) {
+	DerbySQLHelper(Type type) {
 		try {
-			this.clz = clz;
+			this.clz = type;
 
-			tableName = clz.getName().replace('.', '_');
+			tableName = decodeTypeName(type.getName());
 
-			List<Field> fl = clz.getFields();
+			List<Field> fl = type.getFields();
 
-			ArrayList<String> fs = new ArrayList<String>();
+			ArrayList<Column> fs = new ArrayList<Column>();
 			for (Field f : fl) {
 				if (f.isArray()) {
 					// TODO
-				} else if (f.getType().isScala()) {
-					fs.add(f.getName());
-				} else if (f.isInline()) {
+				} else if (f.getRefer().equals(Field.Scala)) {
+					fs.add(new Column(decodeFieldName(type.getName(), f.getName()), f.isKey()));
+				} else if (f.getRefer().equals(Field.Inline)) {
 					// TODO fs.add(f.getName() + "_" +
 					// f.getType().getKeyField().getName());
-				} else if (f.isRefer()) {
-					if (f.getType().getPrimaryKeyField() != null) {
-						fs.add(f.getName() + "_" + f.getType().getPrimaryKeyField().getName());
-					} else {
-						fs.add(f.getName() + "_" + "key");
+				} else if (f.getRefer().equals(Field.Reference)) {
+					for (Field referField : f.getType().getFields()) {
+						if (referField.isKey()) {
+							fs.add(new Column(decodeFieldName(type.getName(), f.getName()) + "_"
+									+ decodeFieldName(f.getType().getName(), referField.getName()), f.isKey()));
+						}
 					}
 				}
 			}
 
 			StringBuilder sb = new StringBuilder();
 			StringBuilder sbq = new StringBuilder();
-			for (String fieldName : fs) {
-				sb.append(fieldName);
+			ArrayList<Column> kfs = new ArrayList<Column>();
+			String sql = "";
+			
+			for (Column column : fs) {
+				sb.append(column.name);
 				sb.append(',');
 				sbq.append("?,");
+				
+
+				if (column.key) {
+					kfs.add(column);
+					sql += column.name + " = ? and ";
+				}
 			}
 
-			keyfield = clz.getPrimaryKeyField().getName();
-			columns = fs.toArray(new String[0]);
-			fieldlist_comma = sb.substring(0, sb.length() - 1);
-			fieldlist_questions = sbq.substring(0, sbq.length() - 1);
+			this.keyColumns = kfs.toArray(new Column[0]);
+			this.wherekeys = sql.substring(0, sql.length() - 4);
 
-			if (keyfield == null) {
-				throw new RuntimeException("Can not find key");
-			}
+			this.columns = fs.toArray(new Column[0]);
+			this.fieldlist_comma = sb.substring(0, sb.length() - 1);
+			this.fieldlist_questions = sbq.substring(0, sbq.length() - 1);
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public String getKeyField() {
-		return this.keyfield;
+	protected String decodeFieldName(String typeName, String fieldName) {
+		return fieldName;
+	}
+
+	protected String decodeTypeName(String typeName) {
+		return typeName.replace('.', '_');
 	}
 
 	public String getTableName() {
@@ -77,19 +100,19 @@ public class DerbySQLHelper {
 	}
 
 	public String builderCount() {
-		return "select count(*) from " + this.tableName + " ";
+		return "SELECT count(*) FROM " + this.tableName + " ";
 	}
 
 	public String builderList() {
-		return "select " + this.fieldlist_comma + " from " + this.tableName + " ";
+		return "SELECT " + this.fieldlist_comma + " FROM " + this.tableName + " ";
 	}
 
 	public String builderDrop() {
-		return "drop table " + this.tableName + " ";
+		return "DROP TABLE " + this.tableName + " ";
 	}
 
 	public String builderGetMeta() {
-		return "select * from " + this.tableName + " where 0=1";
+		return "SELECT * FROM " + this.tableName + " WHERE 0=1";
 	}
 
 	public String builderCreate() {
@@ -97,8 +120,8 @@ public class DerbySQLHelper {
 
 		sb.append("CREATE TABLE ").append(this.tableName).append("(");
 
-		for (String columnName : this.columns) {
-			sb.append(columnName).append(" varchar(40)").append(",");
+		for (Column column : this.columns) {
+			sb.append(column.name).append(" varchar(40)").append(",");
 		}
 		sb.setCharAt(sb.length() - 1, ')');
 
@@ -107,35 +130,31 @@ public class DerbySQLHelper {
 	}
 
 	public String builderInsert() {
-		return "insert into  " + this.tableName + "(" + fieldlist_comma + ") values("
-				+ fieldlist_questions + ")";
+		return "INSERT INTO  " + this.tableName + "(" + fieldlist_comma + ") values(" + fieldlist_questions + ")";
 
 	}
 
 	public String builderUpdate() {
-		StringBuilder sb = new StringBuilder();
+		String sb = "UPDATE " + this.tableName + " SET ";
 
-		sb.append("UPDATE ").append(this.tableName).append(" SET ");
-
-		for (String f : columns) {
-			sb.append(f).append("=?").append(",");
+		for (Column column : this.columns) {
+			sb += column.name + " = ? ,";
 		}
-		sb.setCharAt(sb.length() - 1, ' ');
+		sb = sb.substring(0, sb.length() - 1);
 
-		sb.append("WHERE ").append(this.keyfield).append("=?");
+		sb += "WHERE " + wherekeys;
 		return sb.toString();
 	}
 
 	public String builderDelete() {
-		return "delete from " + this.tableName + " WHERE " + this.keyfield + "=?";
+		return "DELETE FROM " + this.tableName + " WHERE " + wherekeys;
 	}
 
 	public String builderGet() {
-		return "select " + fieldlist_comma + "  from " + this.tableName + " WHERE " + this.keyfield
-				+ "=?";
+		return "SELECT " + fieldlist_comma + "  FROM " + this.tableName + " WHERE " + wherekeys;
 	}
 
-	public String[] builderColumns() {
+	public Column[] builderColumns() {
 		return this.columns;
 	}
 }

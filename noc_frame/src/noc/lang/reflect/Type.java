@@ -5,87 +5,64 @@ import java.util.List;
 
 import noc.annotation.FrameType;
 import noc.annotation.Inline;
+import noc.annotation.DisplayName;
+import noc.annotation.RealType;
 
-@FrameType public class Type {
+@FrameType
+@DisplayName("Type")
+public class Type {
 
-	String displayName;
+	public static final String Master = "Master";
+	public static final String Attribute = "Attribute";
+	public static final String Underlying = "Underlying";
+	public static final String Sequence = "Sequence";
+	public static final String Scala = "Scala";
+	public static final String Eembedded = "Eembedded";
+
 	String name;
-	boolean scala;
-	boolean frameType;
-	boolean standalone;
-	Field primaryKeyField;
-	final List<Field> keyFields;
-	
-	final @Inline List<Field> fields;
-	Type declaringType;
+	String displayName;
 
-	public Type(String name, String displayName, boolean scala, boolean frameType, Type declaringType) {
+	boolean standalone = true;
+
+	@RealType(TypeMaterType.class)
+	String master;
+
+	Type declaringType = null;
+
+	final @Inline
+	List<Field> fields;
+
+	// Type declaringType;
+
+	public Type(String name) {
 		super();
 		this.name = name;
-		this.displayName = displayName;
-		this.scala = scala;		
-		this.frameType = frameType;
-		this.declaringType = declaringType;
-		
-		this.fields = new ArrayList<Field>();
-		this.keyFields = new ArrayList<Field>();
-	}
 
-	public String getDisplayName() {
-		return displayName;
+		this.fields = new ArrayList<Field>();
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public boolean isScala() {
-		return scala;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getMaster() {
+		return master;
+	}
+
+	public void setMaster(String master) {
+		this.master = master;
 	}
 
 	public List<Field> getFields() {
 		return fields;
 	}
 
-	public Type getDeclaringType() {
-		return declaringType;
-	}
-
-
-	public Field getPrimaryKeyField() {
-		return primaryKeyField;
-	}
-
-	public boolean isFrameType() {
-		return frameType;
-	}
-
-	public void setFrameType(boolean frameType) {
-		this.frameType = frameType;
-	}
-
-	public List<Field> getKeyFields() {
-		return keyFields;
-	}
-
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setScala(boolean scala) {
-		this.scala = scala;
-	}
-
-	public void setDeclaringType(Type declaringType) {
-		this.declaringType = declaringType;
-	}
-
-	public void setPrimaryKeyField(Field primaryKeyField) {
-		this.primaryKeyField = primaryKeyField;
+	public String getDisplayName() {
+		return this.displayName;
 	}
 
 	public boolean isStandalone() {
@@ -96,4 +73,11 @@ import noc.annotation.Inline;
 		this.standalone = standalone;
 	}
 
+	public Type getDeclaringType() {
+		return declaringType;
+	}
+
+	public void setDeclaringType(Type declaringType) {
+		this.declaringType = declaringType;
+	}
 }
