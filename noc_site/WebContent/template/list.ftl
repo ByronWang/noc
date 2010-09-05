@@ -14,6 +14,8 @@
 <title>${title}</title>
 </head>
 <body>
+<a style="float:right;" href="/noc/noc/lang/reflect/Type/${type.name}">Type</a>
+
 <h1>${title}</h1>
 [#nested/]
 </body></html>
@@ -21,55 +23,63 @@
 
 [@body title=type.displayName]
 		
-<a style="float:right;" href="/noc/noc/lang/reflect/Type/${type.name}">Type</a>
 
 <table class="list"> 
 	<thead>	
 		<tr>
-			[#list type.fields as inf ][#t]
-			[#if inf.array][#t]
-			[#elseif inf.type.scala][#t]
-			<th scope="col"> ${inf.displayName} </th>
-			[#elseif inf.inline][#t]
-			[#elseif inf.refer][#if inf.type.primaryKeyField??][#t]
-			<th scope="col"> ${inf.displayName}${inf.type.primaryKeyField.displayName} </th>
-			[/#if][/#if][#t]
+			[#list type.fields as f ]
+				[#switch f.refer]
+					[#case "Scala"]
+			<th scope="col">${f.displayName}</th>
+						[#break]
+					[#case "Inline"]
+						[#break]
+					[#case "Reference"]
+					[#case "Cascade"]
+			<th scope="col">${f.displayName}</th>
+						[#break]
+				[/#switch]
 			[/#list][#t]
 		</tr>
 	</thead>
 	
 	
 	<tbody>
-		<#list data?sort_by("${type.primaryKeyField.name}") as item>${r"<#" + "t>"}
+		<#list data as item><#lt>
 		<tr>
-		[#list type.fields as inf ][#t]
-			[#if inf.array][#t]
-			[#elseif inf.type.scala][#t]
-			<td> [#rt]
-				[#if inf.name == type.primaryKeyField.name][#t]
-				<a href="${r"${item."+ inf.name + "}"}">${r"${item."+ inf.name + "}"}</a>[#t]
-				[#else][#t]
-					[#if inf.type.name == "noc.lang.Bool"][#t]
-			<#if item.${inf.name}>True<#else>false</#if>[#t]
-					[#else][#t]
-				${r"${item."+ inf.name + "}"}[#t]
-					[/#if][#t]
-				[/#if][#t]
-			</td>[#lt]
-			[#elseif inf.inline][#t]
-			[#elseif inf.refer][#t]
-			<td> [#rt]
-				[#if inf.type.keyField??][#t]  
-					[#assign  fieldName = inf.name + "_" + inf.type.keyField.name /][#t]			
-					[#if inf.type.keyField.name == "noc.lang.Bool"][#t]
-				<#if item.${fieldName}>True<#else>false</#if>[#t]
-					[#else][#t]
-				${r"${item."+ fieldName + "}"}[#t]
-					[/#if][#t]
-				[/#if][#t]
-			</td>[#lt]
-			[/#if][#t]
-		[/#list][#t]
+		[#list type.fields as f ]
+			<td>[#compress]
+			[#if f.array]
+			[#else]			
+				[#switch f.refer]
+					[#case "Scala"]		
+						[#if f.key]
+							<a href="${r"${item.indentify}"}">${r"${item."+ f.name + "}"}</a>
+						[#else]
+							[#if f.type.name == "noc.lang.Bool"]
+								<#if item.${f.name}>True<#else>false</#if>
+							[#else]
+								${r"${item."+ f.name + "}"}
+							[/#if]
+						[/#if]			
+						[#break]
+					[#case "Inline"]
+						[#break]
+					[#case "Reference"]
+					[#case "Cascade"]
+						[#if f.type.keyField??]  
+							[#assign  fieldName = f.name + "_" + f.type.keyField.name /]			
+							[#if f.type.keyField.name == "noc.lang.Bool"]
+								<#if item.${fieldName}>True<#else>false</#if>
+							[#else]
+								${r"${item."+ fieldName + "}"}
+							[/#if]
+						[/#if]
+						[#break]
+				[/#switch]			
+			[/#if]					
+			[/#compress]</td>
+		[/#list]
 		</tr>   
 	</#list>	
 	</tbody>

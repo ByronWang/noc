@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import noc.frame.Store;
 import noc.frame.vo.Vo;
-import noc.frame.vo.imp.VOImp;
 import noc.freemarker.DefaultModel;
 import noc.http.Fact.Rule;
 import noc.lang.reflect.Type;
@@ -166,11 +165,11 @@ public class NocDataServlet extends HttpServlet {
 			if (key.length() == 0) { // Path
 
 				Store<Vo> store = (Store<Vo>) rule.getStore();
-				Vo v = VoHelper.putAll(request.getParameterMap(), new VOImp(), rule.getType());
+				Vo v = VoHelper.putAll(request.getParameterMap(), store.get(null), rule.getType());
 				v = store.update(v);
 
-				String toPath = request.getContextPath() + rule.typeName.replace('.', '/')
-						+ URLEncoder.encode(v.S(rule.getType().getPrimaryKeyField().getName()), "UTF-8");
+				String toPath = request.getContextPath() + "/"+ rule.typeName.replace('.', '/')
+						+ "/"  + URLEncoder.encode(v.getIndentify(), "UTF-8");
 
 				response.setContentType("text/html; charset=UTF-8");
 				response.sendRedirect(toPath);

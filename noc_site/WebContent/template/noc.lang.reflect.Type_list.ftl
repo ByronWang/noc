@@ -11,9 +11,10 @@
 <table class="list"> 
 	<thead>	
 		<tr>
-			<th scope="col"> displayName </th>
-			<th scope="col"> name </th>
-			<th scope="col"> scala </th>
+			<th scope="col"> Name </th>
+			<th scope="col"> DisplayName </th>
+			<th scope="col"> Master </th>
+			<th scope="col"> Standalone </th>
 		</tr>
 	</thead>
 	
@@ -21,9 +22,10 @@
 	<tbody>
 		<#list data?sort_by("name") as item><#t><#if !item.declaringType??>
 		<tr>
+			<td align="left"> <a href="${item.name}">${item.name}</a></td>
 			<td> ${item.displayName}</td>
-			<td> <a href="${item.name}">${item.name}</a></td>
-			<td> <#if item.scala>True<#else>false</#if></td>
+			<td> ${item.master}</a></td>
+			<td> <#if item.standalone>True<#else>false</#if></td>
 		</tr>
 		</#if></#list>	
 	</tbody>
