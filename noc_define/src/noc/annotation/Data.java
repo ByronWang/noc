@@ -13,6 +13,10 @@ public @interface Data {
 		String[] value();
 	}
 	
+	@interface DefaultValue{
+		String value();
+	}
+	
 	@interface ValueList{
 		String[] value();
 	}
