@@ -94,12 +94,12 @@
 [/#macro]
 
 [#macro refInput field keyField parent="data"]<#compress>
-		<#if ${parent}.${field.name}_${keyField.name}??>
-			<#assign value=${parent}.${field.name}_${keyField.name}/>
-		<#elseif ${parent}.${field.name}??>
-			<#assign value=${parent}.${field.name}.${keyField.name}/>	
+		<#if ${parent}.${field.name}??>
+			<#assign value=${parent}.${field.name}.${keyField.name}/>
+		<#elseif ${parent}.${field.name}_${keyField.name}??>
+			<#assign value=${parent}.${field.name}_${keyField.name}/>	
 		<#else>
-			ERROR			
+			<#assign value=""/>	
 		</#if>		
 		<input name="${field.name}_${keyField.name}" id="${field.name}_${keyField.name}" value="${r"${value!}"}"     title="${parent}.${field.name}_${keyField.name}"/>
 		<span class="refType" onclick='selectItem(this,"${field.name}_${keyField.name}","${contextPath}/${field.type.name?replace(".", "/")}/?popup");'>::</span>
