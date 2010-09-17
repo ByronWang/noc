@@ -5,6 +5,7 @@
 	<projects>
 		<project>noc_frame</project>
 		<project>noc_define</project>
+		<project>noc_kao</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

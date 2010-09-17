@@ -67,14 +67,14 @@
 						[#break]
 					[#case "Reference"]
 					[#case "Cascade"]
-						[#if f.type.keyField??]  
-							[#assign  fieldName = f.name + "_" + f.type.keyField.name /]			
-							[#if f.type.keyField.name == "noc.lang.Bool"]
-								<#if item.${fieldName}>True<#else>false</#if>
-							[#else]
-								${r"${item."+ fieldName + "}"}
+						[#list f.type.fields as rF]
+							[#if rF.key]
+								[#assign subField=rF/]
 							[/#if]
-						[/#if]
+						[/#list]		
+						
+					[@refview field=f keyField=subField parent="item"/]		
+					
 						[#break]
 				[/#switch]			
 			[/#if]					
@@ -86,6 +86,17 @@
 </table>
 
 <br/>
+
+[#macro refview field keyField parent="data"]<#compress>
+		<#if ${parent}.${field.name}_${keyField.name}??>
+			<#assign value=${parent}.${field.name}_${keyField.name}/>
+		<#elseif ${parent}.${field.name}??>
+			<#assign value=${parent}.${field.name}.${keyField.name}/>	
+		<#else>
+			ERROR			
+		</#if>		
+		${r"${value!}"}
+</#compress>[/#macro]
 
 <div class="action">
 <a href="${contextPath}/${type.name?replace(".","/")}/?new">Add New<a>

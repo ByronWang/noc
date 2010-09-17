@@ -70,7 +70,7 @@
 			[#switch f.refer]
 				[#case "Scala"]
 					[@label field=f /]
-					[#if f.key][@readonlyinput field=f /][#else][@input field=f /][/#if]
+					[#if f.key]<#if data.${f.name}?? && data.${f.name}?length gt 0>[@readonlyinput field=f /]<#else>[@input field=f /]</#if>[#else][@input field=f /][/#if]
 					[#break]
 				[#case "Inline"]
 					[@label field=f /]
@@ -82,14 +82,9 @@
 						[#if rF.key]
 							[#assign subField=rF/]
 						[/#if]
-					[/#list]
-										
+					[/#list]										
 					[@label field=f /]
-					[@input field=subField parent="data.${f.name}"/]
-					
-					<span class="refType" onclick='selectItem(this,"${f.name}_${subField.name}","${contextPath}/${f.type.name?replace(".", "/")}/?popup");'>::</span>
-					[@typeinfo tp=f.type /]
-					</fieldset>
+					[@refInput field=f keyField=subField/]					
 					</#compress>
 					[#break]			
 			[/#switch]	
@@ -98,6 +93,18 @@
 </ol>
 [/#macro]
 
+[#macro refInput field keyField parent="data"]<#compress>
+		<#if ${parent}.${field.name}_${keyField.name}??>
+			<#assign value=${parent}.${field.name}_${keyField.name}/>
+		<#elseif ${parent}.${field.name}??>
+			<#assign value=${parent}.${field.name}.${keyField.name}/>	
+		<#else>
+			ERROR			
+		</#if>		
+		<input name="${field.name}_${keyField.name}" id="${field.name}_${keyField.name}" value="${r"${value!}"}"     title="${parent}.${field.name}_${keyField.name}"/>
+		<span class="refType" onclick='selectItem(this,"${field.name}_${keyField.name}","${contextPath}/${field.type.name?replace(".", "/")}/?popup");'>::</span>
+		[@typeinfo tp=field.type /]
+</#compress>[/#macro]
 
 [@body title=type.displayName]
 <form name="form1" method="POST" action="${contextPath}${r"${urlPath!}"}/${type.name?replace(".", "/")}/${r"${data.indentify!}"}" title="Hello Title">

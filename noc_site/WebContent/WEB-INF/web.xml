@@ -11,7 +11,7 @@
 	</context-param>
 	<context-param>
 		<param-name>biz_path</param-name>
-		<param-value>D:\JavaDev\noc_biz\bin</param-value>
+		<param-value>D:\JavaDev\noc_kao\bin</param-value>
 	</context-param>
 	<context-param>
 		<param-name>template_path</param-name>
@@ -23,7 +23,7 @@
     </context-param>
     <context-param>
         <param-name>database_name</param-name>
-        <param-value>noc_biz_0_0_1</param-value>
+        <param-value>kao_0_0_1</param-value>
     </context-param>
     <context-param>
         <param-name>user_name</param-name>

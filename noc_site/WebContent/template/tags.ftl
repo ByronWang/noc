@@ -3,7 +3,7 @@
 [#macro link typename field parent="data"]
 <a href="${contextPath}${r"${urlPath!}"}/${typename?replace(".", "/")}/${r"${" + parent + "."+ field.name + "!}"}">${r"${" + parent + "."+ field.name + "!}"}<a>
 [/#macro]
-[#macro typeinfo tp][#if tp.master == "Scala"]<!--$ {tp.name?replace("noc.lang.", "")}-->[#else]<a href="${contextPath}${r"${urlPath!}"}/${tp.name?replace(".", "/")}/">${tp.name}<a>[/#if][/#macro]
+[#macro typeinfo tp][#if tp.master == "Scala"]<!--$ {tp.name?replace("noc.lang.", "")}-->[#else]<a href="${contextPath}${r"${urlPath!}"}/${tp.name?replace(".", "/")}/">${tp.displayName}</a>[/#if][/#macro]
 
 
 
@@ -15,7 +15,6 @@
 		<#else>
 			<#assign value=""/>			
 		</#if>
-		
 	[#if field.type.name == "noc.lang.Bool"]
 		<#if value>
 			<input type="checkbox" name="${field.name}" checked         />
@@ -62,8 +61,8 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<link rel='stylesheet' href='/noc/css/form.css' type='text/css'/>
-	<script type="text/javascript"  src="/noc/js/prototype.js"/>
-	<script type="text/javascript"  src="/noc/js/popup.js" />	
+	<script type="text/javascript"  src="/noc/js/prototype.js"></script>
+	<script type="text/javascript"  src="/noc/js/popup.js"></script>	
 	<title>${title}</title>
 </head>
 <body>
