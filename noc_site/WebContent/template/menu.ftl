@@ -3,7 +3,7 @@
     [#if tp.name?matches("noc.lang[.].*")]
        &lt; ${tp.name?replace("noc.lang.", "")}
     [#else]
-        &lt; <a href="${contextPath}/${tp.name?replace(".", "/")}/">${tp.name}<a>
+        &lt; <a href="${contextPath}/basic/${tp.name?replace(".", "/")}/">${tp.name}<a>
     [/#if]
 [/#macro]
 

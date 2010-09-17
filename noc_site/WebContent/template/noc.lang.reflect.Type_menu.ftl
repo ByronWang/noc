@@ -4,7 +4,7 @@
 <div class="navbox" >
  
 <ul class="nav"><#list data?sort_by("master") as item><#if item.standalone>
-<li><a href="${contextPath}/${item.name?replace(".","/")}/"  title="${item.master}" target="oEdit">${item.displayName}</a></li>
+<li><a href="${contextPath}/basic/${item.name?replace(".","/")}/"  title="${item.master}" target="oEdit">${item.displayName}</a></li>
 </#if>
 </#list></ul>  
 
