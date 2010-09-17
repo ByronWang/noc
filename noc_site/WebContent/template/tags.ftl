@@ -1,9 +1,9 @@
 [#ftl/]
 
 [#macro link typename field parent="data"]
-<a href="${contextPath}${r"${urlPath!}"}/${typename?replace(".", "/")}/${r"${" + parent + "."+ field.name + "!}"}">${r"${" + parent + "."+ field.name + "!}"}<a>
+<a href="${contextPath}${r"${urlPath!}"}/type/${typename?replace(".", "/")}/${r"${" + parent + "."+ field.name + "!}"}">${r"${" + parent + "."+ field.name + "!}"}<a>
 [/#macro]
-[#macro typeinfo tp][#if tp.master == "Scala"]<!--$ {tp.name?replace("noc.lang.", "")}-->[#else]<a href="${contextPath}${r"${urlPath!}"}/${tp.name?replace(".", "/")}/">${tp.displayName}</a>[/#if][/#macro]
+[#macro typeinfo tp][#if tp.master == "Scala"]<!--$ {tp.name?replace("noc.lang.", "")}-->[#else]<a href="${contextPath}${r"${urlPath!}"}/basic/${tp.name?replace(".", "/")}/">${tp.displayName}</a>[/#if][/#macro]
 
 
 
@@ -66,7 +66,7 @@
 	<title>${title}</title>
 </head>
 <body>
-<a style="float:right;position:absolute;right:0px;top:0px;" href="/noc/noc/lang/reflect/Type/${type.name}">Type</a>
+<a style="float:right;position:absolute;right:0px;top:0px;" href="/noc/type/noc/lang/reflect/Type/${type.name}">Type</a>
 <a style="float:right;position:absolute;right:0px;top:20px;" href="${contextPath}${r"${urlPath!}"}/debug/${type.name?replace(".", "/")}/${r"${data.indentify!}"}">Template</a>
 
 <h1>${title}</h1>

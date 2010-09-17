@@ -28,7 +28,7 @@
 							[#case "Reference"]
 							[#case "Cascade"]
 								<#if item.${f.name}??>
-									[#list f.type.fields as rF][#if rF.key]${r"${item." + f.name + "." + rF.name + "}"}[/#if][/#list]
+									[#list f.type.fields as rF][#if rF.importance == "PrimaryKey"]${r"${item." + f.name + "." + rF.name + "}"}[/#if][/#list]
 								<#else>
 									Null
 								</#if>
@@ -70,7 +70,7 @@
 			[#switch f.refer]
 				[#case "Scala"]
 					[@label field=f /]
-					[#if f.key]<#if data.${f.name}?? && data.${f.name}?length gt 0>[@readonlyinput field=f /]<#else>[@input field=f /]</#if>[#else][@input field=f /][/#if]
+					[#if f.importance == "PrimaryKey"]<#if data.${f.name}?? && data.${f.name}?length gt 0>[@readonlyinput field=f /]<#else>[@input field=f /]</#if>[#else][@input field=f /][/#if]
 					[#break]
 				[#case "Inline"]
 					[@label field=f /]
@@ -79,12 +79,16 @@
 				[#case "Reference"]
 				[#case "Cascade"]	<#compress>
 					[#list f.type.fields as rF]
-						[#if rF.key]
-							[#assign subField=rF/]
+						[#if rF.importance == "PrimaryKey"]
+							[#assign valueField=rF/]
 						[/#if]
+						[#if rF.name == "name" || rF.name == "名称"]
+							[#assign showField=rF/]
+						[/#if]
+						
 					[/#list]										
 					[@label field=f /]
-					[@refInput field=f keyField=subField/]					
+					[@refInput field=f valueField=valueField  showField=showField/]					
 					</#compress>
 					[#break]			
 			[/#switch]	
@@ -93,21 +97,32 @@
 </ol>
 [/#macro]
 
-[#macro refInput field keyField parent="data"]<#compress>
+[#macro refInput field valueField showField parent="data"]<#compress>
 		<#if ${parent}.${field.name}??>
-			<#assign value=${parent}.${field.name}.${keyField.name}/>
-		<#elseif ${parent}.${field.name}_${keyField.name}??>
-			<#assign value=${parent}.${field.name}_${keyField.name}/>	
+			<#assign value=${parent}.${field.name}.${valueField.name}/>
+		<#elseif ${parent}.${field.name}_${valueField.name}??>
+			<#assign value=${parent}.${field.name}_${valueField.name}/>	
 		<#else>
 			<#assign value=""/>	
-		</#if>		
-		<input name="${field.name}_${keyField.name}" id="${field.name}_${keyField.name}" value="${r"${value!}"}"     title="${parent}.${field.name}_${keyField.name}"/>
-		<span class="refType" onclick='selectItem(this,"${field.name}_${keyField.name}","${contextPath}/${field.type.name?replace(".", "/")}/?popup");'>::</span>
+		</#if>
+		<#if ${parent}.${field.name}??>
+			<#assign show=${parent}.${field.name}.${showField.name}/>
+		<#elseif ${parent}.${field.name}_${showField.name}??>
+			<#assign show=${parent}.${field.name}_${showField.name}/>	
+		<#else>
+			<#assign show=""/>	
+		</#if>
+		
+		[#if valueField.name == "code" || valueField.name == "代码"]
+		[/#if]
+		<input name="${field.name}_${valueField.name}" id="${field.name}_${valueField.name}" value="${r"${value!}"}"     title="${parent}.${field.name}_${valueField.name}"/>
+		<input name="${field.name}_${showField.name}" id="${field.name}_${showField.name}" value="${r"${show!}"}"     title="${parent}.${field.name}_${showField.name}"/>
+		<span class="refType" onclick='selectItem(this,"${field.name}","${valueField.name}","${showField.name}","${contextPath}/basic/${field.type.name?replace(".", "/")}/?popup");'>::</span>
 		[@typeinfo tp=field.type /]
 </#compress>[/#macro]
 
 [@body title=type.displayName]
-<form name="form1" method="POST" action="${contextPath}${r"${urlPath!}"}/${type.name?replace(".", "/")}/${r"${data.indentify!}"}" title="Hello Title">
+<form name="form1" method="POST" action="${contextPath}${r"${urlPath!}"}/basic/${type.name?replace(".", "/")}/${r"${data.indentify!}"}" title="Hello Title">
 	[@object type=type parent="data" /]	
 	[@submit/]
 </form>

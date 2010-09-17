@@ -68,7 +68,7 @@
 	
 	<servlet-mapping>
 		<servlet-name>NocDataServlet</servlet-name>
-		<url-pattern>/data/*</url-pattern>
+		<url-pattern>/basic/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>NocDebugServlet</servlet-name>
@@ -76,6 +76,6 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>NocTypeServlet</servlet-name>
-		<url-pattern>/noc/lang/reflect/Type/*</url-pattern>
+		<url-pattern>/type/*</url-pattern>
 	</servlet-mapping>
 </web-app>

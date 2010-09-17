@@ -30,17 +30,19 @@ function getHTML(item,src)
 
 
 
-function selectItem(item,targetName,href){
+function selectItem(item,fieldName,subValueField,subShowField,href){
 	ensurePopupPrepared();    	    	
-    inputName = targetName;        
+    inputName = fieldName + "_" + subValueField; 
+    showInputName = fieldName + "_" + subShowField; 
     getHTML(popup_div,href);
     //mask.style.display="block";
     popup_div.style.top = item.offsetTop;
     popup_div.style.left = item.offsetLeft;     
 }  
-function returnValue(value){
-	
+function returnValue(value,show){
+
     $(inputName).value = value;     
+    $(showInputName).value = show;     
     //alert(value);
     popup_div.style.visibility='hidden';
 	$(inputName).fire();

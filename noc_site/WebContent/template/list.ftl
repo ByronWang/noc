@@ -53,7 +53,7 @@
 			[#else]			
 				[#switch f.refer]
 					[#case "Scala"]		
-						[#if f.key]
+						[#if f.importance == "PrimaryKey"]
 							<a href="${r"${item.indentify}"}">${r"${item."+ f.name + "}"}</a>
 						[#else]
 							[#if f.type.name == "noc.lang.Bool"]
@@ -68,7 +68,7 @@
 					[#case "Reference"]
 					[#case "Cascade"]
 						[#list f.type.fields as rF]
-							[#if rF.key]
+							[#if rF.importance == "PrimaryKey"]
 								[#assign subField=rF/]
 							[/#if]
 						[/#list]		

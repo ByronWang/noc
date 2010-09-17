@@ -35,16 +35,12 @@ public class NocDataServlet extends HttpServlet {
 		super.init();
 		fact = (Fact) this.getServletContext().getAttribute("fact");
 	}
-
-	protected String getPath(HttpServletRequest request){
-		return request.getServletPath() + request.getPathInfo();
-	}
 	
 	@Override protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
 		request.setCharacterEncoding("UTF-8");
 
-		String path = getPath(request);
+		String path = request.getPathInfo();
 		int last = path.lastIndexOf('/');
 		String typeName = path.substring(1, last).replace('/', '.');
 		Rule rule = fact.getRule(typeName);
