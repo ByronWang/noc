@@ -40,15 +40,17 @@ public class DerbySQLHelper {
 				if (f.isArray()) {
 					// TODO
 				} else if (f.getRefer().equals(Field.Scala)) {
-					fs.add(new Column(decodeFieldName(type.getName(), f.getName()), f.isKey()));
+					fs.add(new Column(decodeFieldName(type.getName(), f.getName()),
+							f.getImportance() == Field.PrimaryKey));
 				} else if (f.getRefer().equals(Field.Inline)) {
 					// TODO fs.add(f.getName() + "_" +
 					// f.getType().getKeyField().getName());
 				} else if (f.getRefer().equals(Field.Reference)) {
 					for (Field referField : f.getType().getFields()) {
-						if (referField.isKey()) {
+						if (referField.getImportance() == Field.PrimaryKey) {
 							fs.add(new Column(decodeFieldName(type.getName(), f.getName()) + "_"
-									+ decodeFieldName(f.getType().getName(), referField.getName()), f.isKey()));
+									+ decodeFieldName(f.getType().getName(), referField.getName()),
+									f.getImportance() == Field.PrimaryKey));
 						}
 					}
 				}
@@ -58,12 +60,11 @@ public class DerbySQLHelper {
 			StringBuilder sbq = new StringBuilder();
 			ArrayList<Column> kfs = new ArrayList<Column>();
 			String sql = "";
-			
+
 			for (Column column : fs) {
 				sb.append(column.name);
 				sb.append(',');
 				sbq.append("?,");
-				
 
 				if (column.key) {
 					kfs.add(column);

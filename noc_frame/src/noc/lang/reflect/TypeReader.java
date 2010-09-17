@@ -12,11 +12,13 @@ import javassist.bytecode.SignatureAttribute;
 import noc.annotation.Attribute;
 import noc.annotation.AutoWireByName;
 import noc.annotation.AutoWireByType;
+import noc.annotation.Core;
 import noc.annotation.Dependent;
+import noc.annotation.DisplayName;
+import noc.annotation.Important;
 import noc.annotation.Inline;
 import noc.annotation.Master;
 import noc.annotation.PrimaryKey;
-import noc.annotation.DisplayName;
 import noc.annotation.RealType;
 import noc.annotation.Sequence;
 import noc.frame.Store;
@@ -33,7 +35,8 @@ public class TypeReader {
 
 	Type fillFrom(CtClass clz, Type type) throws ClassNotFoundException, NotFoundException {
 		Object an = null;
-		type.displayName = (an = clz.getAnnotation(DisplayName.class)) != null ? ((DisplayName) an).value() : clz.getName();
+		type.displayName = (an = clz.getAnnotation(DisplayName.class)) != null ? ((DisplayName) an).value() : clz
+				.getName();
 
 		// // Handle Frame Type
 		// boolean frameType = clz.getAnnotation(FrameType.class) != null;
@@ -85,25 +88,25 @@ public class TypeReader {
 
 		int countKey = 0;
 		for (Field f : fs) {
-			if (f.key) countKey++;
+			if (f.importance == Field.PrimaryKey) countKey++;
 		}
-		
-		//如果没有Key的话,按字段名称寻找PrimaryKey中定义的可以默认作为Key的字段
+
+		// 如果没有Key的话,按字段名称寻找PrimaryKey中定义的可以默认作为Key的字段
 		if (countKey <= 0 && (an = PrimaryKey.class.getAnnotation(AutoWireByName.class)) != null) {
 			String autoWire = ((AutoWireByName) an).value();
 			for (Field f : fs) {
 				if (f.name.indexOf(autoWire) > 0) {
-					f.key = true;
+					f.importance = Field.PrimaryKey;
 					countKey++;
 					continue;
 				}
 			}
 		}
 
-		//如果没有Key的话,并且是独立实体的话,设定第一个字段为Key
+		// 如果没有Key的话,并且是独立实体的话,设定第一个字段为Key
 		if (fs.size() > 0 && type.standalone) {
 			if (countKey <= 0) {
-				fs.get(0).key = true;
+				fs.get(0).importance = Field.PrimaryKey;
 			}
 		}
 
@@ -119,7 +122,8 @@ public class TypeReader {
 
 		String name = ctField.getName();
 
-		String displayName = (an = ctField.getAnnotation(DisplayName.class)) != null ? ((DisplayName) an).value() : name;
+		String displayName = (an = ctField.getAnnotation(DisplayName.class)) != null ? ((DisplayName) an).value()
+				: name;
 
 		/* Handle type */
 		CtClass fieldTypeClazz = ctField.getType();
@@ -159,7 +163,9 @@ public class TypeReader {
 			field.refer = Field.Reference;
 		}
 
-		field.key = ctField.hasAnnotation(PrimaryKey.class);
+		if (check(ctField, fieldTypeClazz,Important.class)) field.importance = Field.Important;
+		if (check(ctField, fieldTypeClazz,Core.class)) field.importance = Field.Core;
+		if (ctField.hasAnnotation(PrimaryKey.class)) field.importance = Field.PrimaryKey;
 
 		return field;
 	}

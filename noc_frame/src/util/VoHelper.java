@@ -16,7 +16,7 @@ public class VoHelper {
 				String key = field.getName();
 				if (params.containsKey(key)) {
 					String value = ((String[]) params.get(key))[0];
-					if (field.isKey() && v.S(key) != null) {
+					if (field.getImportance() == Field.PrimaryKey && v.S(key) != null) {
 						if (!value.equals(v.S(key))) {
 							throw new RuntimeException("Key field cannot be modified!");
 						}
@@ -44,7 +44,7 @@ public class VoHelper {
 				// }
 				// } else {
 				for (Field fin : type.getFields()) {
-					if(fin.isKey()){
+					if(fin.getImportance() == Field.PrimaryKey){
 						String key = field.getName() + "_" + fin.getName();
 						if (params.containsKey(key)) {
 							String[] va = (String[]) params.get(key);

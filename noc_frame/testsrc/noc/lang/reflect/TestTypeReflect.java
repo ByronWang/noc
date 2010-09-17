@@ -49,7 +49,7 @@ public class TestTypeReflect extends TestCase {
 					sb.append("list");
 					sb.append(newline);
 					for (Field fin : f.type.fields) {
-						if (fin.key) {
+						if (fin.getImportance() == Field.PrimaryKey) {
 							sb.append(indent);
 							sb.append(f.name);
 							sb.append("");
@@ -89,7 +89,7 @@ public class TestTypeReflect extends TestCase {
 					sb.append(newline);
 
 					for (Field fin : f.type.fields) {
-						if (fin.key) {
+						if (fin.getImportance() == Field.PrimaryKey) {
 							sb.append(indent);
 							sb.append(f.name);
 							sb.append("");
@@ -99,7 +99,7 @@ public class TestTypeReflect extends TestCase {
 					}
 				} else if (f.refer == Field.Scala) {
 					sb.append(f.name);
-					if (f.key) {
+					if (f.getImportance() == Field.PrimaryKey) {
 						sb.append(": readonly");
 					}
 					sb.append(indent);

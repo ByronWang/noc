@@ -163,7 +163,7 @@ public class VOImp implements Vo {
 	public String getIndentify() {
 		String id = "";
 		for(Field field : type.getFields()){
-			if(field.isKey()){
+			if(field.getImportance() == Field.PrimaryKey){
 				id += this.S(field.getName()) + "_";
 			}
 		}

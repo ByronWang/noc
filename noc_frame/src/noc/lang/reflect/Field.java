@@ -10,10 +10,16 @@ public class Field {
 	public static final String Inline = "Inline";
 	public static final String Reference = "Reference";
 	public static final String Cascade = "Cascade";
-
+	
+	public static final String PrimaryKey = "PrimaryKey";
+	public static final String Core = "Core";
+	public static final String Important = "Important";
+	public static final String Normal = "Normal";
+//	importance
+	
 	String name;
 	String displayName;
-	boolean key = false;
+	String importance = Normal;
 
 	Type type;
 	boolean array = false;
@@ -60,20 +66,20 @@ public class Field {
 		this.array = array;
 	}
 
-	public boolean isKey() {
-		return key;
-	}
-
-	public void setKey(boolean key) {
-		this.key = key;
-	}
-
 	public String getDisplayName() {
 		return this.name;
 	}
 
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
+	}
+
+	public String getImportance() {
+		return importance;
+	}
+
+	public void setImportance(String importance) {
+		this.importance = importance;
 	}
 
 }

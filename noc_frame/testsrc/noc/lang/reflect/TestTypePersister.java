@@ -37,7 +37,7 @@ public class TestTypePersister extends TestCase {
 		Field f = p.fields.get(index++);
 		assertEquals("工号", f.name);
 		assertEquals("工号", f.getName());
-		assertEquals(true, f.key);
+		assertEquals(Field.PrimaryKey, f.getImportance());
 		assertEquals(false, f.array);
 		assertEquals(Code.class.getName(), f.type.name);
 		assertEquals(Field.Scala, f.refer);
@@ -45,7 +45,7 @@ public class TestTypePersister extends TestCase {
 		// @PrimaryKey @DisplayName("姓名") Name 名称;
 		f = p.fields.get(index++);
 		assertEquals("姓名", f.name);
-		assertEquals(true, f.key);
+		assertEquals(Field.PrimaryKey, f.getImportance());
 		assertEquals(false, f.array);
 		assertEquals(Name.class.getName(), f.type.name);
 		assertEquals(Field.Scala, f.refer);
@@ -124,7 +124,7 @@ public class TestTypePersister extends TestCase {
 		// Code 代码;
 		f = p.fields.get(index++);
 		assertEquals("代码", f.name);
-		assertEquals(true, f.key);
+		assertEquals(Field.PrimaryKey, f.getImportance());
 		assertEquals(false, f.array);
 		assertEquals(Code.class.getName(), f.type.name);
 		assertEquals(Field.Scala, f.refer);
@@ -142,7 +142,7 @@ public class TestTypePersister extends TestCase {
 		// Name 名称;
 		f = p.fields.get(index++);
 		assertEquals("名称", f.name);
-		assertEquals(true, f.key);
+		assertEquals(Field.PrimaryKey, f.getImportance());
 		assertEquals(false, f.array);
 		assertEquals(Name.class.getName(), f.type.name);
 		assertEquals(Field.Scala, f.refer);
