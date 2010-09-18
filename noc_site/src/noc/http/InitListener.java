@@ -4,6 +4,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import util.PrintObejct;
 
 /**
@@ -11,6 +14,8 @@ import util.PrintObejct;
  * 
  */
 public class InitListener implements ServletContextListener {
+	
+	private static final Log log = LogFactory.getLog(InitListener.class);
 
 	/**
 	 * Default constructor.
@@ -21,7 +26,8 @@ public class InitListener implements ServletContextListener {
 	 * @see ServletContextListener#contextInitialized(ServletContextEvent)
 	 */
 	public void contextInitialized(ServletContextEvent arg0) {
-		System.out.println("IN__Listner__contextInitialized");
+		log.debug("IN__Listner__contextInitialized");
+		
 		final ServletContext context = arg0.getServletContext();
 
 		context.setAttribute("fact", new Fact(context,true));
