@@ -4,6 +4,9 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import javassist.CtClass;
 import javassist.CtField;
 import javassist.Modifier;
@@ -24,7 +27,9 @@ import noc.annotation.Sequence;
 import noc.frame.Store;
 
 public class TypeReader {
-
+	
+	private static final Log log =LogFactory.getLog(TypeReader.class);
+	
 	final Store<Type> types;
 	final CtClass clzScala;
 
@@ -37,6 +42,8 @@ public class TypeReader {
 		Object an = null;
 		type.displayName = (an = clz.getAnnotation(DisplayName.class)) != null ? ((DisplayName) an).value() : clz
 				.getName();
+		
+		log.debug(type.name);
 
 		// // Handle Frame Type
 		// boolean frameType = clz.getAnnotation(FrameType.class) != null;
@@ -117,7 +124,6 @@ public class TypeReader {
 		Object an = null;
 
 		// if (ctField.getName().equals("this$0")) {
-		// System.out.println(parent.getName() + " -> " + ctField.getName());
 		// }
 
 		String name = ctField.getName();

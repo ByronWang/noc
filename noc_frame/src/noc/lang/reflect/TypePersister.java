@@ -17,8 +17,13 @@ import noc.frame.Store;
 import noc.lang.Bool;
 import noc.lang.Name;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class TypePersister implements Store<Type> {
 
+	private static final Log log =LogFactory.getLog(TypePersister.class);
+	
 	ClassPool pool;
 	Map<String, Type> types = new HashMap<String, Type>();
 	TypeReader reader = null;
@@ -29,7 +34,7 @@ public class TypePersister implements Store<Type> {
 		try {
 			reader = new TypeReader(this, pool.get(Scala.class.getName()));
 		} catch (NotFoundException e) {
-			// TODO Auto-generated catch block
+			log.error("new TypeReader", e);
 			e.printStackTrace();
 		}
 

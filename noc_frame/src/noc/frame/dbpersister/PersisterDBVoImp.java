@@ -17,7 +17,12 @@ import noc.frame.vo.Vo;
 import noc.frame.vo.imp.VOImp;
 import noc.lang.reflect.Type;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class PersisterDBVoImp implements Persister<Vo> {
+	private static final Log log =LogFactory.getLog(PersisterDBVoImp.class);
+
 	private final Connection conn;
 
 	final Type type;
@@ -91,12 +96,12 @@ public class PersisterDBVoImp implements Persister<Vo> {
 				int rowCount = metaData.getColumnCount();
 
 				Map<String, String> cols = new HashMap<String, String>();
-				System.out.println("== Before update column ");
+				log.debug("== Before update column ");
 				for (int i = 0; i < rowCount; i++) {
 					cols.put(metaData.getColumnName(i + 1).toUpperCase(), metaData.getColumnTypeName(i + 1));
-					System.out.print(metaData.getColumnName(i + 1) + "  \t");
-					System.out.print(metaData.getColumnDisplaySize(i + 1) + "\t");
-					System.out.println(metaData.getColumnTypeName(i + 1));
+					log.debug(metaData.getColumnName(i + 1) + "  \t");
+					log.debug(metaData.getColumnDisplaySize(i + 1) + "\t");
+					log.debug(metaData.getColumnTypeName(i + 1));
 				}
 
 				ArrayList<String> noCol = new ArrayList<String>();
@@ -115,11 +120,11 @@ public class PersisterDBVoImp implements Persister<Vo> {
 					rs = st.executeQuery(SQL_GETMETA);
 					metaData = rs.getMetaData();
 					rowCount = metaData.getColumnCount();
-					System.out.println("== After update column ");
+					log.debug("== After update column ");
 					for (int i = 0; i < rowCount; i++) {
-						System.out.print(metaData.getColumnName(i + 1) + "  \t");
-						System.out.print(metaData.getColumnDisplaySize(i + 1) + "\t");
-						System.out.println(metaData.getColumnTypeName(i + 1));
+						log.debug(metaData.getColumnName(i + 1) + "  \t");
+						log.debug(metaData.getColumnDisplaySize(i + 1) + "\t");
+						log.debug(metaData.getColumnTypeName(i + 1));
 					}
 				}
 				conn.commit();

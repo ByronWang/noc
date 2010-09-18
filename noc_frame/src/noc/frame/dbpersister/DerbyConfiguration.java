@@ -7,7 +7,11 @@ import java.sql.SQLException;
 import noc.frame.Persister;
 import noc.lang.reflect.Type;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class DerbyConfiguration {
+	private static final Log log =LogFactory.getLog(DerbyConfiguration.class);
 
 	final String databaseName;
 	final String userName;
@@ -24,11 +28,11 @@ public class DerbyConfiguration {
 	public void init() {
 		try {
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver").newInstance();
-			System.out.println("== Load the embedded driver");
+			log.debug("Load the embedded driver");
 			// create and connect the database named helloDB
 			conn = DriverManager.getConnection("jdbc:derby:" + this.databaseName + ";create=true",
 					this.userName, this.userPassword);
-			System.out.println("== create and connect to " + this.databaseName);
+			log.debug("== create and connect to " + this.databaseName);
 			conn.setAutoCommit(false);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -45,12 +49,12 @@ public class DerbyConfiguration {
 				conn.commit();
 				conn.close();
 			}
-			System.out.println("== Database disconnect");
+			log.debug("== Database disconnect");
 		} catch (SQLException e) {}
 
 		try { // perform a clean shutdown
 			DriverManager.getConnection("jdbc:derby:;shutdown=true");
-			System.out.println("== Database shut down normally");
+			log.debug("== Database shut down normally");
 		} catch (SQLException se) {}
 	}
 
