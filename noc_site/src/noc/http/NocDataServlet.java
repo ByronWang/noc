@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import noc.frame.Store;
 import noc.frame.vo.Vo;
 import noc.freemarker.DefaultModel;
@@ -26,6 +29,7 @@ import freemarker.template.TemplateException;
  */
 public class NocDataServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static final Log log = LogFactory.getLog(NocDataServlet.class);
 
 	protected Fact fact;
 
@@ -41,10 +45,12 @@ public class NocDataServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 
 		String path = request.getPathInfo();
+		log.debug("Path: " + path);
 		int last = path.lastIndexOf('/');
 		String typeName = path.substring(1, last).replace('/', '.');
 		Rule rule = fact.getRule(typeName);
 		String key = path.substring(last + 1);
+		log.debug("Key: " + key);
 		request.setAttribute("_Rule", rule);
 		request.setAttribute("_Key", key);
 
@@ -169,7 +175,7 @@ public class NocDataServlet extends HttpServlet {
 
 				response.setContentType("text/html; charset=UTF-8");
 				response.sendRedirect(toPath);
-				System.out.println("Redrectto > " + toPath);
+				log.debug("Redrectto > " + toPath);
 			} else {
 				doPut(request, response);
 			}

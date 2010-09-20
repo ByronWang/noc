@@ -52,7 +52,7 @@
 
 [#macro submit]<input type="submit" class="submit" name="Submit" value="submit"/>[/#macro]
 [#macro backToList type]
-	<a href="${contextPath}${r"${urlPath!}"}/${type.name?replace(".", "/")}/">Return to list</a>
+	<a href="${contextPath}${r"${urlPath!}"}/basic/${type.name?replace(".", "/")}/">Return to list</a>
 [/#macro]
 
 

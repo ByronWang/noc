@@ -11,6 +11,9 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import noc.frame.Store;
 import noc.lang.reflect.Type;
 import freemarker.cache.TemplateLoader;
@@ -19,6 +22,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 public class TypeTemplateLoader implements TemplateLoader {
+	private final static Log log = LogFactory.getLog(TypeTemplateLoader.class);
 
 	final Store<Type> typeStore;
 	final String path;
@@ -56,7 +60,7 @@ public class TypeTemplateLoader implements TemplateLoader {
 	@Override public Object findTemplateSource(String name) throws IOException {
 
 		try {
-			System.out.println("findTemplateSource" + name);
+			log.debug("findTemplateSource: " + name);
 
 			int pos = name.indexOf('_');
 			int pos2 = name.indexOf('_', pos + 1);

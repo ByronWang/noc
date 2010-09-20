@@ -115,7 +115,7 @@
 		
 		[#if valueField.name == "code" || valueField.name == "代码"]
 		[/#if]
-		<input name="${field.name}_${valueField.name}" id="${field.name}_${valueField.name}" value="${r"${value!}"}"     title="${parent}.${field.name}_${valueField.name}"/>
+		<input name="${field.name}_${valueField.name}" type="hidden" id="${field.name}_${valueField.name}" value="${r"${value!}"}"     title="${parent}.${field.name}_${valueField.name}"/>
 		<input name="${field.name}_${showField.name}" id="${field.name}_${showField.name}" value="${r"${show!}"}"     title="${parent}.${field.name}_${showField.name}"/>
 		<span class="refType" onclick='selectItem(this,"${field.name}","${valueField.name}","${showField.name}","${contextPath}/basic/${field.type.name?replace(".", "/")}/?popup");'>::</span>
 		[@typeinfo tp=field.type /]
