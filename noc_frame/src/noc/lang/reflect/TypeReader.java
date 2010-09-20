@@ -23,6 +23,7 @@ import noc.annotation.Inline;
 import noc.annotation.Master;
 import noc.annotation.PrimaryKey;
 import noc.annotation.RealType;
+import noc.annotation.Reference;
 import noc.annotation.Sequence;
 import noc.frame.Store;
 
@@ -168,6 +169,7 @@ public class TypeReader {
 		} else {
 			field.refer = Field.Reference;
 		}
+		if (ctField.hasAnnotation(Reference.class)) field.refer = Field.Reference;
 
 		if (check(ctField, fieldTypeClazz,Important.class)) field.importance = Field.Important;
 		if (check(ctField, fieldTypeClazz,Core.class)) field.importance = Field.Core;

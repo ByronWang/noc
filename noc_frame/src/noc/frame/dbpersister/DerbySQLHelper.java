@@ -47,7 +47,7 @@ public class DerbySQLHelper {
 					// f.getType().getKeyField().getName());
 				} else if (f.getRefer().equals(Field.Reference)) {
 					for (Field referField : f.getType().getFields()) {
-						if (referField.getImportance() == Field.PrimaryKey) {
+						if (referField.getImportance() == Field.PrimaryKey || referField.getImportance() == Field.Core) {
 							fs.add(new Column(decodeFieldName(type.getName(), f.getName()) + "_"
 									+ decodeFieldName(f.getType().getName(), referField.getName()),
 									f.getImportance() == Field.PrimaryKey));
