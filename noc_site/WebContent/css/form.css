@@ -221,7 +221,7 @@ div.popup{
     /*display:block;*/
     
     min-height: 7em;
-    min-width: 10em;
+    min-width: 8em;
     
     
      -moz-border-radius: 12px; /* FF1+ */
@@ -229,14 +229,13 @@ div.popup{
           border-radius: 12px; /* Opera 10.5, IE 9 */
                   
   background-color: #FFFFFF;
-  background-color: rgba(250, 250,240, 0.4);  /* FF3+, Saf3+, Opera 10.10+, Chrome */
+  background-color: rgba(250, 250,240, 0.85);  /* FF3+, Saf3+, Opera 10.10+, Chrome */
     filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#99B4B490',endColorstr='#99B4B490'); /* IE6,IE7 */
         -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#99B4B490',endColorstr='#99B4B490')"; /* IE8 */
 
 }
 
 table.popup{
-	width: 12em;
 	display: block;
 	background: transparent;
 }
