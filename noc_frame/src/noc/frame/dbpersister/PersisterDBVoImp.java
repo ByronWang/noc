@@ -21,7 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class PersisterDBVoImp implements Persister<Vo> {
-	private static final Log log =LogFactory.getLog(PersisterDBVoImp.class);
+	private static final Log log = LogFactory.getLog(PersisterDBVoImp.class);
 
 	private final Connection conn;
 
@@ -44,20 +44,22 @@ public class PersisterDBVoImp implements Persister<Vo> {
 
 	SimpleHelper<Vo> helper = new SimpleHelper<Vo>() {
 
-		@Override int fillParameter(PreparedStatement prepareStatement, Vo v) throws SQLException {
+		@Override
+		int fillParameter(PreparedStatement prepareStatement, Vo v) throws SQLException {
 			int i = 0;
 			for (; i < fields.length; i++) {
 				prepareStatement.setString(i + 1, v.S(fields[i].name));
-				log.debug((i+1) + ": " + v.S(fields[i].name));
+				log.debug((i + 1) + ": " + v.S(fields[i].name));
 			}
 			return i;
 		}
 
-		@Override Vo fillObject(ResultSet resultSet) throws SQLException {
+		@Override
+		Vo fillObject(ResultSet resultSet) throws SQLException {
 			Vo v = new VOImp(type);
 			for (int i = 0; i < fields.length; i++) {
 				v.put(fields[i].name, resultSet.getString(i + 1));
-				log.debug(fields[i].name + ": " +  resultSet.getString(i + 1));
+				log.debug(fields[i].name + ": " + resultSet.getString(i + 1));
 			}
 			return v;
 		}
@@ -82,7 +84,7 @@ public class PersisterDBVoImp implements Persister<Vo> {
 		fields = builder.builderColumns();
 		SQL_COUNT = builder.builderCount();
 		SQL_LIST = builder.builderList();
-		
+
 		keyColumns = builder.keyColumns;
 	}
 
@@ -142,9 +144,10 @@ public class PersisterDBVoImp implements Persister<Vo> {
 		}
 	}
 
-	@Override public Vo update(Vo value) {
+	@Override
+	public Vo update(Vo value) {
 		String[] keys = new String[keyColumns.length];
-		for(int i=0;i<keyColumns.length;i++){
+		for (int i = 0; i < keyColumns.length; i++) {
 			keys[i] = value.S(keyColumns[i].name);
 		}
 		Vo v = this.get(keys);
@@ -152,13 +155,13 @@ public class PersisterDBVoImp implements Persister<Vo> {
 		if (v == null) {
 			this.doInsert(value);
 		} else {
-			this.doUpdate(value);
+			this.doUpdate(value, keys);
 		}
 		return (Vo) this.get(keys);
 	}
 
-	protected void doUpdate(Vo value) {
-//		helper.execute(conn, SQL_UPDATE, value);
+	protected void doUpdate(Vo value, Object... keys) {
+		helper.execute(conn, SQL_UPDATE, value, keys);
 	}
 
 	protected void doInsert(Vo value) {
@@ -173,16 +176,19 @@ public class PersisterDBVoImp implements Persister<Vo> {
 		return helper.get(conn, SQL_GET, keys);
 	}
 
-	@Override public List<Vo> list() {
+	@Override
+	public List<Vo> list() {
 		return helper.query(conn, SQL_LIST);
 	}
 
-	@Override public void drop() {
+	@Override
+	public void drop() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	@Override public Vo get(String key) {
+	@Override
+	public Vo get(String key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
