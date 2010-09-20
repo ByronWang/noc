@@ -81,9 +81,11 @@ public class NocDataServlet extends HttpServlet {
 
 			if (key.length() == 0) { // Path
 				String mode = request.getQueryString();
+				log.debug("mode: " + mode);
+				
 				if (mode == null) {
 					template = rule.getListTemplate();
-					data = rule.getStore().list();
+					data = rule.getStore().list();					
 				} else {
 					if ("new".equalsIgnoreCase(mode)) {
 						template = rule.getNewTemplate();
@@ -108,6 +110,9 @@ public class NocDataServlet extends HttpServlet {
 				return;
 			}
 
+			log.debug("template: " + template.getName());
+			log.debug("data: " + data);
+			
 			processTemplate(rule.getType(), template, data, request, response);
 
 			PrintObejct.print(response);
