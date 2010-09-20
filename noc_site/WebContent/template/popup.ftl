@@ -19,6 +19,10 @@
 				[#break]
 		[/#switch]
 	[/#list]	
+	
+	[#if !coreField??]
+		[#assign coreField=primaryKeyField]		
+	[/#if]
 					
     <#list data as item>
     <tr>
