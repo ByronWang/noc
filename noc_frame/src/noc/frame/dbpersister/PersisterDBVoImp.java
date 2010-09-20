@@ -48,6 +48,7 @@ public class PersisterDBVoImp implements Persister<Vo> {
 			int i = 0;
 			for (; i < fields.length; i++) {
 				prepareStatement.setString(i + 1, v.S(fields[i].name));
+				log.debug((i+1) + ": " + v.S(fields[i].name));
 			}
 			return i;
 		}
@@ -56,6 +57,7 @@ public class PersisterDBVoImp implements Persister<Vo> {
 			Vo v = new VOImp(type);
 			for (int i = 0; i < fields.length; i++) {
 				v.put(fields[i].name, resultSet.getString(i + 1));
+				log.debug(fields[i].name + ": " +  resultSet.getString(i + 1));
 			}
 			return v;
 		}
