@@ -64,7 +64,7 @@ public class Fact {
 
 			/* Create and adjust the configuration */
 			templateEngine = new Configuration();
-			templateEngine.setTemplateUpdateDelay(0);
+			templateEngine.setTemplateUpdateDelay(1);
 			templateEngine.setTemplateLoader(new MultiTemplateLoader(loaders));
 			templateEngine.setSharedVariable("contextPath", context.getContextPath());
 			templateEngine.setObjectWrapper(new DefaultObjectWrapper());
