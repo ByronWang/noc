@@ -17,22 +17,22 @@
 		<param-name>template_path</param-name>
 		<param-value>template</param-value>
 	</context-param>
-    <context-param>
-        <param-name>template_work_path</param-name>
-        <param-value>template_work_path</param-value>
-    </context-param>
-    <context-param>
-        <param-name>database_name</param-name>
-        <param-value>kao_0_0_1</param-value>
-    </context-param>
-    <context-param>
-        <param-name>user_name</param-name>
-        <param-value>user</param-value>
-    </context-param>
-    <context-param>
-        <param-name>user_password</param-name>
-        <param-value>password</param-value>
-    </context-param>
+	<context-param>
+		<param-name>template_work_path</param-name>
+		<param-value>template_work_path</param-value>
+	</context-param>
+	<context-param>
+		<param-name>database_name</param-name>
+		<param-value>kao_0_0_1</param-value>
+	</context-param>
+	<context-param>
+		<param-name>user_name</param-name>
+		<param-value>user</param-value>
+	</context-param>
+	<context-param>
+		<param-name>user_password</param-name>
+		<param-value>password</param-value>
+	</context-param>
 
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
@@ -42,11 +42,11 @@
 		<welcome-file>default.htm</welcome-file>
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
-	
-    <listener>
-        <listener-class>noc.http.InitListener</listener-class>
-    </listener>
-	
+
+	<listener>
+		<listener-class>noc.http.InitListener</listener-class>
+	</listener>
+
 	<servlet>
 		<description></description>
 		<display-name>NocDataServlet</display-name>
@@ -65,7 +65,7 @@
 		<servlet-name>NocTypeServlet</servlet-name>
 		<servlet-class>noc.http.NocDataServlet</servlet-class>
 	</servlet>
-	
+
 	<servlet-mapping>
 		<servlet-name>NocDataServlet</servlet-name>
 		<url-pattern>/basic/*</url-pattern>

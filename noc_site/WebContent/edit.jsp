@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <%@page import="java.util.Map"%>
@@ -11,12 +11,30 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
 
-<style type="text/css"> 
- th{background:#a5e3c4;padding:3px;}
- td th{background:#6495ed;padding:2px;}
-td{background:#f0f0f0;padding:3px;}
-td td {background:#e0e8e0;padding:2px;}
-caption{background:yellow;}
+<style type="text/css">
+th {
+	background: #a5e3c4;
+	padding: 3px;
+}
+
+td th {
+	background: #6495ed;
+	padding: 2px;
+}
+
+td {
+	background: #f0f0f0;
+	padding: 3px;
+}
+
+td td {
+	background: #e0e8e0;
+	padding: 2px;
+}
+
+caption {
+	background: yellow;
+}
 </style>
 
 </head>
@@ -56,6 +74,6 @@ caption{background:yellow;}
     out.flush();
 
    %> -->
-   
+
 </body>
 </html>

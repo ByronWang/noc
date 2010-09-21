@@ -439,8 +439,9 @@
 }
 
 * html #background-image tbody td {
-	filter: progid : DXImageTransform.Microsoft.AlphaImageLoader ( src =
-		'table-images/back.png', sizingMethod = 'crop' );
+	filter: progid :   DXImageTransform.Microsoft.AlphaImageLoader (   src =
+		
+		 'table-images/back.png', sizingMethod =   'crop' );
 	background: none;
 }
 
