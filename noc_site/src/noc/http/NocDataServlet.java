@@ -35,13 +35,18 @@ public class NocDataServlet extends HttpServlet {
 
 	// protected final String typeProfix;
 
-	@Override public void init() throws ServletException {
+	@Override
+	public void init() throws ServletException {
 		super.init();
 		fact = (Fact) this.getServletContext().getAttribute("fact");
 	}
-	
-	@Override protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+
+	static long count = 0;
+
+	@Override
+	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
+		log.debug((++count) + "==    START    Request  :  " + request.getPathInfo());
 		request.setCharacterEncoding("UTF-8");
 
 		String path = request.getPathInfo();
@@ -54,8 +59,11 @@ public class NocDataServlet extends HttpServlet {
 		request.setAttribute("_Rule", rule);
 		request.setAttribute("_Key", key);
 
-		PrintObejct.print(request);
+		if (log.isTraceEnabled()) {
+			PrintObejct.print(request);
+		}
 		super.service(request, response);
+		log.debug(count + "==    FINISH    Request  :  " + request.getPathInfo());
 	}
 
 	// protected Template getTemplate(String typeName, String mode) {
@@ -82,10 +90,10 @@ public class NocDataServlet extends HttpServlet {
 			if (key.length() == 0) { // Path
 				String mode = request.getQueryString();
 				log.debug("mode: " + mode);
-				
+
 				if (mode == null) {
 					template = rule.getListTemplate();
-					data = rule.getStore().list();					
+					data = rule.getStore().list();
 				} else {
 					if ("new".equalsIgnoreCase(mode)) {
 						template = rule.getNewTemplate();
@@ -112,10 +120,12 @@ public class NocDataServlet extends HttpServlet {
 
 			log.debug("template: " + template.getName());
 			log.debug("data: " + data);
-			
+
 			processTemplate(rule.getType(), template, data, request, response);
 
-			PrintObejct.print(response);
+			if (log.isTraceEnabled()) {
+				PrintObejct.print(response);
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -134,8 +144,9 @@ public class NocDataServlet extends HttpServlet {
 		template.process(root, response.getWriter());
 	}
 
-	@SuppressWarnings("unchecked") @Override protected void doPut(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	@SuppressWarnings("unchecked")
+	@Override
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		request.setAttribute("path", "ddd");
 
@@ -145,7 +156,7 @@ public class NocDataServlet extends HttpServlet {
 			String key = (String) request.getAttribute("_Key");
 
 			Store<Vo> store = (Store<Vo>) rule.getStore();
-			
+
 			Vo v = store.get(key);
 			VoHelper.putAll(request.getParameterMap(), v, rule.getType());
 			v = store.update(v);
@@ -160,14 +171,14 @@ public class NocDataServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	@SuppressWarnings("unchecked") protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	@SuppressWarnings("unchecked")
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+			IOException {
 		request.setCharacterEncoding("UTF-8");
 		try {
 
 			Rule rule = (Rule) request.getAttribute("_Rule");
 			String key = (String) request.getAttribute("_Key");
-
 
 			if (key.length() == 0) { // Path
 
@@ -175,8 +186,8 @@ public class NocDataServlet extends HttpServlet {
 				Vo v = VoHelper.putAll(request.getParameterMap(), store.get(null), rule.getType());
 				v = store.update(v);
 
-				String toPath = request.getContextPath() + "/"+ rule.typeName.replace('.', '/')
-						+ "/"  + URLEncoder.encode(v.getIndentify(), "UTF-8");
+				String toPath = request.getContextPath() + "/" + rule.typeName.replace('.', '/') + "/"
+						+ URLEncoder.encode(v.getIndentify(), "UTF-8");
 
 				response.setContentType("text/html; charset=UTF-8");
 				response.sendRedirect(toPath);

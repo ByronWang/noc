@@ -22,35 +22,34 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModelException;
 
-public class TypeTemplateLoader extends FileTemplateLoader implements TemplateLoader {
+public class TypeTemplateLoader extends FileTemplateLoader implements
+		TemplateLoader {
 	private final static Log log = LogFactory.getLog(TypeTemplateLoader.class);
 
 	final Store<Type> typeStore;
-	final String path;
-	final String workPath;
+	final File templateFolder;
 	final File templateWorkFolder;
 
 	final Configuration preEngine;
 	final TemplateLoader preTemplateLoad;
 	final ServletContext context;
 
-	TypeTemplateLoader(ServletContext context, Store<Type> typeStore, String path, String workPath) throws IOException {
-		super(new File(context.getRealPath(workPath)));
+	TypeTemplateLoader(ServletContext context, Store<Type> typeStore,
+			File templateFolder, File workFolder) throws IOException {
+		super(workFolder);
 		try {
 			this.context = context;
 			this.typeStore = typeStore;
-			this.path = context.getRealPath(path);
-
+			this.templateFolder = templateFolder;
+			this.templateWorkFolder = workFolder;
+			
 			preEngine = new Configuration();
 			preEngine.setTemplateUpdateDelay(1);
-			preEngine.setDirectoryForTemplateLoading(new File(this.path));
-			preEngine.setSharedVariable("contextPath", context.getContextPath());
+			preEngine.setDirectoryForTemplateLoading(templateFolder);
+			preEngine
+					.setSharedVariable("contextPath", context.getContextPath());
 			preTemplateLoad = preEngine.getTemplateLoader();
 
-			this.workPath = context.getRealPath(workPath);
-			templateWorkFolder = new File(this.workPath);
-			templateWorkFolder.delete();
-			templateWorkFolder.mkdir();
 		} catch (TemplateModelException e) {
 			throw new RuntimeException(e);
 		}
@@ -62,7 +61,8 @@ public class TypeTemplateLoader extends FileTemplateLoader implements TemplateLo
 		private final String typeName;
 		private final Object precompilerSource;
 
-		TypeTemplateSource( String name,String precompileName,String typeName, Object precompilerSource) {
+		TypeTemplateSource(String name, String precompileName, String typeName,
+				Object precompilerSource) {
 			if (name == null) {
 				throw new IllegalArgumentException("name == null");
 			}
@@ -96,33 +96,40 @@ public class TypeTemplateLoader extends FileTemplateLoader implements TemplateLo
 
 		int pos = name.indexOf('_');
 		int pos2 = name.indexOf('_', pos + 1);
-		if (pos2 > 0) return null;
+		if (pos2 > 0)
+			return null;
 
 		String typeName = name.substring(0, pos);
 		String precompileName = name.substring(pos + 1);
 
-		log.debug("START preTemplateLoad.findTemplateSource: " + precompileName);
+		log
+				.debug("START preTemplateLoad.findTemplateSource: "
+						+ precompileName);
 		Object o = preTemplateLoad.findTemplateSource(precompileName);
-		log.debug("FINISH preTemplateLoad.findTemplateSource: " + o.getClass().getName());
-		return new TypeTemplateSource(name,precompileName, typeName, o);
+		log.debug("FINISH preTemplateLoad.findTemplateSource: "
+				+ o.getClass().getName());
+		return new TypeTemplateSource(name, precompileName, typeName, o);
 	}
 
 	@Override
 	public long getLastModified(Object templateSource) {
-		return preTemplateLoad.getLastModified(((TypeTemplateSource) templateSource).precompilerSource);
+		return preTemplateLoad
+				.getLastModified(((TypeTemplateSource) templateSource).precompilerSource);
 	}
 
 	@Override
-	public Reader getReader(Object templateSource, String encoding) throws IOException {
+	public Reader getReader(Object templateSource, String encoding)
+			throws IOException {
 
 		TypeTemplateSource source = (TypeTemplateSource) templateSource;
 
 		try {
 			log.debug("before getTemplate : " + source.precompilerName);
-			Template preTemplate = preEngine.getTemplate(source.precompilerName);
-			
+			Template preTemplate = preEngine
+					.getTemplate(source.precompilerName);
+
 			log.debug("START create Template : " + source.name);
-			
+
 			Map<String, Object> root = new HashMap<String, Object>();
 			root.put("type", typeStore.get(source.typeName));
 
@@ -130,12 +137,12 @@ public class TypeTemplateLoader extends FileTemplateLoader implements TemplateLo
 			FileWriter fw = new FileWriter(f);
 			preTemplate.process(root, fw);
 			fw.close();
-			
+
 			log.debug("FINISH create Template : " + source.name);
-			
+
 			Object s = super.findTemplateSource(source.name);
 			return super.getReader(s, encoding);
-			
+
 		} catch (TemplateException e) {
 			throw new RuntimeException(e);
 		}

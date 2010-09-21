@@ -1,5 +1,6 @@
 package noc.http;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,22 +56,26 @@ public class Fact {
 
 			stores.put(Type.class.getName(), typeStore);
 
+			File tempateFolder = new File(context.getRealPath(context.getInitParameter(TEMPLATE_PATH)));
+			File templateWorkFolder = new File(context.getRealPath(context.getInitParameter(TEMPLATE_WORK_PATH)));
+
+			if (templateWorkFolder.exists())
+				templateWorkFolder.delete();
+			templateWorkFolder.mkdir();
+
 			TemplateLoader[] loaders = new TemplateLoader[] {
 					new WebappTemplateLoader(context, context.getInitParameter(TEMPLATE_PATH)),
-					// new WebappTemplateLoader(context,
-					// context.getInitParameter(TEMPLATE_WORK_PATH)),
-					new TypeTemplateLoader(context, typeStore, context.getInitParameter(TEMPLATE_PATH), context
-							.getInitParameter(TEMPLATE_WORK_PATH)) };
+					new TypeTemplateLoader(context, typeStore, tempateFolder, templateWorkFolder) };
 
 			/* Create and adjust the configuration */
 			templateEngine = new Configuration();
-			templateEngine.setTemplateUpdateDelay(1);
+			templateEngine.setTemplateUpdateDelay(10);
 			templateEngine.setTemplateLoader(new MultiTemplateLoader(loaders));
 			templateEngine.setSharedVariable("contextPath", context.getContextPath());
 			templateEngine.setObjectWrapper(new DefaultObjectWrapper());
 
-			dbEngine = new DerbyConfiguration(context.getInitParameter(DATABASE_NAME),
-					context.getInitParameter(USER_NAME), context.getInitParameter(USER_PASSWORD));
+			dbEngine = new DerbyConfiguration(context.getInitParameter(DATABASE_NAME), context
+					.getInitParameter(USER_NAME), context.getInitParameter(USER_PASSWORD));
 			dbEngine.init();
 
 			rules = new HashMap<String, Rule>();
@@ -209,13 +214,8 @@ public class Fact {
 			if (debugMode) {
 				rule = new DebugRule(this, typeName);
 			} else {
-				rule = new Rule(typeName,
-						typeStore.get(typeName), 
-						getStore(typeName), 
-						getTemplate(typeName,"list"), 
-						getTemplate(typeName, "edit"), 
-						getTemplate(typeName, "edit"), 
-						getTemplate(typeName, "menu"), 
+				rule = new Rule(typeName, typeStore.get(typeName), getStore(typeName), getTemplate(typeName, "list"),
+						getTemplate(typeName, "edit"), getTemplate(typeName, "edit"), getTemplate(typeName, "menu"),
 						getTemplate(typeName, "popup"));
 			}
 
