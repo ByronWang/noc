@@ -19,7 +19,7 @@ public class TestCatalogType {
 		for (Type type : store.list()) {
 			System.out.println(type.getName());
 			for (Field f : type.getFields()) {
-				if (f.isInline()) {
+				if (f.getRefer() == Field.Inline) {
 					System.out.println("[Inline] " + f.getDisplayName() + " : "
 							+ f.getType().getName());
 				} else {

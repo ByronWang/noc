@@ -1,4 +1,6 @@
 package noc.test;
+
+
 import noc.frame.Persister;
 import noc.frame.Store;
 import noc.frame.dbpersister.DerbyConfiguration;
@@ -28,7 +30,7 @@ public class TestNewP {
 			Store<Vo> store = new VoPersisiterStore(de, p);
 			
 			
-			Vo v = new VOImp();
+			Vo v = new VOImp(null);
 			v.put("工号","工号");
 			v.put("名称","名称");
 			v.put("英文名","英文名");
