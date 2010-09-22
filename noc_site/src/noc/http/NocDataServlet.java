@@ -46,7 +46,7 @@ public class NocDataServlet extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
-		log.debug((++count) + "==    START    Request  :  " + request.getPathInfo());
+		log.info((++count) + "==    START    Request  :  " + request.getPathInfo());
 		request.setCharacterEncoding("UTF-8");
 
 		String path = request.getPathInfo();
@@ -63,7 +63,7 @@ public class NocDataServlet extends HttpServlet {
 			PrintObejct.print(request);
 		}
 		super.service(request, response);
-		log.debug(count + "==    FINISH    Request  :  " + request.getPathInfo());
+		log.info(count + "==    FINISH    Request  :  " + request.getPathInfo());
 	}
 
 	// protected Template getTemplate(String typeName, String mode) {
