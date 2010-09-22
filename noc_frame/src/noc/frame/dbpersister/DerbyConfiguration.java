@@ -10,7 +10,7 @@ import noc.lang.reflect.Type;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class DerbyConfiguration {
+public class DerbyConfiguration{
 	private static final Log log =LogFactory.getLog(DerbyConfiguration.class);
 
 	final String databaseName;

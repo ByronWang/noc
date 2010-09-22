@@ -11,11 +11,12 @@ import noc.lang.reflect.Type;
 
 public class VoStore implements Store<Vo> {
 	Map<String, Vo> map = new Hashtable<String, Vo>();
-
+	protected Factory parent;
 	protected Type type;
 //	protected String keyPropName;
 
-	public VoStore(Type type) {
+	public VoStore(Factory parent, Type type) {
+		this.parent = parent;
 		this.type = type;
 	}
 

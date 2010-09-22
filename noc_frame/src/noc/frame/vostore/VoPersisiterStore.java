@@ -8,8 +8,8 @@ import noc.lang.reflect.Type;
 public class VoPersisiterStore extends VoStore {
 	public Persister<Vo> persister;
 
-	public VoPersisiterStore(Type clz, Persister<Vo> persister) {
-		super(clz);
+	public VoPersisiterStore(Factory parent,Type clz, Persister<Vo> persister) {
+		super(parent,clz);
 		this.persister = persister;
 		
 		for(Vo v: this.persister.list()){
