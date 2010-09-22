@@ -53,7 +53,7 @@ public class NocDataServlet extends HttpServlet {
 		log.debug("Path: " + path);
 		int last = path.lastIndexOf('/');
 		String typeName = path.substring(1, last).replace('/', '.');
-		Rule rule = fact.getRule(typeName);
+		Rule rule = fact.get(typeName);
 		String key = path.substring(last + 1);
 		log.debug("Key: " + key);
 		request.setAttribute("_Rule", rule);

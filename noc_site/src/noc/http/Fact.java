@@ -11,6 +11,8 @@ import noc.frame.Persister;
 import noc.frame.Store;
 import noc.frame.dbpersister.DerbyConfiguration;
 import noc.frame.vo.Vo;
+import noc.frame.vostore.DataConfiguration;
+import noc.frame.vostore.Findable;
 import noc.frame.vostore.VoPersisiterStore;
 import noc.lang.reflect.Type;
 import noc.lang.reflect.TypePersister;
@@ -21,24 +23,22 @@ import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 
-public class Fact {
+public class Fact extends Findable<Fact.Rule>{
 
-	final String DEFINE_PATH = "define_path";
-	final String BIZ_PATH = "biz_path";
+	static final String DEFINE_PATH = "define_path";
+	static final String BIZ_PATH = "biz_path";
 
-	final String DATABASE_NAME = "database_name";
-	final String USER_NAME = "user_name";
-	final String USER_PASSWORD = "user_password";
+	static final String DATABASE_NAME = "database_name";
+	static final String USER_NAME = "user_name";
+	static final String USER_PASSWORD = "user_password";
 
-	final String TEMPLATE_PATH = "template_path";
-	final String TEMPLATE_WORK_PATH = "template_work_path";
+	static final String TEMPLATE_PATH = "template_path";
+	static final String TEMPLATE_WORK_PATH = "template_work_path";
 
 	private TypePersister typeStore;
 	private Configuration templateEngine;
-
+	private DataConfiguration stores;
 	private DerbyConfiguration dbEngine;
-	private Map<String, Store<?>> stores;
-	private Map<String, Rule> rules;
 	// Extension
 	final static String TEMPLATE_EXTENSION = ".ftl";
 	final boolean debugMode;
@@ -52,9 +52,17 @@ public class Fact {
 			typeStore.loadFolder(context.getInitParameter(DEFINE_PATH));
 			typeStore.loadFolder(context.getInitParameter(BIZ_PATH));
 
-			stores = new HashMap<String, Store<?>>();
-
-			stores.put(Type.class.getName(), typeStore);
+			stores = new DataConfiguration(typeStore){
+				@Override
+				protected Store<?> find(String typeName) {
+					Type type = types.get(typeName);
+					Persister<Vo> p = dbEngine.getPersister(Vo.class, type);
+					p.prepare();
+					Store<?> store = new VoPersisiterStore(this,type, p);
+					items.put(typeName, store);
+					return items.get(typeName);
+				}
+			};
 
 			File tempateFolder = new File(context.getRealPath(context.getInitParameter(TEMPLATE_PATH)));
 			File templateWorkFolder = new File(context.getRealPath(context.getInitParameter(TEMPLATE_WORK_PATH)));
@@ -78,20 +86,10 @@ public class Fact {
 					.getInitParameter(USER_NAME), context.getInitParameter(USER_PASSWORD));
 			dbEngine.init();
 
-			rules = new HashMap<String, Rule>();
-
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
-
-	// public Template getDataTemplate(String typeName) {
-	// return getTemplate(typeName, "type");
-	// }
-	//
-	// public Template getListTemplate(String typeName) {
-	// return getTemplate(typeName, "list");
-	// }
 
 	private Template getTemplate(String typeName, String name) {
 		try {
@@ -104,19 +102,7 @@ public class Fact {
 	}
 
 	private Store<?> getStore(String typeName) {
-		Store<?> store = stores.get(typeName);
-		if (store == null) {
-
-			Type de = typeStore.get(typeName);
-
-			Persister<Vo> p = dbEngine.getPersister(Vo.class, de);
-			p.prepare();
-			stores.put(typeName, new VoPersisiterStore(de, p));
-			store = stores.get(typeName);
-
-			// prepareData(store, de, "sample");
-		}
-		return store;
+		return stores.get(typeName);
 	}
 
 	public class Rule {
@@ -208,28 +194,24 @@ public class Fact {
 		}
 	}
 
-	public Rule getRule(String typeName) {
-		Rule rule = rules.get(typeName);
-		if (rule == null) {
-			if (debugMode) {
-				rule = new DebugRule(this, typeName);
-			} else {
-				rule = new Rule(typeName, typeStore.get(typeName), getStore(typeName), getTemplate(typeName, "list"),
-						getTemplate(typeName, "edit"), getTemplate(typeName, "edit"), getTemplate(typeName, "menu"),
-						getTemplate(typeName, "popup"));
-			}
-
-			rules.put(typeName, rule);
-			rule = rules.get(typeName);
-		}
-		return rule;
-	}
-
-	// private Store<Type> getTypeStore() {
-	// return this.typeStore;
-	// }
-
 	public void destroy() {
 		dbEngine.destroy();
+	}
+
+	@Override
+	protected Rule find(String typeName) {
+		Rule rule = null;
+		
+		if (debugMode) {
+			rule = new DebugRule(this, typeName);
+		} else {
+			rule = new Rule(typeName, typeStore.get(typeName), getStore(typeName), getTemplate(typeName, "list"),
+					getTemplate(typeName, "edit"), getTemplate(typeName, "edit"), getTemplate(typeName, "menu"),
+					getTemplate(typeName, "popup"));
+		}
+		
+		items.put(typeName, rule);
+		rule = items.get(typeName);
+		return rule;
 	}
 }
