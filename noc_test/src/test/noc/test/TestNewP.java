@@ -1,36 +1,39 @@
 package noc.test;
 
-
+import junit.framework.TestCase;
 import noc.frame.Persister;
 import noc.frame.Store;
 import noc.frame.dbpersister.DerbyConfiguration;
 import noc.frame.vo.Vo;
-import noc.frame.vo.imp.VOImp;
-import noc.frame.vostore.VoPersisiterStore;
+import noc.frame.vostore.VoPersistableStore;
 import noc.lang.reflect.Type;
-import noc.lang.reflect.TypePersister;
+import noc.lang.reflect.TypeReadonlyStore;
 
-public class TestNewP {
-	public static void main(String[] args) {
+public class TestNewP extends TestCase{
+	public void testDB() {
 		try {
 
 			String definePath = "d:\\JavaDev\\noc_Define\\bin";
 			String bizPath = "d:\\JavaDev\\noc_Biz\\bin";
 
-			TypePersister typeStore = new TypePersister();
+			TypeReadonlyStore typeStore = new TypeReadonlyStore();
+			typeStore.setUp();			
 			typeStore.loadFolder(definePath);
 			typeStore.loadFolder(bizPath);
-			Type de =typeStore.get("data.master.Employee");
+			Type de =typeStore.readData("data.master.Employee");
 
 
 			DerbyConfiguration conf = new DerbyConfiguration("testdb","user","password");
 			conf.init();
-			Persister<Vo> p = conf.getPersister(Vo.class, de);
-			p.prepare();			
-			Store<Vo> store = new VoPersisiterStore(de, p);
+			
+			Persister<String,Vo> p = conf.getPersister(Vo.class, de);
+			p.setUp();			
+			
+			Store<String,Vo> store = new VoPersistableStore(null,de, p);
+			store.setUp();
 			
 			
-			Vo v = new VOImp(null);
+			Vo v =  store.borrowData(null);
 			v.put("工号","工号");
 			v.put("名称","名称");
 			v.put("英文名","英文名");
@@ -41,11 +44,10 @@ public class TestNewP {
 			v.put("入职日期","入职日期");
 			v.put("离职日期","离职日期");
 			v.put("成本中心","成本中心");
-
-			v = store.update(v);
+			v = store.returnData(v.getIndentify(), v);
 			
 			
-			v = store.get("工号");
+			v = store.readData("工号");
 			
 			System.out.println(v);
 			

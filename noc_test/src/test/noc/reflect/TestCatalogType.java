@@ -5,16 +5,16 @@ import java.io.IOException;
 import javassist.CannotCompileException;
 import noc.lang.reflect.Field;
 import noc.lang.reflect.Type;
-import noc.lang.reflect.TypePersister;
+import noc.lang.reflect.TypeReadonlyStore;
 
 public class TestCatalogType {
 	public static void main(String[] args) throws IOException, ClassNotFoundException,
 			CannotCompileException {
 
-		TypePersister store = new TypePersister();
+		TypeReadonlyStore store = new TypeReadonlyStore();
 		//store.loadFolder("..\\noc_Biz\\bin");
 		//
-		store.get("data.AttrRuler");
+		store.readData("data.AttrRuler");
 
 		for (Type type : store.list()) {
 			System.out.println(type.getName());
