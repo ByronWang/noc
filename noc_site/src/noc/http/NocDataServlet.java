@@ -11,14 +11,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import noc.frame.Store;
 import noc.frame.vo.Vo;
 import noc.freemarker.DefaultModel;
 import noc.http.Fact.Rule;
 import noc.lang.reflect.Type;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import util.PrintObejct;
 import util.VoHelper;
 import freemarker.template.Template;
@@ -157,9 +158,13 @@ public class NocDataServlet extends HttpServlet {
 
 			Store<String,Vo> store = (Store<String,Vo>) rule.getStore();
 
-			Vo v = store.readData(key);
-			VoHelper.putAll(request.getParameterMap(), v, rule.getType());
-			v = store.returnData(v);
+			Map<?,?> source = request.getParameterMap();
+			
+			Vo dest = store.borrowData(key);
+			
+			VoHelper.putAll(source, dest, rule.getType());
+			
+			store.returnData(key, dest);
 
 			doGet(request, response);
 		} catch (Exception e) {
@@ -183,11 +188,15 @@ public class NocDataServlet extends HttpServlet {
 			if (key.length() == 0) { // Path
 
 				Store<String,Vo> store = (Store<String,Vo>) rule.getStore();
-				Vo v = VoHelper.putAll(request.getParameterMap(), store.readData(null), rule.getType());
-				v = store.returnData(v);
+				Map<?,?> source = request.getParameterMap();
+				Vo dest = store.borrowData(null);
+				
+				dest = VoHelper.putAll(source, dest, rule.getType());
+				
+				dest = store.returnData(dest.getIndentify(), dest);
 
 				String toPath = request.getContextPath() + "/" + rule.typeName.replace('.', '/') + "/"
-						+ URLEncoder.encode(v.getIndentify(), "UTF-8");
+						+ URLEncoder.encode(dest.getIndentify(), "UTF-8");
 
 				response.setContentType("text/html; charset=UTF-8");
 				response.sendRedirect(toPath);
