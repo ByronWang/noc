@@ -40,7 +40,7 @@ public class TypeReadonlyStore implements Store<String,Type> {
 			reader = new TypeReader(this, pool.get(Scala.class.getName()));
 
 			Type boolType = readData(Bool.class.getName());
-			this.types.put("YesNo", boolType);
+			this.types.put("boolean", boolType);
 			this.types.put(boolType.getName(), boolType);
 
 			Type nameType = readData(Name.class.getName());
