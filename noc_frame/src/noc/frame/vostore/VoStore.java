@@ -8,6 +8,7 @@ import java.util.Map;
 import noc.frame.Factory;
 import noc.frame.Store;
 import noc.frame.vo.Vo;
+import noc.frame.vo.imp.VOImp;
 import noc.lang.reflect.Type;
 
 public class VoStore implements Store<String,Vo> {
@@ -39,6 +40,9 @@ public class VoStore implements Store<String,Vo> {
 
 	@Override
 	public Vo borrowData(String key) {
+		if (key == null) {
+			return new VOImp(type);
+		}
 		return new VoAgent(this.readData(key));
 	}
 

@@ -71,8 +71,29 @@ public class TypeReadonlyStore implements Store<String,Type> {
 			while (en.hasMoreElements()) {
 				String name = en.nextElement().getName();
 				if (name.endsWith(".class")) {
-					name.substring(0, name.length() - ".class".length()).replace('\\', '.').replace('/', '.');
+					name = name.substring(0, name.length() - ".class".length()).replace('\\', '.').replace('/', '.');
 					this.readData(name);
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+
+	public void loadFolder(File root, File d) {
+		try {
+			if (!d.exists() || !d.isDirectory()) return;
+
+			for (File f : d.listFiles()) {
+				if (f.isFile() && f.getName().endsWith(".class")) {
+					String name = f.getPath().substring(root.getPath().length() + 1);
+
+					name = name.substring(0, name.length() - ".class".length()).replace('\\', '.').replace('/', '.');
+
+					this.readData(name);
+				} else if (f.isDirectory()) {
+					loadFolder(root, f);
 				}
 			}
 		} catch (Exception e) {
@@ -97,27 +118,6 @@ public class TypeReadonlyStore implements Store<String,Type> {
 			throw new RuntimeException(e);
 		}
 	}
-
-	public void loadFolder(File root, File d) {
-		try {
-			if (!d.exists() || !d.isDirectory()) return;
-
-			for (File f : d.listFiles()) {
-				if (f.isFile() && f.getName().endsWith(".class")) {
-					String name = f.getPath().substring(root.getPath().length() + 1);
-
-					name = name.substring(0, name.length() - ".class".length()).replace('\\', '.').replace('/', '.');
-
-					this.readData(name);
-				} else if (f.isDirectory()) {
-					loadFolder(root, f);
-				}
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	@Override
 	public Type readData(String name) {
 		try {
