@@ -48,8 +48,8 @@ public class DBVoPersister implements Persister<String,Vo> {
 		int fillParameter(PreparedStatement prepareStatement, Vo v) throws SQLException {
 			int i = 0;
 			for (; i < fields.length; i++) {
-				prepareStatement.setString(i + 1, v.get(fields[i].name).toString());
-				log.debug((i + 1) + ": " + v.get(fields[i].name).toString());
+				prepareStatement.setString(i + 1, String.valueOf(v.get(fields[i].name)));
+				log.debug((i + 1) + ": " + String.valueOf(v.get(fields[i].name)));
 			}
 			return i;
 		}
