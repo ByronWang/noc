@@ -5,12 +5,12 @@ import java.io.IOException;
 
 import javax.servlet.ServletContext;
 
+import noc.frame.Findable;
 import noc.frame.Persister;
 import noc.frame.Store;
 import noc.frame.dbpersister.DerbyConfiguration;
 import noc.frame.vo.Vo;
 import noc.frame.vostore.DataConfiguration;
-import noc.frame.vostore.Findable;
 import noc.frame.vostore.VoPersisiterStore;
 import noc.lang.reflect.Type;
 import noc.lang.reflect.TypePersister;
@@ -21,7 +21,7 @@ import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 
-public class Fact extends Findable<Fact.Rule>{
+public class Fact extends Findable<String,Fact.Rule>{
 
 	static final String DEFINE_PATH = "define_path";
 	static final String BIZ_PATH = "biz_path";
@@ -52,11 +52,11 @@ public class Fact extends Findable<Fact.Rule>{
 
 			stores = new DataConfiguration(typeStore){
 				@Override
-				protected Store<?> find(String typeName) {
-					Type type = types.get(typeName);
-					Persister<Vo> p = dbEngine.getPersister(Vo.class, type);
+				protected Store<String,?> find(String typeName) {
+					Type type = types.readData(typeName);
+					Persister<String,Vo> p = dbEngine.getPersister(Vo.class, type);
 					p.prepare();
-					Store<?> store = new VoPersisiterStore(this,type, p);
+					Store<String,?> store = new VoPersisiterStore(this,type, p);
 					items.put(typeName, store);
 					return items.get(typeName);
 				}
@@ -99,21 +99,21 @@ public class Fact extends Findable<Fact.Rule>{
 
 	}
 
-	private Store<?> getStore(String typeName) {
+	private Store<String,?> getStore(String typeName) {
 		return stores.get(typeName);
 	}
 
 	public class Rule {
 		protected String typeName;
 		private Type type;
-		private Store<?> store;
+		private Store<String,?> store;
 		private Template listTemplate;
 		private Template editTemplate;
 		private Template newTemplate;
 		private Template menuTemplate;
 		private Template popupTemplate;
 
-		private Rule(String typeName, Type type, Store<?> store, Template listTemplate, Template editTemplate,
+		private Rule(String typeName, Type type, Store<String,?> store, Template listTemplate, Template editTemplate,
 				Template newTemplate, Template menuTemplate, Template popupTemplate) {
 			super();
 			this.typeName = typeName;
@@ -130,7 +130,7 @@ public class Fact extends Findable<Fact.Rule>{
 			return type;
 		}
 
-		public Store<?> getStore() {
+		public Store<String,?> getStore() {
 			return store;
 		}
 
@@ -164,10 +164,10 @@ public class Fact extends Findable<Fact.Rule>{
 		}
 
 		public Type getType() {
-			return typeStore.get(typeName);
+			return typeStore.readData(typeName);
 		}
 
-		public Store<?> getStore() {
+		public Store<String,?> getStore() {
 			return fact.getStore(typeName);
 		}
 
@@ -203,7 +203,7 @@ public class Fact extends Findable<Fact.Rule>{
 		if (debugMode) {
 			rule = new DebugRule(this, typeName);
 		} else {
-			rule = new Rule(typeName, typeStore.get(typeName), getStore(typeName), getTemplate(typeName, "list"),
+			rule = new Rule(typeName, typeStore.readData(typeName), getStore(typeName), getTemplate(typeName, "list"),
 					getTemplate(typeName, "edit"), getTemplate(typeName, "edit"), getTemplate(typeName, "menu"),
 					getTemplate(typeName, "popup"));
 		}

@@ -26,7 +26,7 @@ public class TypeTemplateLoader extends FileTemplateLoader implements
 		TemplateLoader {
 	private final static Log log = LogFactory.getLog(TypeTemplateLoader.class);
 
-	final Store<Type> typeStore;
+	final Store<String,Type> typeStore;
 	final File templateFolder;
 	final File templateWorkFolder;
 
@@ -34,7 +34,7 @@ public class TypeTemplateLoader extends FileTemplateLoader implements
 	final TemplateLoader preTemplateLoad;
 	final ServletContext context;
 
-	TypeTemplateLoader(ServletContext context, Store<Type> typeStore,
+	TypeTemplateLoader(ServletContext context, Store<String,Type> typeStore,
 			File templateFolder, File workFolder) throws IOException {
 		super(workFolder);
 		try {
@@ -131,7 +131,7 @@ public class TypeTemplateLoader extends FileTemplateLoader implements
 			log.debug("START create Template : " + source.name);
 
 			Map<String, Object> root = new HashMap<String, Object>();
-			root.put("type", typeStore.get(source.typeName));
+			root.put("type", typeStore.readData(source.typeName));
 
 			File f = new File(templateWorkFolder, source.name);
 			FileWriter fw = new FileWriter(f);

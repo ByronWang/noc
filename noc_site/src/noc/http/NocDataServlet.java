@@ -110,7 +110,7 @@ public class NocDataServlet extends HttpServlet {
 				}
 			} else {// Object
 				template = rule.getEditTemplate();
-				data = rule.getStore().get(key);
+				data = rule.getStore().readData(key);
 			}
 
 			if (template == null || data == null) {
@@ -155,11 +155,11 @@ public class NocDataServlet extends HttpServlet {
 			Rule rule = (Rule) request.getAttribute("_Rule");
 			String key = (String) request.getAttribute("_Key");
 
-			Store<Vo> store = (Store<Vo>) rule.getStore();
+			Store<String,Vo> store = (Store<String,Vo>) rule.getStore();
 
-			Vo v = store.get(key);
+			Vo v = store.readData(key);
 			VoHelper.putAll(request.getParameterMap(), v, rule.getType());
-			v = store.update(v);
+			v = store.returnData(v);
 
 			doGet(request, response);
 		} catch (Exception e) {
@@ -182,9 +182,9 @@ public class NocDataServlet extends HttpServlet {
 
 			if (key.length() == 0) { // Path
 
-				Store<Vo> store = (Store<Vo>) rule.getStore();
-				Vo v = VoHelper.putAll(request.getParameterMap(), store.get(null), rule.getType());
-				v = store.update(v);
+				Store<String,Vo> store = (Store<String,Vo>) rule.getStore();
+				Vo v = VoHelper.putAll(request.getParameterMap(), store.readData(null), rule.getType());
+				v = store.returnData(v);
 
 				String toPath = request.getContextPath() + "/" + rule.typeName.replace('.', '/') + "/"
 						+ URLEncoder.encode(v.getIndentify(), "UTF-8");
