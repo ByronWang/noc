@@ -5,6 +5,7 @@ public interface Vo  extends V{
 	void put(String name,String value);
 	V get(String name);
 	
+	@Deprecated
 	String getIndentify();
 			
 	//void add(V v);

@@ -174,7 +174,7 @@ public class TypePersister implements Store<String,Type> {
 	}
 
 	@Override
-	public Type returnData(Type v) {
+	public Type returnData(String key, Type v) {
 		throw new UnsupportedOperationException(v.toString());
 	}
 

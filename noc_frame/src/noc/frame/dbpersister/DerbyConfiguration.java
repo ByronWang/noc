@@ -40,7 +40,7 @@ public class DerbyConfiguration{
 	}
 
 	@SuppressWarnings("unchecked") public <T> Persister<String,T> getPersister(Class<T> t, Type de) {
-		return (Persister<String,T>) new PersisterDBVoImp(de, conn);
+		return (Persister<String,T>) new DBVoPersister(de, conn);
 	}
 
 	public void destroy() {

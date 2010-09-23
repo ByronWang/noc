@@ -25,12 +25,12 @@ public class VoStore implements Store<String,Vo> {
 		return map.get(key);
 	}
 
-	@Override public Vo returnData(Vo v) {
-		//TODO add return operator
-//		VoAgent vo = (VoAgent)v;
-		
-		map.put(v.getIndentify(), v);
-		return map.get(v.getIndentify());
+	@Override public Vo returnData(String key, Vo v) {
+		VoAgent vo = (VoAgent)v;
+		if(vo.changed){
+			map.put(key, v);
+		}
+		return map.get(key);
 	}
 
 	@Override public List<Vo> list() {

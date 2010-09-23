@@ -4,17 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import noc.frame.vo.V;
-import noc.frame.vo.VScalar;
 import noc.frame.vo.Vo;
 import noc.frame.vo.Vol;
-import noc.frame.vo.imp.VScalarImp;
 
-public class VoAgent implements Vo {
+public class VoReadOnlyAgent implements Vo {
 	Map<String, V> changedData = new HashMap<String, V>();
 	Vo source = null;
 	boolean changed = false;
 
-	public VoAgent(Vo source) {
+	public VoReadOnlyAgent(Vo source) {
 		this.source = source;
 	}
 
@@ -34,27 +32,17 @@ public class VoAgent implements Vo {
 
 	@Override
 	public void put(String name, V value) {
-		V oldValue = this.source.get(name);
-		if (oldValue != value) {
-			changedData.put(name, new VScalarImp(value));
-			changed = true;
-		}
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void put(String name, String value) {
-		VScalar oldValue = (VScalar) this.source.get(name);
-		if (oldValue != null) {
-			if (!oldValue.equals(value)) {
-				changedData.put(name, new VScalarImp(value));
-				changed = true;
-			}
-		}
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public String getCanonicalForm() {
-		return changedData.toString();
+		return source.getCanonicalForm();
 	}
 
 }

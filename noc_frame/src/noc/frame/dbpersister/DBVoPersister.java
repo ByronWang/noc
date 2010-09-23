@@ -20,8 +20,8 @@ import noc.lang.reflect.Type;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class PersisterDBVoImp implements Persister<String,Vo> {
-	private static final Log log = LogFactory.getLog(PersisterDBVoImp.class);
+public class DBVoPersister implements Persister<String,Vo> {
+	private static final Log log = LogFactory.getLog(DBVoPersister.class);
 
 	private final Connection conn;
 
@@ -65,7 +65,7 @@ public class PersisterDBVoImp implements Persister<String,Vo> {
 		}
 	};
 
-	public PersisterDBVoImp(Type type, Connection conn) {
+	public DBVoPersister(Type type, Connection conn) {
 		this.type = type;
 		this.conn = conn;
 
@@ -145,7 +145,7 @@ public class PersisterDBVoImp implements Persister<String,Vo> {
 	}
 
 	@Override
-	public Vo returnData(Vo value) {
+	public Vo returnData(String key, Vo value) {
 		String[] keys = new String[keyColumns.length];
 		for (int i = 0; i < keyColumns.length; i++) {
 			keys[i] = value.get(keyColumns[i].name).toString();
