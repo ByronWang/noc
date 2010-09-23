@@ -21,8 +21,8 @@ public class VoHelper {
 				String key = field.getName();
 				if (params.containsKey(key)) {
 					String value = ((String[]) params.get(key))[0];
-					if ((field.getImportance() == Field.PrimaryKey ||field.getImportance() == Field.Core )&& v.S(key) != null) {
-						if (!value.equals(v.S(key))) {
+					if ((field.getImportance() == Field.PrimaryKey ||field.getImportance() == Field.Core )&& v.get(key) != null) {
+						if (!value.equals(v.get(key).toString())) {
 							throw new RuntimeException("Key field cannot be modified!");
 						}
 					} else {

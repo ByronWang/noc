@@ -123,7 +123,7 @@ public class TestTypeReflect extends TestCase {
 	
 	public void testType() {
 
-		Type p = store.get("noc.lang.reflect.Type");
+		Type p = store.readData("noc.lang.reflect.Type");
 		showType(p);
 	}
 
@@ -137,7 +137,7 @@ public class TestTypeReflect extends TestCase {
 	// }
 	public void testSetValue() {
 
-		Type person = store.get("data.TestPerson");
+		Type person = store.readData("data.TestPerson");
 		
 		Vo v = new VOImp(person);
 

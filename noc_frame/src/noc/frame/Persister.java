@@ -1,7 +1,7 @@
 package noc.frame;
 
 
-public interface Persister<T> extends Store<T>{
+public interface Persister<K,V> extends Store<K,V>{
 
 	void prepare();
 	void drop();

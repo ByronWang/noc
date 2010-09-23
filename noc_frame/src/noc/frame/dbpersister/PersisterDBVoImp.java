@@ -20,7 +20,7 @@ import noc.lang.reflect.Type;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class PersisterDBVoImp implements Persister<Vo> {
+public class PersisterDBVoImp implements Persister<String,Vo> {
 	private static final Log log = LogFactory.getLog(PersisterDBVoImp.class);
 
 	private final Connection conn;
@@ -48,8 +48,8 @@ public class PersisterDBVoImp implements Persister<Vo> {
 		int fillParameter(PreparedStatement prepareStatement, Vo v) throws SQLException {
 			int i = 0;
 			for (; i < fields.length; i++) {
-				prepareStatement.setString(i + 1, v.S(fields[i].name));
-				log.debug((i + 1) + ": " + v.S(fields[i].name));
+				prepareStatement.setString(i + 1, v.get(fields[i].name).toString());
+				log.debug((i + 1) + ": " + v.get(fields[i].name).toString());
 			}
 			return i;
 		}
@@ -145,10 +145,10 @@ public class PersisterDBVoImp implements Persister<Vo> {
 	}
 
 	@Override
-	public Vo update(Vo value) {
+	public Vo returnData(Vo value) {
 		String[] keys = new String[keyColumns.length];
 		for (int i = 0; i < keyColumns.length; i++) {
-			keys[i] = value.S(keyColumns[i].name);
+			keys[i] = value.get(keyColumns[i].name).toString();
 		}
 		Vo v = this.get(keys);
 
@@ -188,9 +188,20 @@ public class PersisterDBVoImp implements Persister<Vo> {
 	}
 
 	@Override
-	public Vo get(String key) {
+	public Vo borrowData(String key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
+	public void invalidateObject(String key) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Vo readData(String key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

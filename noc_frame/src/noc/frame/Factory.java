@@ -1,4 +1,4 @@
-package noc.frame.vostore;
+package noc.frame;
 
 
 public interface Factory<T> {

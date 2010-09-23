@@ -39,8 +39,8 @@ public class DerbyConfiguration{
 		}
 	}
 
-	@SuppressWarnings("unchecked") public <T> Persister<T> getPersister(Class<T> t, Type de) {
-		return (Persister<T>) new PersisterDBVoImp(de, conn);
+	@SuppressWarnings("unchecked") public <T> Persister<String,T> getPersister(Class<T> t, Type de) {
+		return (Persister<String,T>) new PersisterDBVoImp(de, conn);
 	}
 
 	public void destroy() {

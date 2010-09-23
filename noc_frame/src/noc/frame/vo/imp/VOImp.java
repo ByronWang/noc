@@ -69,81 +69,12 @@ public class VOImp implements Vo {
 		}
 		return sb.toString();
 	}
-
-	@Override public Vo O(String name) {
-		return (Vo) this.get(name);
-	}
-
-	@Override public String S(String name) {
-		VScalar v = (VScalar) this.get(name);
-		return v != null ? v.getValue().toString() : null;
-	}
-
-	@Override public Vol L(String name) {
-		return (Vol) this.get(name);
-	}
-
 //	@Override public void add(V v) {
 //		throw new UnsupportedOperationException();
 //	}
 
 	@Override public void put(String name, String value) {
 		this.put(name, new VScalarImp(value));
-	}
-
-	@Override public Iterator<VOEntry> iterator() {
-		return values.iterator();
-	}
-
-	@Override public int size() {
-		return values.size();
-	}
-
-	@Override public Iterable<String> keys() {
-		return new Iterable<String>() {
-			@Override public Iterator<String> iterator() {
-				return new Iterator<String>() {
-					Iterator<VOEntry> i = values.iterator();
-
-					@Override public boolean hasNext() {
-						return i.hasNext();
-					}
-
-					@Override public String next() {
-						return i.next().getKey();
-					}
-
-					@Override public void remove() {
-						throw new UnsupportedOperationException();
-					}
-				};
-			}
-
-		};
-
-	}
-
-	@Override public Iterable<V> values() {
-		return new Iterable<V>() {
-			@Override public Iterator<V> iterator() {
-				return new Iterator<V>() {
-					Iterator<VOEntry> i = values.iterator();
-
-					@Override public boolean hasNext() {
-						return i.hasNext();
-					}
-
-					@Override public V next() {
-						return i.next().getValue();
-					}
-
-					@Override public void remove() {
-						throw new UnsupportedOperationException();
-					}
-				};
-			}
-
-		};
 	}
 
 	@Override public String getCanonicalForm() {
@@ -164,7 +95,7 @@ public class VOImp implements Vo {
 		String id = "";
 		for(Field field : type.getFields()){
 			if(field.getImportance() == Field.PrimaryKey){
-				id += this.S(field.getName()) + "_";
+				id += this.get(field.getName()).toString() + "_";
 			}
 		}
 		return id.substring(0,id.length()-1);

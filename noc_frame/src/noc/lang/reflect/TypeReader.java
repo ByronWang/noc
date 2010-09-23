@@ -31,10 +31,10 @@ public class TypeReader {
 	
 	private static final Log log =LogFactory.getLog(TypeReader.class);
 	
-	final Store<Type> types;
+	final Store<String,Type> types;
 	final CtClass clzScala;
 
-	TypeReader(Store<Type> types, CtClass scala) {
+	TypeReader(Store<String,Type> types, CtClass scala) {
 		this.types = types;
 		this.clzScala = scala;
 	}
@@ -63,7 +63,7 @@ public class TypeReader {
 
 		if (clz.getDeclaringClass() != null) {
 			type.master = Type.Eembedded;
-			type.declaringType = types.get(clz.getDeclaringClass().getName());
+			type.declaringType = types.readData(clz.getDeclaringClass().getName());
 			type.standalone = false;
 		} else {
 			type.standalone = true;
@@ -141,18 +141,18 @@ public class TypeReader {
 		/* construct field */
 		if (fieldTypeClazz.isArray()) {
 			array = true;
-			fieldType = types.get(fieldTypeClazz.getComponentType().getName());
+			fieldType = types.readData(fieldTypeClazz.getComponentType().getName());
 		} else if (fieldTypeClazz.getName().equals(java.util.List.class.getName())
 				|| fieldTypeClazz.getName().equals(noc.lang.List.class.getName())) {
 			// Generic field
 			array = true;
-			fieldType = types.get(decorateActualTypeArguments(ctField).get(0));
+			fieldType = types.readData(decorateActualTypeArguments(ctField).get(0));
 		} else {
-			fieldType = types.get(fieldTypeClazz.getName());
+			fieldType = types.readData(fieldTypeClazz.getName());
 		}
 
 		if (ctField.hasAnnotation(RealType.class)) {
-			fieldType = types.get(((RealType) ctField.getAnnotation(RealType.class)).value().getName());
+			fieldType = types.readData(((RealType) ctField.getAnnotation(RealType.class)).value().getName());
 		}
 		assert fieldType != null;
 

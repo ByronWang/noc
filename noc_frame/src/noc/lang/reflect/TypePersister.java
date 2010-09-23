@@ -20,7 +20,7 @@ import noc.lang.Name;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class TypePersister implements Store<Type> {
+public class TypePersister implements Store<String,Type> {
 
 	private static final Log log =LogFactory.getLog(TypePersister.class);
 	
@@ -38,16 +38,16 @@ public class TypePersister implements Store<Type> {
 			e.printStackTrace();
 		}
 
-		Type boolType = get(Bool.class.getName());
+		Type boolType = readData(Bool.class.getName());
 		this.types.put("boolean", boolType);
 		this.types.put(boolType.getName(), boolType);
 
-		Type nameType = get(Name.class.getName());
+		Type nameType = readData(Name.class.getName());
 		this.types.put("java.lang.String", nameType);
 		this.types.put(nameType.getName(), nameType);
 
-		this.get(Type.class.getName());
-		this.get(Field.class.getName());
+		this.readData(Type.class.getName());
+		this.readData(Field.class.getName());
 	}
 
 	public TypePersister(String path) {			
@@ -59,16 +59,16 @@ public class TypePersister implements Store<Type> {
 
 				reader = new TypeReader(this, pool.get(Scala.class.getName()));
 
-			Type boolType = get(Bool.class.getName());
+			Type boolType = readData(Bool.class.getName());
 			this.types.put("boolean", boolType);
 			this.types.put(boolType.getName(), boolType);
 
-			Type nameType = get(Name.class.getName());
+			Type nameType = readData(Name.class.getName());
 			this.types.put("java.lang.String", nameType);
 			this.types.put(nameType.getName(), nameType);
 
-			this.get(Type.class.getName());
-			this.get(Field.class.getName());
+			this.readData(Type.class.getName());
+			this.readData(Field.class.getName());
 		} catch (NotFoundException e) {
 			throw new RuntimeException(e);
 		}
@@ -92,7 +92,7 @@ public class TypePersister implements Store<Type> {
 				String name = en.nextElement().getName();
 				if (name.endsWith(".class")) {
 					name.substring(0, name.length() - ".class".length()).replace('\\', '.').replace('/', '.');
-					this.get(name);
+					this.readData(name);
 				}
 			}
 		} catch (Exception e) {
@@ -128,7 +128,7 @@ public class TypePersister implements Store<Type> {
 
 					name = name.substring(0, name.length() - ".class".length()).replace('\\', '.').replace('/', '.');
 
-					this.get(name);
+					this.readData(name);
 				} else if (f.isDirectory()) {
 					loadFolder(root, f);
 				}
@@ -139,7 +139,7 @@ public class TypePersister implements Store<Type> {
 	}
 
 	@Override
-	public Type get(String name) {
+	public Type readData(String name) {
 		try {
 			Type type = types.get(name);
 			if (type == null) {
@@ -174,8 +174,19 @@ public class TypePersister implements Store<Type> {
 	}
 
 	@Override
-	public Type update(Type v) {
+	public Type returnData(Type v) {
 		throw new UnsupportedOperationException(v.toString());
+	}
+
+	@Override
+	public Type borrowData(String key) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void invalidateObject(String key) {
+		throw new UnsupportedOperationException();
+		
 	}
 
 }

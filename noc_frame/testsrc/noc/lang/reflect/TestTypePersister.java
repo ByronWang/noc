@@ -26,7 +26,7 @@ public class TestTypePersister extends TestCase {
 		//
 		// store.get("data.sales.Order");
 
-		Type p = store.get("data.TestPerson");
+		Type p = store.readData("data.TestPerson");
 		// bassertEquals(true, p.standalone);
 
 		//assertEquals(16, store.list().size());
@@ -115,7 +115,7 @@ public class TestTypePersister extends TestCase {
 
 		// data.TestDepartment
 
-		p = store.get("data.TestDepartment");
+		p = store.readData("data.TestDepartment");
 
 //		assertEquals(false, p.standalone);
 
@@ -133,7 +133,7 @@ public class TestTypePersister extends TestCase {
 		// Status 状态;
 
 		// data.TestDepartment
-		p = store.get("data.TestCompany");
+		p = store.readData("data.TestCompany");
 
 //		assertEquals(true, p.standalone);
 
@@ -151,13 +151,13 @@ public class TestTypePersister extends TestCase {
 		// Status 状态;
 		// List<TestCompany> 子公司;
 
-		p = store.get("data.TestPerson$Contact");
+		p = store.readData("data.TestPerson$Contact");
 //		assertEquals(false, p.standalone);
 
-		p = store.get("data.TestDepartment$ContactHasnotKey");
+		p = store.readData("data.TestDepartment$ContactHasnotKey");
 //		assertEquals(false, p.standalone);
 
-		p = store.get("data.TestDepartment$ContactHasKey");
+		p = store.readData("data.TestDepartment$ContactHasKey");
 //		assertEquals(true, p.standalone);
 
 		//		
