@@ -59,16 +59,16 @@ public class PrintObejct {
 							log.trace(indent(level + 1) + va[i].toString());
 						}
 					} else if (rType.isPrimitive()) {
-						log.trace(indent(level) + m.getName() + m.invoke(object).toString());
+						log.trace(indent(level) + m.getName() + ": " + m.invoke(object).toString());
 					} else if (m.getName().endsWith("Stream") || m.getName().endsWith("Reader")
 							|| m.getName().endsWith("Writer")) {
 						log.trace(indent(level) + m.getName() + "[[ " + m.getReturnType().getName() + " ]]");
 					} else {
 						Object returnValue = (Object) m.invoke(object);
 						if (returnValue == null) {
-							log.trace(indent(level) + m.getName(), null);
+							log.trace(indent(level) + m.getName() + ": " + null);
 						} else if (returnValue instanceof String) {
-							log.trace(indent(level) + m.getName() + (String) returnValue);
+							log.trace(indent(level) + m.getName()  + ": " + (String) returnValue);
 						} else if (returnValue instanceof Class<?>) {
 							log.trace(indent(level) + m.getName() + "[[ Class<" + ((Class<?>) returnValue).getName()
 									+ "> ]]");
@@ -83,7 +83,7 @@ public class PrintObejct {
 								if (getitem != null) {
 									for (Object o : va) {
 										String key = o.toString();
-										log.trace(indent(level + 1) + key + getitem.invoke(object, key).toString());
+										log.trace(indent(level + 1) + key  + ": " + getitem.invoke(object, key).toString());
 									}
 									continue;
 								}
@@ -103,7 +103,7 @@ public class PrintObejct {
 								if (getitem != null) {
 									while (va.hasMoreElements()) {
 										String key = va.nextElement().toString();
-										log.trace(indent(level + 1) + key + getitem.invoke(object, key).toString());
+										log.trace(indent(level + 1) + key  + ": " + getitem.invoke(object, key).toString());
 									}
 									continue;
 								}
