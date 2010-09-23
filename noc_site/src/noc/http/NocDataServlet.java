@@ -106,7 +106,8 @@ public class NocDataServlet extends HttpServlet {
 						template = rule.getPopupTemplate();
 						data = rule.getStore().list();
 					} else {
-						// TODO ERROR
+						response.sendError(400);
+						return;
 					}
 				}
 			} else {// Object
@@ -121,8 +122,8 @@ public class NocDataServlet extends HttpServlet {
 
 			log.debug("template: " + template.getName());
 			log.debug("data: " + data);
-
-			processTemplate(rule.getType(), template, data, request, response);
+			
+			processTemplate(rule.getType(), template, data, response);
 
 			if (log.isTraceEnabled()) {
 				PrintObejct.print(response);
@@ -131,35 +132,27 @@ public class NocDataServlet extends HttpServlet {
 			throw new RuntimeException(e);
 		}
 	}
-
-	void processTemplate(Type type, Template template, Object data, HttpServletRequest request,
-			HttpServletResponse response) throws UnsupportedEncodingException, TemplateException, IOException {
+	void processTemplate(Type type, Template template, Object data, 
+			HttpServletResponse response) throws TemplateException, IOException  {
 		response.setContentType("text/html; charset=UTF-8");
-
 		Map<String, Object> root = new HashMap<String, Object>();
 		root.put("data", data);
 		template.process(root, response.getWriter());
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		request.setAttribute("path", "ddd");
-
 		try {
 
 			Rule rule = (Rule) request.getAttribute("_Rule");
 			String key = (String) request.getAttribute("_Key");
 
-			Store<String,Vo> store = (Store<String,Vo>) rule.getStore();
-
 			Map<?,?> source = request.getParameterMap();
 			
-			Vo dest = store.borrowData(key);
-			
-			VoHelper.putAll(source, dest, rule.getType());
-			
+			Store<String,Vo> store = (Store<String,Vo>) rule.getStore();			
+			Vo dest = store.borrowData(key);			
+			VoHelper.putAll(source, dest, rule.getType());			
 			store.returnData(key, dest);
 
 			doGet(request, response);
@@ -183,13 +176,12 @@ public class NocDataServlet extends HttpServlet {
 
 			if (key.length() == 0) { // Path
 
-				Store<String,Vo> store = (Store<String,Vo>) rule.getStore();
 				Map<?,?> source = request.getParameterMap();
-				Vo dest = store.borrowData(null);
 				
-				dest = VoHelper.putAll(source, dest, rule.getType());
-				
-				dest = store.returnData(dest.getIndentify(), dest);
+				Store<String,Vo> store = (Store<String,Vo>) rule.getStore();
+				Vo dest = store.borrowData(null);				
+				dest = VoHelper.putAll(source, dest, rule.getType());				
+				store.returnData(dest.getIndentify(), dest);
 
 				String toPath = request.getContextPath() + "/" + rule.typeName.replace('.', '/') + "/"
 						+ URLEncoder.encode(dest.getIndentify(), "UTF-8");

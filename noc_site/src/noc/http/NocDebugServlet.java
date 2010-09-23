@@ -27,7 +27,7 @@ public class NocDebugServlet extends NocDataServlet {
 	}
 
 		
-	@Override void processTemplate(Type type, Template template, Object data, HttpServletRequest request,
+	@Override void processTemplate(Type type, Template template, Object data,
 			HttpServletResponse response) throws UnsupportedEncodingException, TemplateException, IOException {
 		response.getOutputStream().print("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/></head><body>");				
 		response.getOutputStream().print("<pre>");				
