@@ -7,7 +7,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public abstract class SimpleHelper<T> {
+	private static final Log log = LogFactory.getLog(SimpleHelper.class);
+
 	T get(Connection conn, String sql, Object... keys) {
 		PreparedStatement statement = null;
 		ResultSet res = null;
@@ -15,7 +20,7 @@ public abstract class SimpleHelper<T> {
 			statement = conn.prepareStatement(sql);
 
 			for (int i = 1; i <= keys.length; i++) {
-				statement.setObject(i, keys[i-1]);
+				statement.setObject(i, keys[i - 1]);
 			}
 
 			res = statement.executeQuery();
@@ -66,6 +71,8 @@ public abstract class SimpleHelper<T> {
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		} finally {
+			log.debug("== SUCCEED When exec " + sql);
+			
 			try {
 				if (res != null) res.close();
 				if (statement != null) statement.close();
@@ -82,9 +89,8 @@ public abstract class SimpleHelper<T> {
 
 			statement = conn.prepareStatement(sql);
 
-
 			int pos = fillParameter(statement, v);
-			
+
 			for (int i = 0; i < keys.length; i++) {
 				statement.setObject(pos + i + 1, keys[i]);
 			}
@@ -93,6 +99,7 @@ public abstract class SimpleHelper<T> {
 
 			conn.commit();
 
+			log.debug("== SUCCEED When exec " + sql);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		} finally {
@@ -104,7 +111,7 @@ public abstract class SimpleHelper<T> {
 			}
 		}
 	}
-	
+
 	abstract int fillParameter(PreparedStatement prepareStatement, T v) throws SQLException;
 
 	abstract T fillObject(ResultSet result) throws SQLException;

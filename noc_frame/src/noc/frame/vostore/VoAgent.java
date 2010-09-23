@@ -38,6 +38,8 @@ public class VoAgent implements Vo {
 			changedData.put(name, new VScalarImp(value));
 			changed = true;
 		}
+
+//		changed = this.changedData.size() < 10;//TODO Delete  add for test				
 	}
 
 	@Override
@@ -49,6 +51,8 @@ public class VoAgent implements Vo {
 				changed = true;
 			}
 		}
+		
+//		changed = this.changedData.size() < 10;//TODO Delete  add for test				
 	}
 
 	@Override
