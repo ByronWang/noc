@@ -49,8 +49,8 @@ public class Fact extends Findable<String,Fact.Rule>{
 			typeStore.appendClassPath(context.getRealPath("WEB-INF/lib/noc_define.jar"));
 			typeStore.appendClassPath(context.getRealPath("WEB-INF/lib/noc_frame.jar"));
 			typeStore.setUp();
-			typeStore.loadFolder(context.getInitParameter(DEFINE_PATH));
-			typeStore.loadFolder(context.getInitParameter(BIZ_PATH));
+			typeStore.loadJar(context.getRealPath(context.getInitParameter(DEFINE_PATH)));
+			typeStore.loadJar(context.getRealPath(context.getInitParameter(BIZ_PATH)));
 
 			stores = new DataConfiguration(typeStore){
 				@Override

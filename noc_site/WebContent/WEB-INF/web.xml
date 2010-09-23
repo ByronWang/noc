@@ -7,11 +7,11 @@
 
 	<context-param>
 		<param-name>define_path</param-name>
-		<param-value>D:\JavaDev\noc_define\bin</param-value>
+		<param-value>WEB-INF\lib\noc_define.jar</param-value>
 	</context-param>
 	<context-param>
 		<param-name>biz_path</param-name>
-		<param-value>D:\JavaDev\noc_kao\bin</param-value>
+		<param-value>WEB-INF\lib\noc_kao.jar</param-value>
 	</context-param>
 	<context-param>
 		<param-name>template_path</param-name>

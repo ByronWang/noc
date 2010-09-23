@@ -183,7 +183,7 @@ public class NocDataServlet extends HttpServlet {
 				dest = VoHelper.putAll(source, dest, rule.getType());				
 				store.returnData(dest.getIndentify(), dest);
 
-				String toPath = request.getContextPath() + "/" + rule.typeName.replace('.', '/') + "/"
+				String toPath = request.getContextPath() + "/basic/" + rule.typeName.replace('.', '/') + "/"
 						+ URLEncoder.encode(dest.getIndentify(), "UTF-8");
 
 				response.setContentType("text/html; charset=UTF-8");
