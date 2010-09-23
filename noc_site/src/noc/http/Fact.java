@@ -11,9 +11,9 @@ import noc.frame.Store;
 import noc.frame.dbpersister.DerbyConfiguration;
 import noc.frame.vo.Vo;
 import noc.frame.vostore.DataConfiguration;
-import noc.frame.vostore.VoPersisiterStore;
+import noc.frame.vostore.VoPersistableStore;
 import noc.lang.reflect.Type;
-import noc.lang.reflect.TypePersister;
+import noc.lang.reflect.TypeReadonlyStore;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.cache.WebappTemplateLoader;
@@ -33,7 +33,7 @@ public class Fact extends Findable<String,Fact.Rule>{
 	static final String TEMPLATE_PATH = "template_path";
 	static final String TEMPLATE_WORK_PATH = "template_work_path";
 
-	private TypePersister typeStore;
+	private TypeReadonlyStore typeStore;
 	private Configuration templateEngine;
 	private DataConfiguration stores;
 	private DerbyConfiguration dbEngine;
@@ -45,8 +45,10 @@ public class Fact extends Findable<String,Fact.Rule>{
 		this.debugMode = debugMode;
 		try {
 
-			typeStore = new TypePersister(context.getRealPath("WEB-INF/lib"));
-			// typeStore.appendClassPath(BIZ_PATH)
+			typeStore = new TypeReadonlyStore();
+			typeStore.appendClassPath(context.getRealPath("WEB-INF/lib/noc_define.jar"));
+			typeStore.appendClassPath(context.getRealPath("WEB-INF/lib/noc_frame.jar"));
+			typeStore.setUp();
 			typeStore.loadFolder(context.getInitParameter(DEFINE_PATH));
 			typeStore.loadFolder(context.getInitParameter(BIZ_PATH));
 
@@ -55,8 +57,9 @@ public class Fact extends Findable<String,Fact.Rule>{
 				protected Store<String,?> find(String typeName) {
 					Type type = types.readData(typeName);
 					Persister<String,Vo> p = dbEngine.getPersister(Vo.class, type);
-					p.prepare();
-					Store<String,?> store = new VoPersisiterStore(this,type, p);
+					p.setUp();
+					Store<String,?> store = new VoPersistableStore(this,type, p);
+					store.setUp();
 					items.put(typeName, store);
 					return items.get(typeName);
 				}
