@@ -138,10 +138,6 @@ public class NocDataServlet extends HttpServlet {
 
 		Map<String, Object> root = new HashMap<String, Object>();
 		root.put("data", data);
-		root.put("urlPath", "");
-		root.put("_path_new", request.getContextPath() + "" + "?mode=new");
-		root.put("_action", request.getContextPath() + "");
-		root.put("_method", "POST");
 		template.process(root, response.getWriter());
 	}
 

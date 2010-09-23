@@ -122,7 +122,7 @@
 </#compress>[/#macro]
 
 [@body title=type.displayName]
-<form name="form1" method="POST" action="${contextPath}${r"${urlPath!}"}/basic/${type.name?replace(".", "/")}/${r"${data.indentify!}"}" title="Hello Title">
+<form name="form1" method="POST" action="${contextPath}/basic/${type.name?replace(".", "/")}/${r"${data.indentify!}"}" title="Hello Title">
 	[@object type=type parent="data" /]	
 	[@submit/]
 </form>
