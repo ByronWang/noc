@@ -17,6 +17,7 @@ public class DataConfiguration extends Findable<String, Store<String,?>> impleme
 	protected Store<String,?> find(String typeName) {
 		Type type = types.readData(typeName);
 		Store<String,?> store = new VoStore(this, type);
+		store.setUp();
 		items.put(typeName, store);
 		return items.get(typeName);
 	}

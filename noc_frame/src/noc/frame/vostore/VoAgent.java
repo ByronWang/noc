@@ -6,22 +6,21 @@ import java.util.Map;
 import noc.frame.vo.V;
 import noc.frame.vo.VScalar;
 import noc.frame.vo.Vo;
-import noc.frame.vo.Vol;
 import noc.frame.vo.imp.VScalarImp;
 
 public class VoAgent implements Vo {
-	Map<String, V> changedData = new HashMap<String, V>();
-	Vo source = null;
-	boolean changed = false;
+	protected Map<String, V> changedData = new HashMap<String, V>();
+	protected Vo source = null;
+	protected boolean changed = false;
 
 	public VoAgent(Vo source) {
 		this.source = source;
 	}
-
+	
 	@Override
 	public V get(String name) {
 		if (changedData.containsKey(name)) {
-			return (Vol) changedData.get(name);
+			return changedData.get(name);
 		} else {
 			return source.get(name);
 		}
@@ -45,7 +44,7 @@ public class VoAgent implements Vo {
 	public void put(String name, String value) {
 		VScalar oldValue = (VScalar) this.source.get(name);
 		if (oldValue != null) {
-			if (!oldValue.equals(value)) {
+			if (!oldValue.getValue().equals(value)) {
 				changedData.put(name, new VScalarImp(value));
 				changed = true;
 			}
@@ -55,6 +54,24 @@ public class VoAgent implements Vo {
 	@Override
 	public String getCanonicalForm() {
 		return changedData.toString();
+	}
+
+
+
+	public Map<String, V> getChangedData() {
+		return changedData;
+	}
+
+
+
+	public Vo getSource() {
+		return source;
+	}
+
+
+
+	public boolean isChanged() {
+		return changed;
 	}
 
 }

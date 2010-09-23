@@ -11,7 +11,7 @@ import noc.frame.vo.Vo;
 import noc.lang.reflect.Type;
 
 public class VoStore implements Store<String,Vo> {
-	Map<String, Vo> map = new Hashtable<String, Vo>();
+	Map<String, Vo> items ;
 	protected Factory parent;
 	protected Type type;
 //	protected String keyPropName;
@@ -22,19 +22,19 @@ public class VoStore implements Store<String,Vo> {
 	}
 
 	@Override public Vo readData(String key) {
-		return map.get(key);
+		return items.get(key);
 	}
 
 	@Override public Vo returnData(String key, Vo v) {
 		VoAgent vo = (VoAgent)v;
-		if(vo.changed){
-			map.put(key, v);
+		if(vo.isChanged()){
+			items.put(key, v);
 		}
-		return map.get(key);
+		return items.get(key);
 	}
 
 	@Override public List<Vo> list() {
-		return new ArrayList<Vo>(map.values());
+		return new ArrayList<Vo>(items.values());
 	}
 
 	@Override
@@ -45,5 +45,15 @@ public class VoStore implements Store<String,Vo> {
 	@Override
 	public void invalidateObject(String key) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setUp() {
+		items = new Hashtable<String, Vo>();
+	}
+
+	@Override
+	public void tearDown() {
+		items = null;
 	}
 }

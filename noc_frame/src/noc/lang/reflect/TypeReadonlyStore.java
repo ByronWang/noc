@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import javassist.ClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
@@ -20,47 +21,26 @@ import noc.lang.Name;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class TypePersister implements Store<String,Type> {
+public class TypeReadonlyStore implements Store<String,Type> {
 
-	private static final Log log =LogFactory.getLog(TypePersister.class);
+	private static final Log log =LogFactory.getLog(TypeReadonlyStore.class);
 	
 	ClassPool pool;
-	Map<String, Type> types = new HashMap<String, Type>();
-	TypeReader reader = null;
+	Map<String, Type> types;
+	TypeReader reader;
 
-	public TypePersister() {
+	public TypeReadonlyStore() {
+		types = new HashMap<String, Type>();		
 		this.pool = ClassPool.getDefault();
-
-		try {
-			reader = new TypeReader(this, pool.get(Scala.class.getName()));
-		} catch (NotFoundException e) {
-			log.error("new TypeReader", e);
-			e.printStackTrace();
-		}
-
-		Type boolType = readData(Bool.class.getName());
-		this.types.put("boolean", boolType);
-		this.types.put(boolType.getName(), boolType);
-
-		Type nameType = readData(Name.class.getName());
-		this.types.put("java.lang.String", nameType);
-		this.types.put(nameType.getName(), nameType);
-
-		this.readData(Type.class.getName());
-		this.readData(Field.class.getName());
 	}
 
-	public TypePersister(String path) {			
+	@Override
+	public void setUp() {
 		try {
-			this.pool = ClassPool.getDefault();
-			
-			this.pool.appendClassPath(path + "/noc_define.jar");
-			this.pool.appendClassPath(path + "/noc_frame.jar");
-
-				reader = new TypeReader(this, pool.get(Scala.class.getName()));
+			reader = new TypeReader(this, pool.get(Scala.class.getName()));
 
 			Type boolType = readData(Bool.class.getName());
-			this.types.put("boolean", boolType);
+			this.types.put("YesNo", boolType);
 			this.types.put(boolType.getName(), boolType);
 
 			Type nameType = readData(Name.class.getName());
@@ -74,7 +54,7 @@ public class TypePersister implements Store<String,Type> {
 		}
 	}
 
-	public TypePersister(ClassPool pool) {
+	public TypeReadonlyStore(ClassPool pool) {
 		this.pool = pool;
 	}
 
@@ -186,6 +166,13 @@ public class TypePersister implements Store<String,Type> {
 	@Override
 	public void invalidateObject(String key) {
 		throw new UnsupportedOperationException();
+		
+	}
+
+
+	@Override
+	public void tearDown() {
+		// TODO Auto-generated method stub
 		
 	}
 

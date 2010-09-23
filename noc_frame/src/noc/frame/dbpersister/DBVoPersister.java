@@ -88,7 +88,7 @@ public class DBVoPersister implements Persister<String,Vo> {
 		keyColumns = builder.keyColumns;
 	}
 
-	public void prepare() {
+	public void setUp() {
 		try {
 			Statement st = conn.createStatement();
 
@@ -182,7 +182,7 @@ public class DBVoPersister implements Persister<String,Vo> {
 	}
 
 	@Override
-	public void drop() {
+	public void tearDown() {
 		// TODO Auto-generated method stub
 
 	}

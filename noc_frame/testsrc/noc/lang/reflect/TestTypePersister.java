@@ -9,11 +9,11 @@ import data.TestDepartment;
 
 public class TestTypePersister extends TestCase {
 
-	TypePersister store = null;
+	TypeReadonlyStore store = null;
 
 	@Override protected void setUp() throws Exception {
 		super.setUp();
-		store = new TypePersister();
+		store = new TypeReadonlyStore();
 	}
 
 	@Override protected void tearDown() throws Exception {

@@ -10,11 +10,12 @@ import util.VoHelper;
 
 public class TestTypeReflect extends TestCase {
 
-	TypePersister store = null;
+	TypeReadonlyStore store = null;
 
 	@Override protected void setUp() throws Exception {
 		super.setUp();
-		store = new TypePersister();
+		store = new TypeReadonlyStore();
+		store.setUp();
 	}
 
 	@Override protected void tearDown() throws Exception {
