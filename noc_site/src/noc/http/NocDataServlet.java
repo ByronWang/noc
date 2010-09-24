@@ -1,7 +1,6 @@
 package noc.http;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +14,6 @@ import noc.frame.Store;
 import noc.frame.vo.Vo;
 import noc.freemarker.DefaultModel;
 import noc.http.Fact.Rule;
-import noc.lang.reflect.Type;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -122,8 +120,8 @@ public class NocDataServlet extends HttpServlet {
 
 			log.debug("template: " + template.getName());
 			log.debug("data: " + data);
-			
-			processTemplate(rule.getType(), template, data, response);
+
+			processTemplate(template, data, response);
 
 			if (log.isTraceEnabled()) {
 				PrintObejct.print(response);
@@ -132,7 +130,7 @@ public class NocDataServlet extends HttpServlet {
 			throw new RuntimeException(e);
 		}
 	}
-	void processTemplate(Type type, Template template, Object data, 
+	void processTemplate(Template template, Object data, 
 			HttpServletResponse response) throws TemplateException, IOException  {
 		response.setContentType("text/html; charset=UTF-8");
 		Map<String, Object> root = new HashMap<String, Object>();
