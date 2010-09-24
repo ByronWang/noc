@@ -16,28 +16,21 @@ import freemarker.template.TemplateException;
 public class NocDebugServlet extends NocDataServlet {
 	private static final long serialVersionUID = 1L;
 
-	@Override
-	public void init() throws ServletException {
+	@Override public void init() throws ServletException {
 		super.init();
-		// ObejctHelper.show(this.getServletContext());
+		//ObejctHelper.show(this.getServletContext());
 	}
 
-	protected String getPath(HttpServletRequest request) {
+	protected String getPath(HttpServletRequest request){
 		return request.getPathInfo();
 	}
 
-	@Override
-	void processTemplate(Template template, Object data,
-			HttpServletResponse response) throws UnsupportedEncodingException,
-			TemplateException, IOException {
-		response
-				.getOutputStream()
-				.print(
-						"<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/></head><body>");
-		response.getOutputStream().print("<pre>");
-		response.getOutputStream().write(
-				template.toString().replace("&", "&amp;").replace("<", "&lt;")
-						.replace(">", "&gt;").getBytes("UTF-8"));
+		
+	@Override void processTemplate(Template template, Object data,
+			HttpServletResponse response) throws UnsupportedEncodingException, TemplateException, IOException {
+		response.getOutputStream().print("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/></head><body>");				
+		response.getOutputStream().print("<pre>");				
+		response.getOutputStream().write(template.toString().replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").getBytes("UTF-8"));
 		response.getOutputStream().print("</pre></body></html>");
 	}
 }
