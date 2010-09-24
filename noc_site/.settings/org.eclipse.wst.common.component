@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+	<wb-module deploy-name="noc_site">
+		<wb-resource deploy-path="/" source-path="/WebContent" />
+		<wb-resource deploy-path="/WEB-INF/classes" source-path="/src" />
+		<wb-resource deploy-path="/WEB-INF/classes" source-path="/test" />
+		<dependent-module archiveName="noc_frame.jar"
+			deploy-path="/WEB-INF/lib" handle="module:/resource/noc_frame/noc_frame">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module archiveName="noc_define.jar"
+			deploy-path="/WEB-INF/lib" handle="module:/resource/noc_define/noc_define">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module archiveName="noc_kao.jar"
+			deploy-path="/WEB-INF/lib" handle="module:/resource/noc_kao/noc_kao">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<property name="java-output-path" />
+		<property name="context-root" value="noc" />
+	</wb-module>
+</project-modules>
