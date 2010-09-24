@@ -1,58 +1,66 @@
 package noc.frame.vo.imp;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 
 import noc.frame.vo.V;
-import noc.frame.vo.VOEntry;
-import noc.frame.vo.VScalar;
 import noc.frame.vo.Vo;
-import noc.frame.vo.Vol;
 import noc.lang.reflect.Field;
 import noc.lang.reflect.Type;
 
 public class VOImp implements Vo {
 	final Type type;
-	ArrayList<VOEntry> values = new ArrayList<VOEntry>(20);
+	Map<String, V> items = new HashMap<String, V>();
+	String[] keys;
+
+	boolean beModified = false;
+	String indentify = null;
 
 	public VOImp(Type type) {
 		this.type = type;
+		ArrayList<String> kes = new ArrayList<String>();
+
+		for (Field field : type.getFields()) {
+			if (field.getImportance() == Field.PrimaryKey) {
+				kes.add(field.getName());
+			}
+		}
+		keys = kes.toArray(new String[0]);
 	}
 
-	public VOImp(Type type,String keyValue, Object... params) {
+	public VOImp(Type type, String keyValue, Object... params) {
 		this.type = type;
 		for (int i = 0; i < params.length; i += 2) {
 			if (params[i + 1] instanceof V) {
-				this.values.add(new VOEntryImp((String) params[i], (V) params[i + 1]));
+				items.put((String) params[i], (V) params[i + 1]);
 			} else {
-				this.values.add(new VOEntryImp((String) params[i], new VScalarImp(params[i + 1])));
+				items.put((String) params[i], new VScalarImp(params[i + 1]));
 			}
 		}
+		beModified = true;
 	}
 
-	@Override public V get(String name) {
-		for (VOEntry e : values) {
-			if (name.equals(e.getKey())) {
-				return e.getValue();
-			}
+	@Override
+	public V get(String name) {
+		return items.get(name);
+	}
+
+	@Override
+	public void put(String name, Object v) {
+		if (v instanceof V) {
+			items.put(name, (V) v);
+		} else {
+			items.put(name, new VScalarImp(v));
 		}
-		return null;
+		beModified = true;
 	}
 
-	@Override public void put(String name, V v) {
-		for (VOEntry e : values) {
-			if (name.equals(e.getKey())) {
-				e.setValue(v);
-				return;
-			}
-		}
-		values.add(new VOEntryImp(name, v));
-	}
-
-	@Override public String toString() {
+	@Override
+	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
-		for (VOEntry entry : values) {
+		for (Map.Entry<String, V> entry : items.entrySet()) {
 			sb.append(entry.getKey());
 			sb.append(":");
 			if (entry.getValue() != null) {
@@ -69,18 +77,16 @@ public class VOImp implements Vo {
 		}
 		return sb.toString();
 	}
-//	@Override public void add(V v) {
-//		throw new UnsupportedOperationException();
-//	}
 
-	@Override public void put(String name, String value) {
-		this.put(name, new VScalarImp(value));
-	}
+	// @Override public void add(V v) {
+	// throw new UnsupportedOperationException();
+	// }
 
-	@Override public String getCanonicalForm() {
+	@Override
+	public String getCanonicalForm() {
 		StringBuilder sb = new StringBuilder();
 		sb.append('{');
-		for (VOEntry entry : values) {
+		for (Map.Entry<String, V> entry : items.entrySet()) {
 			sb.append(entry.getKey());
 			sb.append(':');
 			sb.append(entry.getValue().getCanonicalForm());
@@ -92,13 +98,34 @@ public class VOImp implements Vo {
 
 	@Override
 	public String getIndentify() {
-		String id = "";
-		for(Field field : type.getFields()){
-			if(field.getImportance() == Field.PrimaryKey){
-				id += this.get(field.getName()).toString() + "_";
-			}
+		if (!beModified) {
+			return indentify;
 		}
-		return id.substring(0,id.length()-1);
+
+		switch (keys.length) {
+		case 1:
+			indentify = this.get(keys[0]).toString();
+			break;
+		case 2:
+			indentify = this.get(keys[0]).toString();
+			indentify += "_" + this.get(keys[1]).toString();
+			break;
+		case 3:
+			indentify = this.get(keys[0]).toString();
+			indentify += "_" + this.get(keys[1]).toString();
+			indentify += "_" + this.get(keys[2]).toString();
+			break;
+		case 4:
+			indentify = this.get(keys[0]).toString();
+			indentify += "_" + this.get(keys[1]).toString();
+			indentify += "_" + this.get(keys[2]).toString();
+			indentify += "_" + this.get(keys[3]).toString();
+			break;
+		}
+
+		beModified = false;
+
+		return indentify;
 	}
 
 	// @Override public String getKeyValue() {

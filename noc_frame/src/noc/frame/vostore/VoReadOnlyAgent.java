@@ -31,12 +31,7 @@ public class VoReadOnlyAgent implements Vo {
 	}
 
 	@Override
-	public void put(String name, V value) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void put(String name, String value) {
+	public void put(String name, Object value) {
 		throw new UnsupportedOperationException();
 	}
 
