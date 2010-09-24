@@ -3,7 +3,7 @@ package noc.frame;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Findable<K,V> {
+public abstract class Findable<K, V> {
 	protected Map<K, V> items;
 
 	public Findable() {
@@ -12,11 +12,12 @@ public abstract class Findable<K,V> {
 
 	public V get(K key) {
 		V item = items.get(key);
-		if (item == null) {
-			item = find(key);
-			if (item != null) {
-				items.put(key, item);
-			}
+		if (item != null)
+			return item;
+
+		item = find(key);
+		if (item != null) {
+			items.put(key, item);
 		}
 		return item;
 	}
