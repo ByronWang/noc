@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import noc.frame.vo.V;
 import noc.frame.vo.Vo;
 import noc.lang.reflect.Field;
 import noc.lang.reflect.Type;
 
 public class VOImp implements Vo {
 	final Type type;
-	Map<String, V> items = new HashMap<String, V>();
+	Map<String, Object> items = new HashMap<String, Object>();
 	String[] keys;
 
 	boolean beModified = false;
@@ -30,29 +29,26 @@ public class VOImp implements Vo {
 	}
 
 	public VOImp(Type type, String keyValue, Object... params) {
-		this.type = type;
+		this(type);
+		
 		for (int i = 0; i < params.length; i += 2) {
-			if (params[i + 1] instanceof V) {
-				items.put((String) params[i], (V) params[i + 1]);
+			if (params[i + 1] instanceof Object) {
+				items.put((String) params[i], (Object) params[i + 1]);
 			} else {
-				items.put((String) params[i], new VScalarImp(params[i + 1]));
+				items.put((String) params[i], params[i + 1]);
 			}
 		}
 		beModified = true;
 	}
 
 	@Override
-	public V get(String name) {
+	public Object get(String name) {
 		return items.get(name);
 	}
 
 	@Override
 	public void put(String name, Object v) {
-		if (v instanceof V) {
-			items.put(name, (V) v);
-		} else {
-			items.put(name, new VScalarImp(v));
-		}
+		items.put(name, (Object) v);
 		beModified = true;
 	}
 
@@ -60,7 +56,7 @@ public class VOImp implements Vo {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
-		for (Map.Entry<String, V> entry : items.entrySet()) {
+		for (Map.Entry<String, Object> entry : items.entrySet()) {
 			sb.append(entry.getKey());
 			sb.append(":");
 			if (entry.getValue() != null) {
@@ -78,7 +74,7 @@ public class VOImp implements Vo {
 		return sb.toString();
 	}
 
-	// @Override public void add(V v) {
+	// @Override public void add(Object v) {
 	// throw new UnsupportedOperationException();
 	// }
 
@@ -86,10 +82,10 @@ public class VOImp implements Vo {
 	public String getCanonicalForm() {
 		StringBuilder sb = new StringBuilder();
 		sb.append('{');
-		for (Map.Entry<String, V> entry : items.entrySet()) {
+		for (Map.Entry<String, Object> entry : items.entrySet()) {
 			sb.append(entry.getKey());
 			sb.append(':');
-			sb.append(entry.getValue().getCanonicalForm());
+			sb.append(entry.getValue());
 			sb.append(',');
 		}
 		sb.setCharAt(sb.length() - 1, '}');

@@ -1,14 +1,8 @@
 package noc.frame.vostore;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import noc.frame.vo.V;
 import noc.frame.vo.Vo;
-import noc.frame.vo.Vol;
 
 public class VoReadOnlyAgent implements Vo {
-	Map<String, V> changedData = new HashMap<String, V>();
 	Vo source = null;
 	boolean changed = false;
 
@@ -17,12 +11,8 @@ public class VoReadOnlyAgent implements Vo {
 	}
 
 	@Override
-	public V get(String name) {
-		if (changedData.containsKey(name)) {
-			return (Vol) changedData.get(name);
-		} else {
-			return source.get(name);
-		}
+	public Object get(String name) {
+		return source.get(name);
 	}
 
 	@Override

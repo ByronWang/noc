@@ -46,7 +46,7 @@ public class VoPersistableStore extends VoStore {
 	public Vo returnData(String key, Vo v) {
 		if (v instanceof VoAgent) {
 			VoAgent vo = (VoAgent) v;
-			if (vo.isChanged()) {
+			if (vo.isBeModified()) {
 				items.put(key, v);
 				return persister.returnData(key, v);
 			} else {

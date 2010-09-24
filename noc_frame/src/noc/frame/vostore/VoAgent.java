@@ -3,12 +3,10 @@ package noc.frame.vostore;
 import java.util.HashMap;
 import java.util.Map;
 
-import noc.frame.vo.V;
 import noc.frame.vo.Vo;
-import noc.frame.vo.imp.VScalarImp;
 
 public class VoAgent implements Vo {
-	protected Map<String, V> changedData = new HashMap<String, V>();
+	protected Map<String, Object> changedData = new HashMap<String, Object>();
 	protected Vo source = null;
 	protected boolean beModified = false;
 
@@ -17,7 +15,7 @@ public class VoAgent implements Vo {
 	}
 	
 	@Override
-	public V get(String name) {
+	public Object get(String name) {
 		if (changedData.containsKey(name)) {
 			return changedData.get(name);
 		} else {
@@ -32,16 +30,16 @@ public class VoAgent implements Vo {
 
 	@Override
 	public void put(String name, Object v) {
-		V oldValue = this.source.get(name);
+		Object oldValue = this.source.get(name);
 		
-		if (v instanceof V) {
+		if (v instanceof Object) {
 			if (oldValue != v) {
-				changedData.put(name, (V) v);
+				changedData.put(name, (Object) v);
 				beModified = true;
 			}
 		} else if(oldValue !=null){
-			if (!oldValue.toString().equals(v)) {
-				changedData.put(name, new VScalarImp(v));
+			if (!oldValue.equals(v)) {
+				changedData.put(name, v);
 				beModified = true;
 			}
 		}
@@ -56,7 +54,7 @@ public class VoAgent implements Vo {
 
 
 
-	public Map<String, V> getChangedData() {
+	public Map<String, Object> getChangedData() {
 		return changedData;
 	}
 
@@ -66,10 +64,9 @@ public class VoAgent implements Vo {
 		return source;
 	}
 
-
-
-	public boolean isChanged() {
+	public boolean isBeModified() {
 		return beModified;
 	}
+
 
 }

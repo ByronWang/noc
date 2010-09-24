@@ -28,7 +28,7 @@ public class VoStore implements Store<String,Vo> {
 
 	@Override public Vo returnData(String key, Vo v) {
 		VoAgent vo = (VoAgent)v;
-		if(vo.isChanged()){
+		if(vo.isBeModified()){
 			items.put(key, v);
 		}
 		return items.get(key);
