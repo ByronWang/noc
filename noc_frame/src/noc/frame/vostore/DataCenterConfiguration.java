@@ -5,10 +5,10 @@ import noc.frame.Findable;
 import noc.frame.Store;
 import noc.lang.reflect.Type;
 
-public class DataConfiguration extends Findable<String, Store<String,?>> implements Factory<Store<?,?>> {
+public class DataCenterConfiguration extends Findable<String, Store<String,?>> implements Factory<Store<?,?>> {
 	protected Store<String,Type> types = null;
 
-	public DataConfiguration(Store<String,Type> types) {
+	public DataCenterConfiguration(Store<String,Type> types) {
 		this.types = types;
 		items.put(Type.class.getName(), types);
 	}
@@ -17,8 +17,7 @@ public class DataConfiguration extends Findable<String, Store<String,?>> impleme
 	protected Store<String,?> find(String typeName) {
 		Type type = types.readData(typeName);
 		Store<String,?> store = new VoStore(this, type);
-		store.setUp();
-		items.put(typeName, store);
-		return items.get(typeName);
+		store.setUp();;
+		return store;
 	}
 }
