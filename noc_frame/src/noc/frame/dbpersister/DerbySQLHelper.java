@@ -105,7 +105,7 @@ public class DerbySQLHelper {
 	}
 
 	public String builderList() {
-		return "SELECT " + this.fieldlist_comma + " FROM " + this.tableName + " ";
+		return "SELECT " + this.fieldlist_comma + ",TIMESTAMP_ FROM " + this.tableName + " ";
 	}
 
 	public String builderDrop() {
@@ -124,14 +124,15 @@ public class DerbySQLHelper {
 		for (Column column : this.columns) {
 			sb.append(column.name).append(" varchar(40)").append(",");
 		}
-		sb.setCharAt(sb.length() - 1, ')');
+		sb.append("TIMESTAMP_").append(" TIMESTAMP");
+		sb.append(')');
 
 		return sb.toString();
 
 	}
 
 	public String builderInsert() {
-		return "INSERT INTO  " + this.tableName + "(" + fieldlist_comma + ") values(" + fieldlist_questions + ")";
+		return "INSERT INTO  " + this.tableName + "(" + fieldlist_comma + ",TIMESTAMP_) values(" + fieldlist_questions + ",CURRENT_TIMESTAMP)";
 
 	}
 
@@ -141,6 +142,7 @@ public class DerbySQLHelper {
 		for (Column column : this.columns) {
 			sb += column.name + " = ? ,";
 		}
+		sb += " TIMESTAMP_= CURRENT_TIMESTAMP";
 		sb = sb.substring(0, sb.length() - 1);
 
 		sb += "WHERE " + wherekeys;
@@ -152,7 +154,7 @@ public class DerbySQLHelper {
 	}
 
 	public String builderGet() {
-		return "SELECT " + fieldlist_comma + "  FROM " + this.tableName + " WHERE " + wherekeys;
+		return "SELECT " + fieldlist_comma + ",TIMESTAMP_  FROM " + this.tableName + " WHERE " + wherekeys;
 	}
 
 	public Column[] builderColumns() {

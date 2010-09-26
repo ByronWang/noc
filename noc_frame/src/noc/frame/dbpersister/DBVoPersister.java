@@ -57,10 +57,12 @@ public class DBVoPersister implements Persister<String,Vo> {
 		@Override
 		Vo fillObject(ResultSet resultSet) throws SQLException {
 			Vo v = new VOImp(type);
-			for (int i = 0; i < fields.length; i++) {
+			int i = 0;
+			for (; i < fields.length; i++) {
 				v.put(fields[i].name, resultSet.getString(i + 1));
 				log.trace(fields[i].name + ": " + resultSet.getString(i + 1));
 			}
+			v.put("TIMESTAMP_", resultSet.getTimestamp(i + 1));
 			return v;
 		}
 	};
