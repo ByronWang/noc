@@ -194,12 +194,6 @@ public class DBVoPersister implements Persister<String,Vo> {
 	}
 
 	@Override
-	public void invalidateObject(String key) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public Vo readData(String key) {
 		// TODO Auto-generated method stub
 		return null;

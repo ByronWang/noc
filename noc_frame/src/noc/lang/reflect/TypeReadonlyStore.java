@@ -164,13 +164,6 @@ public class TypeReadonlyStore implements Store<String,Type> {
 	}
 
 	@Override
-	public void invalidateObject(String key) {
-		throw new UnsupportedOperationException();
-		
-	}
-
-
-	@Override
 	public void tearDown() {
 		// TODO Auto-generated method stub
 		

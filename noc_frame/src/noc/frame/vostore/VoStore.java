@@ -47,11 +47,6 @@ public class VoStore implements Store<String,Vo> {
 	}
 
 	@Override
-	public void invalidateObject(String key) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public void setUp() {
 		items = new Hashtable<String, Vo>();
 	}
