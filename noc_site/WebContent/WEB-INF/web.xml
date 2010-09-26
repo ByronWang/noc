@@ -6,6 +6,10 @@
 	<display-name>noc</display-name>
 
 	<context-param>
+		<param-name>debug</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
 		<param-name>define_path</param-name>
 		<param-value>WEB-INF\lib\noc_define.jar</param-value>
 	</context-param>
@@ -22,15 +26,15 @@
 		<param-value>template_work_path</param-value>
 	</context-param>
 	<context-param>
-		<param-name>database_name</param-name>
+		<param-name>db_name</param-name>
 		<param-value>kao_0_0_1</param-value>
 	</context-param>
 	<context-param>
-		<param-name>user_name</param-name>
+		<param-name>db_username</param-name>
 		<param-value>user</param-value>
 	</context-param>
 	<context-param>
-		<param-name>user_password</param-name>
+		<param-name>db_password</param-name>
 		<param-value>password</param-value>
 	</context-param>
 

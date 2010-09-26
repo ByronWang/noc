@@ -10,7 +10,7 @@ import noc.frame.Persister;
 import noc.frame.Store;
 import noc.frame.dbpersister.DerbyConfiguration;
 import noc.frame.vo.Vo;
-import noc.frame.vostore.DataConfiguration;
+import noc.frame.vostore.DataCenterConfiguration;
 import noc.frame.vostore.VoPersistableStore;
 import noc.lang.reflect.Type;
 import noc.lang.reflect.TypeReadonlyStore;
@@ -26,23 +26,25 @@ public class Fact extends Findable<String,Fact.Rule>{
 	static final String DEFINE_PATH = "define_path";
 	static final String BIZ_PATH = "biz_path";
 
-	static final String DATABASE_NAME = "database_name";
-	static final String USER_NAME = "user_name";
-	static final String USER_PASSWORD = "user_password";
+	static final String DATABASE_NAME = "db_name";
+	static final String USER_NAME = "db_username";
+	static final String USER_PASSWORD = "db_password";
+	
+	static final String DEBUG_MODE = "debug";
 
 	static final String TEMPLATE_PATH = "template_path";
 	static final String TEMPLATE_WORK_PATH = "template_work_path";
 
 	private TypeReadonlyStore typeStore;
 	private Configuration templateEngine;
-	private DataConfiguration stores;
+	private DataCenterConfiguration stores;
 	private DerbyConfiguration dbEngine;
 	// Extension
 	final static String TEMPLATE_EXTENSION = ".ftl";
 	final boolean debugMode;
 
 	public Fact(ServletContext context, boolean debugMode) {
-		this.debugMode = debugMode;
+		this.debugMode =  "true".equals(context.getInitParameter(DEBUG_MODE));
 		try {
 
 			typeStore = new TypeReadonlyStore();
@@ -52,7 +54,7 @@ public class Fact extends Findable<String,Fact.Rule>{
 			typeStore.loadJar(context.getRealPath(context.getInitParameter(DEFINE_PATH)));
 			typeStore.loadJar(context.getRealPath(context.getInitParameter(BIZ_PATH)));
 
-			stores = new DataConfiguration(typeStore){
+			stores = new DataCenterConfiguration(typeStore){
 				@Override
 				protected Store<String,?> find(String typeName) {
 					Type type = types.readData(typeName);
@@ -60,8 +62,7 @@ public class Fact extends Findable<String,Fact.Rule>{
 					p.setUp();
 					Store<String,?> store = new VoPersistableStore(this,type, p);
 					store.setUp();
-					items.put(typeName, store);
-					return items.get(typeName);
+					return store;
 				}
 			};
 
@@ -206,13 +207,15 @@ public class Fact extends Findable<String,Fact.Rule>{
 		if (debugMode) {
 			rule = new DebugRule(this, typeName);
 		} else {
-			rule = new Rule(typeName, typeStore.readData(typeName), getStore(typeName), getTemplate(typeName, "list"),
-					getTemplate(typeName, "edit"), getTemplate(typeName, "edit"), getTemplate(typeName, "menu"),
+			rule = new Rule(typeName, 
+					typeStore.readData(typeName), 
+					getStore(typeName), 
+					getTemplate(typeName, "list"),
+					getTemplate(typeName, "edit"), 
+					getTemplate(typeName, "edit"), 
+					getTemplate(typeName, "menu"),
 					getTemplate(typeName, "popup"));
 		}
-		
-		items.put(typeName, rule);
-		rule = items.get(typeName);
 		return rule;
 	}
 }
