@@ -38,32 +38,39 @@ public class DBVoPersister implements Persister<String,Vo> {
 	final String SQL_LIST;
 	final String SQL_COUNT;
 
-	final Column[] fields;
+	final Column[] columns;
+	final String[] realFields;
 	final Column[] keyColumns;
 	DerbySQLHelper builder;
+	
+	final Map<String,Integer> map;
+	
 
+	final String[] systemFields = new String[]{"TIMESTAMP_"};
 	SimpleHelper<Vo> helper = new SimpleHelper<Vo>() {
 
 		@Override
 		int fillParameter(PreparedStatement prepareStatement, Vo v) throws SQLException {
 			int i = 0;
-			for (; i < fields.length; i++) {
-				prepareStatement.setString(i + 1, String.valueOf(v.get(fields[i].name)));
-				log.debug((i + 1) + ": " + String.valueOf(v.get(fields[i].name)));
+			for (; i < columns.length; i++) {
+				prepareStatement.setString(i + 1, String.valueOf(v.get(columns[i].name)));
+				log.debug((i + 1) + ": " + String.valueOf(v.get(columns[i].name)));
 			}
 			return i;
 		}
 
 		@Override
 		Vo fillObject(ResultSet resultSet) throws SQLException {
-			Vo v = new VOImp(type);
+			List<Object> data = new ArrayList<Object>(realFields.length + systemFields.length);
+
 			int i = 0;
-			for (; i < fields.length; i++) {
-				v.put(fields[i].name, resultSet.getString(i + 1));
-				log.trace(fields[i].name + ": " + resultSet.getString(i + 1));
+			for (; i < columns.length; i++) {
+				data.add(resultSet.getString(i + 1));
+				log.trace(columns[i].name + ": " + resultSet.getString(i + 1));
 			}
-			v.put("TIMESTAMP_", resultSet.getTimestamp(i + 1));
-			return v;
+			data.add(resultSet.getTimestamp(i + 1));
+
+			return new DBReadOnlyVO(type, map, realFields, data);
 		}
 	};
 
@@ -83,11 +90,24 @@ public class DBVoPersister implements Persister<String,Vo> {
 		SQL_UPDATE = builder.builderUpdate();
 		SQL_DELETE = builder.builderDelete();
 
-		fields = builder.builderColumns();
+		columns = builder.builderColumns();
+		
+		realFields = new String[columns.length];
+		for(int i=0;i<columns.length;i++){
+			realFields[i] = columns[i].name;
+		}
+		
 		SQL_COUNT = builder.builderCount();
 		SQL_LIST = builder.builderList();
 
 		keyColumns = builder.keyColumns;
+		
+		
+		Map<String,Integer> tmpMap = new HashMap<String, Integer>();
+		for(int i=0;i<realFields.length;i++){
+			tmpMap.put(realFields[i], i);
+		}
+		map = tmpMap;
 	}
 
 	public void setUp() {
@@ -111,7 +131,7 @@ public class DBVoPersister implements Persister<String,Vo> {
 				}
 
 				ArrayList<String> noCol = new ArrayList<String>();
-				for (Column f : fields) {
+				for (Column f : columns) {
 					if (!cols.containsKey(f.name.toUpperCase())) {
 						noCol.add(f.name);
 					}

@@ -29,7 +29,7 @@ public class VoPersistableStore extends VoStore {
 		log.debug("== Load init data from Persister ==");
 		log.debug("  List Size : " + list.size());
 		for (Vo v : list) {
-			this.items.put(v.getIndentify(), new VoReadOnlyAgent(v));
+			this.items.put(v.getIndentify(), v);
 			log.debug(v);
 		}
 	}

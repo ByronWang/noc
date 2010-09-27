@@ -68,5 +68,15 @@ public class VoAgent implements Vo {
 		return beModified;
 	}
 
+	@Override
+	public Object get(int i) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int size() {
+		throw new UnsupportedOperationException();
+	}
+
 
 }

@@ -30,4 +30,14 @@ public class VoReadOnlyAgent implements Vo {
 		return source.getCanonicalForm();
 	}
 
+	@Override
+	public Object get(int i) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int size() {
+		throw new UnsupportedOperationException();
+	}
+
 }

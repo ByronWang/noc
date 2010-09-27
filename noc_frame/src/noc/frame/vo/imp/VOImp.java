@@ -124,6 +124,16 @@ public class VOImp implements Vo {
 		return indentify;
 	}
 
+	@Override
+	public Object get(int i) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int size() {
+		throw new UnsupportedOperationException();
+	}
+
 	// @Override public String getKeyValue() {
 	// return this.keyValue;
 	// }
