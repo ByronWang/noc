@@ -11,7 +11,7 @@
 
 [#macro input field parent="data"]<#compress>
 		<#if ${parent}??>
-			<#assign value=${parent}.${field.name}/>
+			<#assign value=${parent}.${field.name}!/>
 		<#else>
 			<#assign value=""/>			
 		</#if>

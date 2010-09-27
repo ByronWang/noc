@@ -28,7 +28,7 @@
 							[#case "Reference"]
 							[#case "Cascade"]
 								<#if item.${f.name}??>
-									[#list f.type.fields as rF][#if rF.importance == "PrimaryKey"]${r"${item." + f.name + "." + rF.name + "}"}[/#if][/#list]
+									[#list f.type.fields as rF][#if rF.importance == "PrimaryKey"]${r"${item." + f.name + "." + rF.name + "!}"}[/#if][/#list]
 								<#else>
 									Null
 								</#if>

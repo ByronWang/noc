@@ -8,7 +8,7 @@ import javax.servlet.ServletContext;
 import noc.frame.Findable;
 import noc.frame.Persister;
 import noc.frame.Store;
-import noc.frame.dbpersister.derby.DerbyConfiguration;
+import noc.frame.dbpersister.DbConfiguration;
 import noc.frame.vo.Vo;
 import noc.frame.vostore.DataCenterConfiguration;
 import noc.frame.vostore.VoPersistableStore;
@@ -21,15 +21,16 @@ import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 
-public class Fact extends Findable<String,Fact.Rule>{
+public class Fact extends Findable<String, Fact.Rule> {
 
 	static final String DEFINE_PATH = "define_path";
 	static final String BIZ_PATH = "biz_path";
 
+	static final String DB_DRIVERCLASS = "db_driverclass";
 	static final String DB_URL = "db_url";
-	static final String DB_UserName = "db_username";
+	static final String DB_USERNAME = "db_username";
 	static final String DB_PASSWORD = "db_password";
-	
+
 	static final String DEBUG_MODE = "debug";
 
 	static final String TEMPLATE_PATH = "template_path";
@@ -37,14 +38,14 @@ public class Fact extends Findable<String,Fact.Rule>{
 
 	private TypeReadonlyStore typeStore;
 	private Configuration templateEngine;
-	private DataCenterConfiguration stores;
-	private DerbyConfiguration dbEngine;
+	private DataCenterConfiguration storeEngine;
+	private DbConfiguration dbEngine;
 	// Extension
 	final static String TEMPLATE_EXTENSION = ".ftl";
 	final boolean debugMode;
 
 	public Fact(ServletContext context, boolean debugMode) {
-		this.debugMode =  "true".equals(context.getInitParameter(DEBUG_MODE));
+		this.debugMode = "true".equals(context.getInitParameter(DEBUG_MODE));
 		try {
 
 			typeStore = new TypeReadonlyStore();
@@ -54,13 +55,13 @@ public class Fact extends Findable<String,Fact.Rule>{
 			typeStore.loadJar(context.getRealPath(context.getInitParameter(DEFINE_PATH)));
 			typeStore.loadJar(context.getRealPath(context.getInitParameter(BIZ_PATH)));
 
-			stores = new DataCenterConfiguration(typeStore){
+			storeEngine = new DataCenterConfiguration(typeStore) {
 				@Override
-				protected Store<String,?> find(String typeName) {
+				protected Store<String, ?> find(String typeName) {
 					Type type = types.readData(typeName);
-					Persister<String,Vo> p = dbEngine.getPersister(Vo.class, type);
+					Persister<String, Vo> p = dbEngine.getPersister(Vo.class, type);
 					p.setUp();
-					Store<String,?> store = new VoPersistableStore(this,type, p);
+					Store<String, ?> store = new VoPersistableStore(this, type, p);
 					store.setUp();
 					return store;
 				}
@@ -69,8 +70,7 @@ public class Fact extends Findable<String,Fact.Rule>{
 			File tempateFolder = new File(context.getRealPath(context.getInitParameter(TEMPLATE_PATH)));
 			File templateWorkFolder = new File(context.getRealPath(context.getInitParameter(TEMPLATE_WORK_PATH)));
 
-			if (templateWorkFolder.exists())
-				templateWorkFolder.delete();
+			if (templateWorkFolder.exists()) templateWorkFolder.delete();
 			templateWorkFolder.mkdir();
 
 			TemplateLoader[] loaders = new TemplateLoader[] {
@@ -84,14 +84,9 @@ public class Fact extends Findable<String,Fact.Rule>{
 			templateEngine.setSharedVariable("contextPath", context.getContextPath());
 			templateEngine.setObjectWrapper(new DefaultObjectWrapper());
 
-			if("DERBY".equals(context.getInitParameter(DB_URL).split(":")[1].toUpperCase())){
-				dbEngine = new DerbyConfiguration(context.getInitParameter(DB_URL), context
-						.getInitParameter(DB_UserName), context.getInitParameter(DB_PASSWORD));
-				dbEngine.init();				
-			}else{
-				throw new UnsupportedOperationException();
-			}
-
+			dbEngine = DbConfiguration.getEngine(context.getInitParameter(DB_DRIVERCLASS), context
+					.getInitParameter(DB_URL), context.getInitParameter(DB_USERNAME), context
+					.getInitParameter(DB_PASSWORD));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -107,21 +102,21 @@ public class Fact extends Findable<String,Fact.Rule>{
 
 	}
 
-	private Store<String,?> getStore(String typeName) {
-		return stores.get(typeName);
+	private Store<String, ?> getStore(String typeName) {
+		return storeEngine.get(typeName);
 	}
 
 	public class Rule {
 		protected String typeName;
 		private Type type;
-		private Store<String,?> store;
+		private Store<String, ?> store;
 		private Template listTemplate;
 		private Template editTemplate;
 		private Template newTemplate;
 		private Template menuTemplate;
 		private Template popupTemplate;
 
-		private Rule(String typeName, Type type, Store<String,?> store, Template listTemplate, Template editTemplate,
+		private Rule(String typeName, Type type, Store<String, ?> store, Template listTemplate, Template editTemplate,
 				Template newTemplate, Template menuTemplate, Template popupTemplate) {
 			super();
 			this.typeName = typeName;
@@ -138,7 +133,7 @@ public class Fact extends Findable<String,Fact.Rule>{
 			return type;
 		}
 
-		public Store<String,?> getStore() {
+		public Store<String, ?> getStore() {
 			return store;
 		}
 
@@ -175,7 +170,7 @@ public class Fact extends Findable<String,Fact.Rule>{
 			return typeStore.readData(typeName);
 		}
 
-		public Store<String,?> getStore() {
+		public Store<String, ?> getStore() {
 			return fact.getStore(typeName);
 		}
 
@@ -207,17 +202,12 @@ public class Fact extends Findable<String,Fact.Rule>{
 	@Override
 	protected Rule find(String typeName) {
 		Rule rule = null;
-		
+
 		if (debugMode) {
 			rule = new DebugRule(this, typeName);
 		} else {
-			rule = new Rule(typeName, 
-					typeStore.readData(typeName), 
-					getStore(typeName), 
-					getTemplate(typeName, "list"),
-					getTemplate(typeName, "edit"), 
-					getTemplate(typeName, "edit"), 
-					getTemplate(typeName, "menu"),
+			rule = new Rule(typeName, typeStore.readData(typeName), getStore(typeName), getTemplate(typeName, "list"),
+					getTemplate(typeName, "edit"), getTemplate(typeName, "edit"), getTemplate(typeName, "menu"),
 					getTemplate(typeName, "popup"));
 		}
 		return rule;

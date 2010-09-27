@@ -25,6 +25,11 @@
 		<param-name>template_work_path</param-name>
 		<param-value>template_work_path</param-value>
 	</context-param>
+	<!-- 
+	<context-param>
+		<param-name>db_driverclass</param-name>
+		<param-value>org.apache.derby.jdbc.EmbeddedDriver</param-value>
+	</context-param>
 	<context-param>
 		<param-name>db_url</param-name>
 		<param-value>jdbc:derby:kao_0_0_1_test_TIMESTAMP;create=true</param-value>
@@ -37,7 +42,24 @@
 		<param-name>db_password</param-name>
 		<param-value>password</param-value>
 	</context-param>
+ -->
 
+	<context-param>
+		<param-name>db_driverclass</param-name>
+		<param-value>oracle.jdbc.driver.OracleDriver</param-value>
+	</context-param>
+	<context-param>
+		<param-name>db_url</param-name>
+		<param-value>jdbc:oracle:thin:@192.168.239.231:1521:noc</param-value>
+	</context-param>
+	<context-param>
+		<param-name>db_username</param-name>
+		<param-value>noc</param-value>
+	</context-param>
+	<context-param>
+		<param-name>db_password</param-name>
+		<param-value>noc</param-value>
+	</context-param>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>index.htm</welcome-file>

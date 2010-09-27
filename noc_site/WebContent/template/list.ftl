@@ -59,7 +59,7 @@
 							[#if f.type.name == "noc.lang.Bool"]
 								<#if item.${f.name}>True<#else>false</#if>
 							[#else]
-								${r"${item."+ f.name + "}"}
+								${r"${item."+ f.name + "!}"}
 							[/#if]
 						[/#if]			
 						[#break]
