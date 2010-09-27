@@ -1,27 +1,19 @@
-package noc.frame.dbpersister;
+package noc.frame.dbpersister.derby;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import noc.frame.dbpersister.DbColumn;
+import noc.frame.dbpersister.SqlHelper;
 import noc.lang.reflect.Field;
 import noc.lang.reflect.Type;
 
-public class DerbySQLHelper {
+public class DerbySQLHelper implements SqlHelper {
 
 	Type clz;
 
-	class Column {
-		Column(String name, boolean key) {
-			this.name = name;
-			this.key = key;
-		}
-
-		String name;
-		boolean key;
-	}
-
-	final Column[] columns;
-	final Column[] keyColumns;
+	final DbColumn[] columns;
+	final DbColumn[] keyColumns;
 	final String tableName;
 	final String fieldlist_comma;
 	final String fieldlist_questions;
@@ -35,12 +27,12 @@ public class DerbySQLHelper {
 
 			List<Field> fl = type.getFields();
 
-			ArrayList<Column> fs = new ArrayList<Column>();
+			ArrayList<DbColumn> fs = new ArrayList<DbColumn>();
 			for (Field f : fl) {
 				if (f.isArray()) {
 					// TODO
 				} else if (f.getRefer().equals(Field.Scala)) {
-					fs.add(new Column(decodeFieldName(type.getName(), f.getName()),
+					fs.add(new DbColumn(decodeFieldName(type.getName(), f.getName()),
 							f.getImportance() == Field.PrimaryKey));
 				} else if (f.getRefer().equals(Field.Inline)) {
 					// TODO fs.add(f.getName() + "_" +
@@ -48,7 +40,7 @@ public class DerbySQLHelper {
 				} else if (f.getRefer().equals(Field.Reference)) {
 					for (Field referField : f.getType().getFields()) {
 						if (referField.getImportance() == Field.PrimaryKey || referField.getImportance() == Field.Core) {
-							fs.add(new Column(decodeFieldName(type.getName(), f.getName()) + "_"
+							fs.add(new DbColumn(decodeFieldName(type.getName(), f.getName()) + "_"
 									+ decodeFieldName(f.getType().getName(), referField.getName()),
 									f.getImportance() == Field.PrimaryKey));
 						}
@@ -58,10 +50,10 @@ public class DerbySQLHelper {
 
 			StringBuilder sb = new StringBuilder();
 			StringBuilder sbq = new StringBuilder();
-			ArrayList<Column> kfs = new ArrayList<Column>();
+			ArrayList<DbColumn> kfs = new ArrayList<DbColumn>();
 			String sql = "";
 
-			for (Column column : fs) {
+			for (DbColumn column : fs) {
 				sb.append(column.name);
 				sb.append(',');
 				sbq.append("?,");
@@ -72,10 +64,10 @@ public class DerbySQLHelper {
 				}
 			}
 
-			this.keyColumns = kfs.toArray(new Column[0]);
+			this.keyColumns = kfs.toArray(new DbColumn[0]);
 			this.wherekeys = sql.substring(0, sql.length() - 4);
 
-			this.columns = fs.toArray(new Column[0]);
+			this.columns = fs.toArray(new DbColumn[0]);
 			this.fieldlist_comma = sb.substring(0, sb.length() - 1);
 			this.fieldlist_questions = sbq.substring(0, sbq.length() - 1);
 
@@ -121,7 +113,7 @@ public class DerbySQLHelper {
 
 		sb.append("CREATE TABLE ").append(this.tableName).append("(");
 
-		for (Column column : this.columns) {
+		for (DbColumn column : this.columns) {
 			sb.append(column.name).append(" varchar(40)").append(",");
 		}
 		sb.append("TIMESTAMP_").append(" TIMESTAMP");
@@ -139,7 +131,7 @@ public class DerbySQLHelper {
 	public String builderUpdate() {
 		String sb = "UPDATE " + this.tableName + " SET ";
 
-		for (Column column : this.columns) {
+		for (DbColumn column : this.columns) {
 			sb += column.name + " = ? ,";
 		}
 		sb += " TIMESTAMP_= CURRENT_TIMESTAMP";
@@ -157,7 +149,11 @@ public class DerbySQLHelper {
 		return "SELECT " + fieldlist_comma + ",TIMESTAMP_  FROM " + this.tableName + " WHERE " + wherekeys;
 	}
 
-	public Column[] builderColumns() {
+	public DbColumn[] builderColumns() {
 		return this.columns;
+	}
+
+	public DbColumn[] getKeyColumns() {
+		return keyColumns;
 	}
 }

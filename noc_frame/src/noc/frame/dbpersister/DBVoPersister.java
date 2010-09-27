@@ -12,9 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 import noc.frame.Persister;
-import noc.frame.dbpersister.DerbySQLHelper.Column;
+import noc.frame.dbpersister.derby.DerbySQLHelper;
 import noc.frame.vo.Vo;
-import noc.frame.vo.imp.VOImp;
 import noc.lang.reflect.Type;
 
 import org.apache.commons.logging.Log;
@@ -38,16 +37,16 @@ public class DBVoPersister implements Persister<String,Vo> {
 	final String SQL_LIST;
 	final String SQL_COUNT;
 
-	final Column[] columns;
+	final DbColumn[] columns;
 	final String[] realFields;
-	final Column[] keyColumns;
-	DerbySQLHelper builder;
+	final DbColumn[] keyColumns;
+	final SqlHelper builder;
 	
 	final Map<String,Integer> map;
 	
 
 	final String[] systemFields = new String[]{"TIMESTAMP_"};
-	SimpleHelper<Vo> helper = new SimpleHelper<Vo>() {
+	SqlExecuteeHelper<Vo> helper = new SqlExecuteeHelper<Vo>() {
 
 		@Override
 		int fillParameter(PreparedStatement prepareStatement, Vo v) throws SQLException {
@@ -74,11 +73,11 @@ public class DBVoPersister implements Persister<String,Vo> {
 		}
 	};
 
-	public DBVoPersister(Type type, Connection conn) {
+	public DBVoPersister(Connection conn,Type type,SqlHelper helper) {
 		this.type = type;
 		this.conn = conn;
 
-		builder = DerbySQLHelper.builder(type);
+		builder = helper;
 		this.tableName = builder.getTableName();
 
 		SQL_DROP = builder.builderDrop();
@@ -100,9 +99,8 @@ public class DBVoPersister implements Persister<String,Vo> {
 		SQL_COUNT = builder.builderCount();
 		SQL_LIST = builder.builderList();
 
-		keyColumns = builder.keyColumns;
-		
-		
+		keyColumns = builder.getKeyColumns();
+				
 		Map<String,Integer> tmpMap = new HashMap<String, Integer>();
 		for(int i=0;i<realFields.length;i++){
 			tmpMap.put(realFields[i], i);
@@ -131,7 +129,7 @@ public class DBVoPersister implements Persister<String,Vo> {
 				}
 
 				ArrayList<String> noCol = new ArrayList<String>();
-				for (Column f : columns) {
+				for (DbColumn f : columns) {
 					if (!cols.containsKey(f.name.toUpperCase())) {
 						noCol.add(f.name);
 					}

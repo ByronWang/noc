@@ -10,8 +10,8 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public abstract class SimpleHelper<T> {
-	private static final Log log = LogFactory.getLog(SimpleHelper.class);
+public abstract class SqlExecuteeHelper<T> {
+	private static final Log log = LogFactory.getLog(SqlExecuteeHelper.class);
 
 	T get(Connection conn, String sql, Object... keys) {
 		PreparedStatement statement = null;
