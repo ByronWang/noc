@@ -131,9 +131,7 @@ public class SqlHelper {
 		for (DbColumn column : this.columns) {
 			sb += column.name + " = ? ,";
 		}
-		sb += " TIMESTAMP_= CURRENT_TIMESTAMP";
-		sb = sb.substring(0, sb.length() - 1);
-
+		sb += " TIMESTAMP_= CURRENT_TIMESTAMP ";
 		sb += "WHERE " + wherekeys + "";
 		return sb.toString();
 	}

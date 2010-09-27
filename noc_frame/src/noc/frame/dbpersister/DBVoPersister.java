@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import noc.frame.Persister;
-import noc.frame.dbpersister.derby.DerbySQLHelper;
 import noc.frame.vo.Vo;
 import noc.lang.reflect.Type;
 
@@ -170,29 +169,33 @@ public class DBVoPersister implements Persister<String,Vo> {
 		for (int i = 0; i < keyColumns.length; i++) {
 			keys[i] = value.get(keyColumns[i].name).toString();
 		}
-		Vo v = this.get(keys);
+		Vo v = this.get((Object[])keys);
 
 		if (v == null) {
 			this.doInsert(value);
 		} else {
-			this.doUpdate(value, keys);
+			this.doUpdate(value, (Object[])keys);
 		}
-		return (Vo) this.get(keys);
+		return (Vo) this.get((Object[])keys);
 	}
 
 	protected void doUpdate(Vo value, Object... keys) {
+		log.debug(SQL_UPDATE + " : " +  value);
 		helper.execute(conn, SQL_UPDATE, value, keys);
 	}
 
 	protected void doInsert(Vo value) {
+		log.debug(SQL_INSERT + " : " +  value);
 		helper.execute(conn, SQL_INSERT, value);
 	}
 
 	public void delete(Vo value) {
+		log.debug(SQL_DELETE + " : " +  value);
 		helper.execute(conn, SQL_DELETE, value);
 	}
 
 	public Vo get(Object... keys) {
+		log.debug(SQL_GET + " : " +  keys);
 		return helper.get(conn, SQL_GET, keys);
 	}
 
