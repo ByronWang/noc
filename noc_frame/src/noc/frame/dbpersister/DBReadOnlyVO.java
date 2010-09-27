@@ -63,7 +63,6 @@ public class DBReadOnlyVO implements Vo {
 
 	@Override
 	public Object get(String name) {
-		System.out.println(name);
 		return data.get(map.get(name));
 	}
 
