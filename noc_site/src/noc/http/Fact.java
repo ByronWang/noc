@@ -8,7 +8,7 @@ import javax.servlet.ServletContext;
 import noc.frame.Findable;
 import noc.frame.Persister;
 import noc.frame.Store;
-import noc.frame.dbpersister.DerbyConfiguration;
+import noc.frame.dbpersister.derby.DerbyConfiguration;
 import noc.frame.vo.Vo;
 import noc.frame.vostore.DataCenterConfiguration;
 import noc.frame.vostore.VoPersistableStore;
@@ -26,9 +26,9 @@ public class Fact extends Findable<String,Fact.Rule>{
 	static final String DEFINE_PATH = "define_path";
 	static final String BIZ_PATH = "biz_path";
 
-	static final String DATABASE_NAME = "db_name";
-	static final String USER_NAME = "db_username";
-	static final String USER_PASSWORD = "db_password";
+	static final String DB_URL = "db_url";
+	static final String DB_UserName = "db_username";
+	static final String DB_PASSWORD = "db_password";
 	
 	static final String DEBUG_MODE = "debug";
 
@@ -84,9 +84,13 @@ public class Fact extends Findable<String,Fact.Rule>{
 			templateEngine.setSharedVariable("contextPath", context.getContextPath());
 			templateEngine.setObjectWrapper(new DefaultObjectWrapper());
 
-			dbEngine = new DerbyConfiguration(context.getInitParameter(DATABASE_NAME), context
-					.getInitParameter(USER_NAME), context.getInitParameter(USER_PASSWORD));
-			dbEngine.init();
+			if("DERBY".equals(context.getInitParameter(DB_URL).split(":")[1].toUpperCase())){
+				dbEngine = new DerbyConfiguration(context.getInitParameter(DB_URL), context
+						.getInitParameter(DB_UserName), context.getInitParameter(DB_PASSWORD));
+				dbEngine.init();				
+			}else{
+				throw new UnsupportedOperationException();
+			}
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);

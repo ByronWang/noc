@@ -26,8 +26,8 @@
 		<param-value>template_work_path</param-value>
 	</context-param>
 	<context-param>
-		<param-name>db_name</param-name>
-		<param-value>kao_0_0_1_test_TIMESTAMP</param-value>
+		<param-name>db_url</param-name>
+		<param-value>jdbc:derby:kao_0_0_1_test_TIMESTAMP;create=true</param-value>
 	</context-param>
 	<context-param>
 		<param-name>db_username</param-name>
