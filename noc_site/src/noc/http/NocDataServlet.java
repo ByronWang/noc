@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import noc.frame.Store;
 import noc.frame.vo.Vo;
 import noc.freemarker.DefaultModel;
+import noc.freemarker.VoModel;
 import noc.http.Fact.Rule;
 
 import org.apache.commons.logging.Log;
