@@ -68,7 +68,7 @@ public class DBVoPersister implements Persister<String,Vo> {
 			}
 			data.add(resultSet.getTimestamp(i + 1));
 
-			return new DBReadOnlyVO(type, map, realFields, data);
+			return new DBReadOnlyVO(type, realFields, data);
 		}
 	};
 

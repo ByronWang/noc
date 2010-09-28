@@ -1,6 +1,7 @@
 package noc.frame.dbpersister;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +11,7 @@ import noc.lang.reflect.Type;
 
 public class DBReadOnlyVO implements Vo {
 	final Type type;
-	final Map<String, Integer> map;
+	final Map<String, Object> map;
 	final String[] realFields;
 	
 	final List<Object> data;
@@ -19,9 +20,9 @@ public class DBReadOnlyVO implements Vo {
 	final String m_String;
 	final String m_CanonicalForm;
 
-	public DBReadOnlyVO(Type type, Map<String, Integer> map,String[] realFields, List<Object> data) {
+	public DBReadOnlyVO(Type type, String[] realFields, List<Object> data) {
 		this.type = type;
-		this.map = map;
+		this.map = new HashMap<String, Object>();
 		this.data = data;
 		this.realFields = realFields;
 		
@@ -31,6 +32,10 @@ public class DBReadOnlyVO implements Vo {
 			if (field.getImportance() == Field.PrimaryKey) {
 				primaryKeys.add(field.getName());
 			}
+		}
+		
+		for(int i =0;i<realFields.length;i++){
+			map.put(realFields[i], data.get(i));
 		}
 		
 		String indentify = null;
@@ -63,7 +68,7 @@ public class DBReadOnlyVO implements Vo {
 
 	@Override
 	public Object get(String name) {
-		return data.get(map.get(name));
+		return map.get(name);
 	}
 
 	@Override
