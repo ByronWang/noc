@@ -45,24 +45,22 @@ public class NocDataServlet extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
-		log.info((++count) + "==    START    Request  :  " + request.getPathInfo());
 		request.setCharacterEncoding("UTF-8");
 
-		String path = request.getPathInfo();
-		log.debug("Path: " + path);
-		int last = path.lastIndexOf('/');
-		String typeName = path.substring(1, last).replace('/', '.');
+		String[] path = request.getPathInfo().split("/");
+		String typeName = path[1] + "." + path[2] + "." + path[3];
+		if (path.length > 4) {
+			String key = path[4];
+			request.setAttribute("Key_", key);
+		}
+
 		Rule rule = fact.get(typeName);
-		String key = path.substring(last + 1);
-		log.debug("Key: " + key);
-		request.setAttribute("_Rule", rule);
-		request.setAttribute("_Key", key);
+		request.setAttribute("Rule_", rule);
 
 		if (log.isTraceEnabled()) {
 			PrintObejct.print(request);
 		}
 		super.service(request, response);
-		log.info(count + "==    FINISH    Request  :  " + request.getPathInfo());
 	}
 
 	// protected Template getTemplate(String typeName, String mode) {
@@ -76,8 +74,8 @@ public class NocDataServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 
-			Rule rule = (Rule) request.getAttribute("_Rule");
-			String key = (String) request.getAttribute("_Key");
+			Rule rule = (Rule) request.getAttribute("Rule_");
+			String key = (String) request.getAttribute("Key_");
 			if (rule == null) {
 				response.sendError(400);
 				return;
@@ -86,7 +84,7 @@ public class NocDataServlet extends HttpServlet {
 			Template template = null;
 			Object data = null;
 
-			if (key.length() == 0) { // Path
+			if (key == null) { // Path
 				String mode = request.getQueryString();
 				log.debug("mode: " + mode);
 
@@ -130,27 +128,28 @@ public class NocDataServlet extends HttpServlet {
 			throw new RuntimeException(e);
 		}
 	}
-	void processTemplate(Template template, Object data, 
-			HttpServletResponse response) throws TemplateException, IOException  {
+
+	void processTemplate(Template template, Object data, HttpServletResponse response) throws TemplateException,
+			IOException {
 		response.setContentType("text/html; charset=UTF-8");
 		Map<String, Object> root = new HashMap<String, Object>();
 		root.put("data", data);
 		template.process(root, response.getWriter());
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 
-			Rule rule = (Rule) request.getAttribute("_Rule");
-			String key = (String) request.getAttribute("_Key");
+			Rule rule = (Rule) request.getAttribute("Rule_");
+			String key = (String) request.getAttribute("Key_");
 
-			Map<?,?> source = request.getParameterMap();
-			
-			Store<String,Vo> store = (Store<String,Vo>) rule.getStore();			
-			Vo dest = store.borrowData(key);			
-			VoHelper.putAll(source, dest, rule.getType());			
+			Map<?, ?> source = request.getParameterMap();
+
+			Store<String, Vo> store = (Store<String, Vo>) rule.getStore();
+			Vo dest = store.borrowData(key);
+			VoHelper.putAll(source, dest, rule.getType());
 			store.returnData(key, dest);
 
 			doGet(request, response);
@@ -169,16 +168,16 @@ public class NocDataServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		try {
 
-			Rule rule = (Rule) request.getAttribute("_Rule");
-			String key = (String) request.getAttribute("_Key");
+			Rule rule = (Rule) request.getAttribute("Rule_");
+			String key = (String) request.getAttribute("Key_");
 
-			if (key.length() == 0) { // Path
+			if (key == null) { // Path
 
-				Map<?,?> source = request.getParameterMap();
-				
-				Store<String,Vo> store = (Store<String,Vo>) rule.getStore();
-				Vo dest = store.borrowData(null);				
-				dest = VoHelper.putAll(source, dest, rule.getType());				
+				Map<?, ?> source = request.getParameterMap();
+
+				Store<String, Vo> store = (Store<String, Vo>) rule.getStore();
+				Vo dest = store.borrowData(null);
+				dest = VoHelper.putAll(source, dest, rule.getType());
 				store.returnData(dest.getIndentify(), dest);
 
 				String toPath = request.getContextPath() + "/basic/" + rule.typeName.replace('.', '/') + "/"
