@@ -1,5 +1,7 @@
-package data.seq;
+package kao.transaction;
 
+import kao.master.Customer;
+import kao.master.CustomerGroup;
 import noc.annotation.DisplayName;
 import noc.lang.Attr;
 import noc.lang.Code;
@@ -10,8 +12,6 @@ import noc.lang.Desc;
 import noc.lang.ID;
 import noc.lang.List;
 import noc.lang.NumberValue;
-import data.kao.Customer;
-import data.kao.CustomerGroup;
 
 @DisplayName("订单")
 public class Order {
