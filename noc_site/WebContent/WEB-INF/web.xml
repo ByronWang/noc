@@ -25,7 +25,7 @@
 		<param-name>template_work_path</param-name>
 		<param-value>template_work_path</param-value>
 	</context-param>
-	<!-- 
+	
 	<context-param>
 		<param-name>db_driverclass</param-name>
 		<param-value>org.apache.derby.jdbc.EmbeddedDriver</param-value>
@@ -42,8 +42,7 @@
 		<param-name>db_password</param-name>
 		<param-value>password</param-value>
 	</context-param>
- -->
-
+<!-- 
 	<context-param>
 		<param-name>db_driverclass</param-name>
 		<param-value>oracle.jdbc.driver.OracleDriver</param-value>
@@ -60,6 +59,7 @@
 		<param-name>db_password</param-name>
 		<param-value>noc</param-value>
 	</context-param>
+ -->
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>index.htm</welcome-file>
