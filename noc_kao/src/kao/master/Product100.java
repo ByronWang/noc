@@ -1,13 +1,12 @@
-package data.kao;
+package kao.master;
 
 import noc.annotation.DisplayName;
 import noc.annotation.PrimaryKey;
 import noc.lang.Attr;
 import noc.lang.Code;
-import noc.lang.Name;
 
 @DisplayName("产品")
-public class Product50 {
+public class Product100 {
 	@PrimaryKey
 	Code code;
 	Attr code02;
@@ -59,4 +58,54 @@ public class Product50 {
 	Attr code48;
 	Attr code49;
 	Attr code50;
+	Attr code51;
+	Attr code52;
+	Attr code53;
+	Attr code54;
+	Attr code55;
+	Attr code56;
+	Attr code57;
+	Attr code58;
+	Attr code59;
+	Attr code60;
+	Attr code61;
+	Attr code62;
+	Attr code63;
+	Attr code64;
+	Attr code65;
+	Attr code66;
+	Attr code67;
+	Attr code68;
+	Attr code69;
+	Attr code70;
+	Attr code71;
+	Attr code72;
+	Attr code73;
+	Attr code74;
+	Attr code75;
+	Attr code76;
+	Attr code77;
+	Attr code78;
+	Attr code79;
+	Attr code80;
+	Attr code81;
+	Attr code82;
+	Attr code83;
+	Attr code84;
+	Attr code85;
+	Attr code86;
+	Attr code87;
+	Attr code88;
+	Attr code89;
+	Attr code90;
+	Attr code91;
+	Attr code92;
+	Attr code93;
+	Attr code94;
+	Attr code95;
+	Attr code96;
+	Attr code97;
+	Attr code98;
+	Attr code99;
+	Attr code100;
 }

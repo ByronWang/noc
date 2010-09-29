@@ -1,4 +1,4 @@
-package data.kao;
+package kao.master;
 
 import noc.annotation.Core;
 import noc.annotation.DisplayName;

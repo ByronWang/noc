@@ -1,12 +1,11 @@
-package data.kao;
+package kao.master;
 
 import noc.annotation.DisplayName;
 import noc.lang.Code;
 import noc.lang.Name;
 
-@DisplayName("销售员")
-public class Sales {
+@DisplayName("销售办公室")
+public class SalesOffice {
 	Code 代码;
 	Name 名称;
-	SalesOffice 销售办公室;
 }
