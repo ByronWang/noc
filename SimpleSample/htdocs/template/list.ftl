@@ -3,18 +3,18 @@
 	[#if tp.name?matches("noc.lang[.].*")]
    	&lt; ${tp.name?replace("noc.lang.", "")}
 	[#else]
-		&lt; <a href="${contextPath}${r"${urlPath!}"}${tp.name?replace(".", "/")}/">${tp.name}<a>
+		&lt; <a href="${r"${urlPath!}"}${tp.name?replace(".", "/")}/">${tp.name}<a>
 	[/#if]
 [/#macro]
 
 
 [#macro body title]
 <html><head>
-<link rel='stylesheet' href='/noc/css/form.css' type='text/css'/>
+<link rel='stylesheet' href='/css/form.css' type='text/css'/>
 <title>${title}</title>
 </head>
 <body>
-<a style="float:right;" href="/noc/basic/noc/lang/reflect/Type/${type.name}">Type</a>
+<a style="float:right;" href="/basic/lang/reflect/Type/${type.name}">Type</a>
 
 <h1>${title}</h1>
 [#nested/]
@@ -99,6 +99,6 @@
 </#compress>[/#macro]
 
 <div class="action">
-<a href="${contextPath}/basic/${type.name?replace(".","/")}/?new">Add New</a>
+<a href="/basic/${type.name?replace(".","/")}/?new">Add New</a>
 </div>
 [/@body]

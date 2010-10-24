@@ -1,4 +1,4 @@
-package httpd;
+package httpd.resource;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -60,16 +60,45 @@ public class StaticResource implements Resource {
      */
     private static Hashtable<String, String> theMimeTypes = new Hashtable<String, String>();
     static {
-        StringTokenizer st = new StringTokenizer("htm        text/html " + "html       text/html "
-                + "txt        text/plain " +
-
-                "java        text/plain " +
-
-                "asc        text/plain " + "gif        image/gif " + "jpg        image/jpeg "
-                + "jpeg       image/jpeg " + "png        image/png " + "mp3        audio/mpeg "
-                + "m3u        audio/mpeg-url " + "pdf        application/pdf " + "doc        application/msword "
-                + "ogg        application/x-ogg " + "zip        application/octet-stream "
-                + "exe        application/octet-stream " + "class      application/octet-stream ");
+        StringTokenizer st = new StringTokenizer(
+                "htm        text/html " + 
+                "html       text/html "  + 
+                "txt        text/plain " +
+                "java       text/plain " +
+                "ftl        text/plain " +
+                "asc        text/plain " + 
+                "gif        image/gif " + 
+                "jpg        image/jpeg "  + 
+                "jpeg       image/jpeg " +
+                "png        image/png " +
+                "mp3        audio/mpeg "  +
+                "m3u        audio/mpeg-url " +
+                "pdf        application/pdf " +
+                "doc        application/msword "  + 
+                "ogg        application/x-ogg " + 
+                "zip        application/octet-stream "  + 
+                "exe        application/octet-stream " + 
+                "class      application/octet-stream ");
+//        "htm        text/html " + 
+//        "html       text/html "  + 
+//        "txt        text/plain " +
+//        "java       text/plain " +
+//        "ftl        freemarker template " +
+//        "asc        text/plain " + 
+//        "gif        image/gif " + 
+//        "jpg        image/jpeg "  + 
+//        "jpeg       image/jpeg " +
+//        "png        image/png " +
+//        "mp3        audio/mpeg "  +
+//        "m3u        audio/mpeg-url " +
+//        "pdf        application/pdf " +
+//        "doc        application/msword "  + 
+//        "ogg        application/x-ogg " + 
+//        "zip        application/octet-stream "  + 
+//        "exe        application/octet-stream " + 
+//        "class      application/octet-stream ");
+        
+        
         while (st.hasMoreTokens())
             theMimeTypes.put(st.nextToken(), st.nextToken());
     }

@@ -1,4 +1,4 @@
-package httpd;
+package httpd.resource;
 
 import java.io.File;
 import java.io.FileInputStream;

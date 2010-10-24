@@ -1,6 +1,6 @@
 package frame;
 
-import httpd.StaticResource;
+import httpd.resource.StaticResource;
 
 import java.util.HashMap;
 import java.util.Map;

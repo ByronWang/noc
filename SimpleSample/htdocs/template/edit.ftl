@@ -117,12 +117,12 @@
 		[/#if]
 		<input name="${field.name}_${valueField.name}" type="hidden" id="${field.name}_${valueField.name}" value="${r"${value!}"}"     title="${parent}.${field.name}_${valueField.name}"/>
 		<input name="${field.name}_${showField.name}" id="${field.name}_${showField.name}" value="${r"${show!}"}"     title="${parent}.${field.name}_${showField.name}"/>
-		<span class="refType" onclick='selectItem(this,"${field.name}","${valueField.name}","${showField.name}","${contextPath}/basic/${field.type.name?replace(".", "/")}/?popup");'>::</span>
+		<span class="refType" onclick='selectItem(this,"${field.name}","${valueField.name}","${showField.name}","/basic/${field.type.name?replace(".", "/")}/?popup");'>::</span>
 		[@typeinfo tp=field.type /]
 </#compress>[/#macro]
 
 [@body title=type.displayName]
-<form name="form1" method="POST" action="${contextPath}/basic/${type.name?replace(".", "/")}/${r"${data.indentify!}"}" title="Hello Title">
+<form name="form1" method="POST" action="/basic/${type.name?replace(".", "/")}/${r"${data.indentify!}"}" title="Hello Title">
 	[@object type=type parent="data" /]	
 	[@submit/]
 </form>

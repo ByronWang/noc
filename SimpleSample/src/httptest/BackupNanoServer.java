@@ -17,8 +17,8 @@ import org.simpleframework.http.session.Session;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
 
-public class NanoServer implements Container {
-	private static final Log log = LogFactory.getLog(NanoServer.class);
+public class BackupNanoServer implements Container {
+	private static final Log log = LogFactory.getLog(BackupNanoServer.class);
 	ResourceHander fileHandle = new ResourceHander();
 
     @SuppressWarnings("unchecked")
@@ -96,7 +96,7 @@ public class NanoServer implements Container {
 
     public static void main(String[] list) throws Exception {
         System.out.println("start at 8081");
-        Container container = new NanoServer();
+        Container container = new BackupNanoServer();
         System.out.println("container at 8081");
         Connection connection = new SocketConnection(container);
         System.out.println("connection at 8081");

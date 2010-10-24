@@ -1,4 +1,6 @@
-package httpd;
+package httpd.engine;
+
+import httpd.resource.StaticResource;
 
 import java.util.Hashtable;
 import java.util.StringTokenizer;
@@ -14,13 +16,15 @@ import frame.AbstractEngine;
 public class ResourceEngine extends AbstractEngine {
     private static final Log log = LogFactory.getLog(StaticResource.class);
     final StaticResourceEngine staticEngine;
+    final DynamicResourceEngine dynamicEngine;
 
     public ResourceEngine() {
-        this(new StaticResourceEngine());
+        this(new StaticResourceEngine(),new DynamicResourceEngine());
     }
 
-    public ResourceEngine(StaticResourceEngine staticEngine) {
+    public ResourceEngine(StaticResourceEngine staticEngine,DynamicResourceEngine dynamicEngine) {
         this.staticEngine = staticEngine;
+        this.dynamicEngine = dynamicEngine;
     }
 
     @Override
@@ -31,7 +35,7 @@ public class ResourceEngine extends AbstractEngine {
         if (path.getDirectory().length() == 1 || staticPath.containsKey(path.getPath(0, 1))) {
             return staticEngine.make(target);
         } else {
-            return staticEngine.unknownResource;
+            return dynamicEngine.make(target);
         }
     }
 

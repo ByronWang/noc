@@ -1,4 +1,7 @@
-package httpd;
+package httpd.engine;
+
+import httpd.resource.NullResource;
+import httpd.resource.StaticResource;
 
 import java.io.File;
 
