@@ -31,7 +31,7 @@ public abstract class DbConfiguration {
 	public void init() {
 		try {
 			Class.forName(driverClass).newInstance();
-			log.debug("== Load the Oracle driver");
+			log.debug("== Load " + driverClass);
 			conn = DriverManager.getConnection(this.url, this.userName, this.userPassword);
 			log.debug("== create and connect to " + this.url);
 			conn.setAutoCommit(false);

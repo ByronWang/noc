@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import javassist.ClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
@@ -58,15 +57,26 @@ public class TypeReadonlyStore implements Store<String,Type> {
 		this.pool = pool;
 	}
 
-	public void loadJar(String path) {
+    public void load(String path){
+        load(new File(path));
+    }
+    public void load(File path){
+        if(path.isDirectory()){
+            loadFolder(path, path);
+        }else if(path.getName().endsWith(".jar")){
+            loadJar(path);
+        }else{
+            throw new RuntimeException();            
+        }
+    }
+
+    public void loadJar(String path) {
+        loadJar(new File(path));
+    }
+	public void loadJar(File f) {
+	    this.appendClassPath(f.getPath());
 		try {
-			pool.appendClassPath(path);
-			assert (path.endsWith(".jar"));
-
-			File f = new File(path);
-			if (!f.exists()) return;
-
-			JarFile jf = new JarFile(path);
+			JarFile jf = new JarFile(f);
 			Enumeration<JarEntry> en = jf.entries();
 			while (en.hasMoreElements()) {
 				String name = en.nextElement().getName();
