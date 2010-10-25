@@ -29,7 +29,7 @@ public class ResourceEngine extends AbstractEngine {
 
     @Override
     public Resource make(Address target) {
-        log.debug("ADDRESS : " + target.toString());
+        log.debug("Make resource : " + target.toString());
         
         Path path = target.getPath();
         if (path.getDirectory().length() == 1 || staticPath.containsKey(path.getPath(0, 1))) {

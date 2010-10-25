@@ -22,7 +22,7 @@ public abstract class AbstractEngine implements Engine<Address, Resource> {
     @Override
     public Resource resolve(Address target) {
         String path = target.getPath().getPath();
-        log.debug("ADDRESS : " + target.toString() + "  -- " + target.hashCode());
+        log.debug("Client request : " + target.toString());
 
         Resource o = map.get(path);
         if (o == null) {
