@@ -1,9 +1,9 @@
 [#ftl/]
 
 [#macro link typename field parent="data"]
-<a href="${contextPath}/type/${typename?replace(".", "/")}/${r"${" + parent + "."+ field.name + "!}"}">${r"${" + parent + "."+ field.name + "!}"}<a>
+<a href="/type/${typename?replace(".", "/")}/${r"${" + parent + "."+ field.name + "!}"}">${r"${" + parent + "."+ field.name + "!}"}<a>
 [/#macro]
-[#macro typeinfo tp][#if tp.master == "Scala"]<!--$ {tp.name?replace("noc.lang.", "")}-->[#else]<a href="${contextPath}/basic/${tp.name?replace(".", "/")}/">${tp.displayName}</a>[/#if][/#macro]
+[#macro typeinfo tp][#if tp.master == "Scala"]<!--$ {tp.name?replace("noc.lang.", "")}-->[#else]<a href="/basic/${tp.name?replace(".", "/")}/">${tp.displayName}</a>[/#if][/#macro]
 
 
 
@@ -52,7 +52,7 @@
 
 [#macro submit]<input type="submit" class="submit" name="Submit" value="submit"/>[/#macro]
 [#macro backToList type]
-	<a href="${contextPath}/basic/${type.name?replace(".", "/")}/">Return to list</a>
+	<a href="/basic/${type.name?replace(".", "/")}/">Return to list</a>
 [/#macro]
 
 
@@ -67,7 +67,7 @@
 </head>
 <body>
 <a style="float:right;position:absolute;right:0px;top:0px;" href="/noc/type/noc/lang/reflect/Type/${type.name}">Type</a>
-<a style="float:right;position:absolute;right:0px;top:20px;" href="${contextPath}/debug/${type.name?replace(".", "/")}/${r"${data.indentify!}"}">Template</a>
+<a style="float:right;position:absolute;right:0px;top:20px;" href="/debug/${type.name?replace(".", "/")}/${r"${data.indentify!}"}">Template</a>
 
 <h1>${title}</h1>
 

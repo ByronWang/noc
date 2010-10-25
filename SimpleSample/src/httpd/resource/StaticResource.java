@@ -38,7 +38,7 @@ public class StaticResource implements Resource {
             resp.setContentLength((int) f.length());
             resp.setDate("Date", f.lastModified());
             resp.setDate("Last-Modified", f.lastModified());
-
+//max-age
             FileChannel in = new FileInputStream(f).getChannel();
             WritableByteChannel out = resp.getByteChannel();
             in.transferTo(0, f.length(), out);

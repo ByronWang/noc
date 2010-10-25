@@ -6,7 +6,6 @@ import httpd.resource.TypeResource;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Properties;
 
 import noc.frame.Persister;
@@ -30,7 +29,6 @@ import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
-import freemarker.template.Template;
 
 public class DynamicResourceEngine extends AbstractEngine {
     private static final Log log = LogFactory.getLog(DynamicResourceEngine.class);
@@ -39,7 +37,7 @@ public class DynamicResourceEngine extends AbstractEngine {
     Configuration templateEngine;
     DataCenterConfiguration storeEngine;
     DbConfiguration dbEngine;
-    
+
     protected final File homeDir;
     protected final Resource unknownResource;
 
@@ -87,17 +85,14 @@ public class DynamicResourceEngine extends AbstractEngine {
 
             props.load(new FileInputStream(new File("conf/web.properties")));
 
-            dbEngine = DbConfiguration.getEngine(
-                    props.getProperty(DB_DRIVERCLASS), 
-                    props.getProperty(DB_URL),
-                    props.getProperty(DB_USERNAME), 
-                    props.getProperty(DB_PASSWORD));
+            dbEngine = DbConfiguration.getEngine(props.getProperty(DB_DRIVERCLASS), props.getProperty(DB_URL),
+                    props.getProperty(DB_USERNAME), props.getProperty(DB_PASSWORD));
 
             typeStore = new TypeReadonlyStore();
             typeStore.setUp();
 
             File root = new File(props.getProperty(APP_DEFINE_PATH));
-            
+
             typeStore.load(root);
 
             storeEngine = new DataCenterConfiguration(typeStore) {
@@ -139,25 +134,23 @@ public class DynamicResourceEngine extends AbstractEngine {
 
     @Override
     public Resource make(Address target) {
-        
-                String[] segments = target.getPath().getSegments();
-                //  http://localhost/Customer/200100
-                
-                String typeName = segments[0];
-                Type type = typeStore.readData(typeName);                
-                log.debug("ADDRESS : " + target.toString());
-                String[] seg = target.getPath().getSegments();
-                Store<String,?> store = storeEngine.get(type.getName());
-                switch(seg.length){
-                case 1:
-                    return new TypeResource(type, templateEngine, store);
-                case 2:
-                    return new EntityResource(type, templateEngine, (Vo)store.readData(seg[1]));
-                }
-                
-                throw new RuntimeException();
+        String[] segments = target.getPath().getSegments();
+        // http://localhost/Customer/200100
 
- 
+        String typeName = segments[0];
+        Type type = typeStore.readData(typeName);
+        log.debug("ADDRESS : " + target.toString());
+        
+        Store<String, ?> store = (Store<String, ?>) storeEngine.get(type.getName());
+        switch (segments.length) {
+        case 1:
+            return new TypeResource(type, templateEngine, store);
+        case 2:
+            return new EntityResource(type, templateEngine, store,segments[1]);
+        }
+
+        throw new RuntimeException();
+
     }
 
 }
