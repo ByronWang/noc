@@ -12,9 +12,8 @@ import org.apache.commons.logging.LogFactory;
 import org.simpleframework.http.Address;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
-import org.simpleframework.http.resource.Resource;
 
-public class StaticResource implements Resource {
+public class StaticResource implements CachableResource {
     private static final Log log = LogFactory.getLog(StaticResource.class);
 
     private final File f;
@@ -22,10 +21,9 @@ public class StaticResource implements Resource {
     private final String mime;
 
     // For Cache Check file
-
     final int delay = 6000;
-
     long lastChecked;
+    
     long lastModified;
 
     public StaticResource(File file, Address address) {
