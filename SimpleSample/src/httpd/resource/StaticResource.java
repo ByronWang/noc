@@ -37,7 +37,7 @@ public class StaticResource implements CachableResource<File>, Resource {
     long lastModified = -1;
     
     public void update() {
-        log.debug("update " + this.underlyFile.getName());
+        log.debug("check update " + this.underlyFile.getName());
 
         long srcLastModified = underlyFile.lastModified();
 
@@ -87,9 +87,12 @@ public class StaticResource implements CachableResource<File>, Resource {
             long clientLastModified = req.getDate("If-Modified-Since");
             if (clientLastModified > 0) {
                 if (this.lastModified - clientLastModified <= 1000) {
+                    resp.set("Cache-Control", "max-age=6000");
+                    resp.set("ETag", "\"" + underlyFile.lastModified() + "\"");
+                    resp.setDate("Date", System.currentTimeMillis());
                     resp.setCode(304);
                     resp.close();
-                    log.debug(req.getPath() + " Response 304 no change");
+                    log.debug(req.getPath() + " 304 : The document has not been modified! ");
                     return;
                 }
             }
