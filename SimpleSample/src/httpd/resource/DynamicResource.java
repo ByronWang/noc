@@ -107,11 +107,20 @@ public class DynamicResource implements CachableResource<Object>, Resource {
                     return;
                 }
             }
+
+            // normal parse
+            resp.set("Cache-Control", "max-age=6000");
+            resp.set("Content-Language", "zh-CN");
+            resp.set("Content-Type", "text/html; charset=UTF-8");
+            resp.setDate("Date", System.currentTimeMillis());
+            resp.setDate("Last-Modified", this.lastModified);
+            resp.set("ETag", "\"" + lastModified + "\"");
             
             Map<String, Object> root = new HashMap<String, Object>();
             root.put("data", dataResource.getUnderlyObject());
             Template template = presentationResource.getUnderlyObject();
             template.process(root, new OutputStreamWriter(resp.getOutputStream()));
+            resp.close();
         } catch (TemplateException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

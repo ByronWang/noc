@@ -3,6 +3,7 @@ package httpd.engine;
 import help.PrintObejct;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.simpleframework.http.Address;
 import org.simpleframework.http.Request;
@@ -29,6 +30,11 @@ public class ResourceContainer implements Container {
         engine.resolve(req.getAddress()).handle(req, resp);
         }catch(RuntimeException e){
             e.printStackTrace();
+            resp.setCode(404);
+            try {
+                resp.close();
+            } catch (IOException e1) {
+            }
         }
     }
 }
