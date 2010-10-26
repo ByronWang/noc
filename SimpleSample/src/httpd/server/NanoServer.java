@@ -23,11 +23,5 @@ public class NanoServer {
         SocketAddress address1 = new InetSocketAddress(80);
         connection.connect(address1);
         log.info("listing at 80");
-//        SocketAddress address2 = new InetSocketAddress(8081);
-//        connection.connect(address2);
-//        log.info("listing at 8081");
-//        SocketAddress address3 = new InetSocketAddress(8083);
-//        connection.connect(address3);
-//        log.info("listing at 8081");
     }
 }
