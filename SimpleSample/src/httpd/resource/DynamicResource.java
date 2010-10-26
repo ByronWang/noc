@@ -5,55 +5,52 @@ import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import noc.frame.Store;
-import noc.lang.reflect.Type;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.resource.Resource;
 
-import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-public class EntityResource implements Cachable<Object>, Resource {
-    private static final Log log = LogFactory.getLog(EntityResource.class);
+public class DynamicResource implements Cachable<Object>, Resource {
+    private static final Log log = LogFactory.getLog(DynamicResource.class);
 
     // /template/theme/ddd/type/language
-    final Configuration templateEngine;
-    final Store<String, ?> store;
 
-    final Type type;
-    final String key;
+    final Cachable<?> dataResource;
+    final Cachable<Template> presentationResource;
 
-    final String sampleTemplateName;
-    Object underlyData;
+    // final String sampleTemplateName;
+    // Object underlyData;
 
-    public EntityResource(Type type, Store<String, ?> store, String primaryKey, Configuration templateEngine) {
-        this.templateEngine = templateEngine;
-        this.store = store;
-        this.type = type;
-        this.key = primaryKey;
-        this.underlyData = store.readData(primaryKey);
-        this.sampleTemplateName = type.getName() + "_" + "edit" + ".ftl";
+    public DynamicResource(Cachable<?> dataResource, Cachable<Template> presentationResource) {
+        this.dataResource = dataResource;
+        this.presentationResource = presentationResource;
     }
 
     // For Cache Check file
     final int delay = 6000;
     long lastChecked = -1;
-    long sourceLastModified = -1;
+
+    long dataLastModified = -1;
+    long presentationLastModified = -1;
 
     long lastModified = -1;
 
     public void update() {
-        log.debug("update " + this.type.getName() + " - " + this.key);
+        // log.debug("update " + this.type.getName() + " - " + this.key);
 
-        long srcLastModified = System.currentTimeMillis(); // TODO
-                                                           // underlyFile.lastModified();
+        long tempLastModified = dataResource.lastModified(); // TODO
+                                                             // underlyFile.lastModified();
+        if (tempLastModified - dataLastModified > 1000) {
+            reload();
+        }
 
-        if (srcLastModified - sourceLastModified > 1000) {
+        tempLastModified = dataResource.lastModified(); // TODO
+        // underlyFile.lastModified();
+        if (tempLastModified - presentationLastModified > 1000) {
             reload();
         }
 
@@ -61,13 +58,16 @@ public class EntityResource implements Cachable<Object>, Resource {
     }
 
     synchronized public void reload() {
-        log.debug("check to reload " + this.type.getName() + " - " + this.key);
+        // log.debug("check to reload " + this.type.getName() + " - " +
+        // this.key);
 
-        this.sourceLastModified = System.currentTimeMillis(); // TODO
-                                                              // underlyFile.lastModified();
+        this.presentationLastModified = presentationResource.lastModified(); // TODO
+                                                                             // underlyFile.lastModified();
+        this.dataLastModified = dataResource.lastModified();
+        
         this.lastModified = System.currentTimeMillis();
 
-        log.debug("refresh data " + this.sourceLastModified);
+        log.debug("refresh data " + this.presentationLastModified);
     }
 
     @Override
@@ -81,11 +81,12 @@ public class EntityResource implements Cachable<Object>, Resource {
 
     @Override
     public Object getUnderlyObject() {
-        long now = System.currentTimeMillis();
-        if (now - lastChecked >= delay) {
-            update();
-        }
-        return this.underlyData;
+//        long now = System.currentTimeMillis();
+//        if (now - lastChecked >= delay) {
+//            update();
+//        }
+//        return this.underlyData;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -106,11 +107,11 @@ public class EntityResource implements Cachable<Object>, Resource {
                     return;
                 }
             }
-
+            
             Map<String, Object> root = new HashMap<String, Object>();
-            root.put("data", underlyData);
-            Template sampleTemplate = templateEngine.getTemplate(this.sampleTemplateName);
-            sampleTemplate.process(root, new OutputStreamWriter(resp.getOutputStream()));
+            root.put("data", dataResource.getUnderlyObject());
+            Template template = presentationResource.getUnderlyObject();
+            template.process(root, new OutputStreamWriter(resp.getOutputStream()));
         } catch (TemplateException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

@@ -2,15 +2,10 @@ package httpd.engine;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Properties;
 
-import noc.frame.Persister;
-import noc.frame.Store;
-import noc.frame.dbpersister.DbConfiguration;
-import noc.frame.vo.Vo;
-import noc.frame.vostore.DataCenterConfiguration;
-import noc.frame.vostore.VoPersistableStore;
-import noc.lang.reflect.Type;
 import noc.lang.reflect.TypeReadonlyStore;
 
 import org.apache.commons.logging.Log;
@@ -24,73 +19,54 @@ import freemarker.template.Configuration;
 public class DynamicResourceEngine implements Engine<Address, Resource> {
     private static final Log log = LogFactory.getLog(DynamicResourceEngine.class);
 
-    TypeReadonlyStore typeStore;
-    Configuration templateEngine;
-    DataCenterConfiguration storeEngine;
-    DbConfiguration dbEngine;
+    final PresentationResourceEngine presentationEngine;
+    final DataResourceEngine dataResourceEngine;
 
-    PresentationResourceEngine presentationEngine;
+    final Configuration templateEngine;
 
-    protected final File homeFolder;
+    protected final File appHome;
+    Properties props = new Properties();
 
     static final String APP_DEFINE_PATH = "app_define_path";
 
-    static final String DB_DRIVERCLASS = "db_driverclass";
-    static final String DB_URL = "db_url";
-    static final String DB_USERNAME = "db_username";
-    static final String DB_PASSWORD = "db_password";
-
     static final String DEBUG_MODE = "debug";
 
-    public DynamicResourceEngine(File root) {
-        this.homeFolder = root;
-        this.init();
+    public DynamicResourceEngine(File appHome) {
+        try {
+            this.appHome = appHome;
+            props.load(new FileInputStream(new File(this.appHome, "../conf/web.properties")));
+
+            TypeReadonlyStore typeStore;
+            typeStore = new TypeReadonlyStore();
+            typeStore.setUp();
+            String definePath = props.getProperty(APP_DEFINE_PATH);
+            if (definePath.charAt(1) == ':' || definePath.charAt(0) == '/') {
+                typeStore.load(new File(props.getProperty(APP_DEFINE_PATH)));
+            } else {
+                typeStore.load(new File(this.appHome, props.getProperty(APP_DEFINE_PATH)));
+            }
+
+            /* Create and adjust the configuration */
+            templateEngine = new Configuration();
+            templateEngine.setTemplateUpdateDelay(10);
+            templateEngine.setDirectoryForTemplateLoading(new File(this.appHome, "template"));
+
+            presentationEngine = new PresentationResourceEngine(templateEngine, typeStore);
+            dataResourceEngine = new DataResourceEngine(appHome, props, typeStore, templateEngine);
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public File getRealPath(String path) {
-        return new File(homeFolder, path);
+        return new File(this.appHome, path);
     }
 
     // Extension
     String TEMPLATE_EXTENSION = ".ftl";
-    Properties props = new Properties();
-
-    public void init() {
-
-        try {
-
-            props.load(new FileInputStream(new File("conf/web.properties")));
-
-            dbEngine = DbConfiguration.getEngine(props.getProperty(DB_DRIVERCLASS), props.getProperty(DB_URL),
-                    props.getProperty(DB_USERNAME), props.getProperty(DB_PASSWORD));
-
-            typeStore = new TypeReadonlyStore();
-            typeStore.setUp();
-
-            File definePath = new File(props.getProperty(APP_DEFINE_PATH));
-
-            typeStore.load(definePath);
-
-            storeEngine = new DataCenterConfiguration(typeStore) {
-                @Override
-                protected Store<String, ?> find(String typeName) {
-                    Type type = types.readData(typeName);
-                    Persister<String, Vo> p = dbEngine.getPersister(Vo.class, type);
-                    p.setUp();
-                    Store<String, ?> store = new VoPersistableStore(this, type, p);
-                    store.setUp();
-                    return store;
-                }
-            };
-
-            File templateFolder = new File(this.homeFolder, "template");
-            presentationEngine = new PresentationResourceEngine(templateFolder, typeStore);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-    }
 
     @Override
     public Resource resolve(Address target) {

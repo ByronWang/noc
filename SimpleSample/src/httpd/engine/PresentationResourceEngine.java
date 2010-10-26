@@ -1,10 +1,6 @@
 package httpd.engine;
 
 import httpd.resource.TemplateResource;
-
-import java.io.File;
-import java.io.IOException;
-
 import noc.frame.Store;
 import noc.lang.reflect.Type;
 
@@ -20,27 +16,18 @@ public class PresentationResourceEngine implements Engine<Address, Resource> {
     Configuration templateEngine;
     Store<String, Type> typeStore;
 
-    public PresentationResourceEngine(File appHome, Store<String, Type> typeStore) {
-        try {
-            /* Create and adjust the configuration */
-            templateEngine = new Configuration();
-            templateEngine.setTemplateUpdateDelay(10);
-            templateEngine.setDirectoryForTemplateLoading(appHome);
-            this.typeStore = typeStore;
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public PresentationResourceEngine(Configuration templateEngine, Store<String, Type> typeStore) {
+        this.templateEngine = templateEngine;
+        this.typeStore = typeStore;
     }
-    
 
     @Override
     public Resource resolve(Address target) {
         Path path = target.getPath();
-        if(path.getName() == null){
+        if (path.getName() == null) {
             Resource res = new TemplateResource(templateEngine, typeStore, target, "list");
             return res;
-        }else{
+        } else {
             Resource res = new TemplateResource(templateEngine, typeStore, target, "edit");
             return res;
         }
