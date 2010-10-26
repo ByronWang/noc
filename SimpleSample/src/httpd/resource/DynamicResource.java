@@ -115,6 +115,8 @@ public class DynamicResource implements CachableResource<Object>, Resource {
             resp.setDate("Date", System.currentTimeMillis());
             resp.setDate("Last-Modified", this.lastModified);
             resp.set("ETag", "\"" + lastModified + "\"");
+
+            dataResource.handle(req, resp);
             
             Map<String, Object> root = new HashMap<String, Object>();
             root.put("data", dataResource.getUnderlyObject());
