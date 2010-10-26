@@ -17,7 +17,6 @@
 <a style="float:right;" href="/basic/lang/reflect/Type/${type.name}">Type</a>
 
 <h1>${title}</h1>
-%%%%44
 [#nested/]
 </body></html>
 [/#macro]
