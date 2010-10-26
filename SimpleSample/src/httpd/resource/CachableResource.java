@@ -1,7 +1,9 @@
 package httpd.resource;
 
+import org.simpleframework.http.resource.Resource;
 
-public interface Cachable<T> {
+
+public interface CachableResource<T> extends Resource{
     void update();
     void reload();
     T getUnderlyObject();

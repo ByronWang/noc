@@ -19,7 +19,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-public class TypeResource implements Cachable<Object>, Resource {
+public class TypeResource implements CachableResource<Object>, Resource {
     private static final Log log = LogFactory.getLog(TypeResource.class);
 
     public TypeResource(Type type, Store<String, ?> store, Configuration templateEngine) {

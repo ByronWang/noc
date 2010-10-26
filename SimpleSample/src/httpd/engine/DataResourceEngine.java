@@ -1,5 +1,6 @@
 package httpd.engine;
 
+import httpd.resource.CachableResource;
 import httpd.resource.EntityResource;
 import httpd.resource.TypeResource;
 
@@ -17,12 +18,11 @@ import noc.lang.reflect.TypeReadonlyStore;
 
 import org.simpleframework.http.Address;
 import org.simpleframework.http.Path;
-import org.simpleframework.http.resource.Resource;
 
 import frame.Engine;
 import freemarker.template.Configuration;
 
-public class DataResourceEngine implements Engine<Address, Resource> {
+public class DataResourceEngine implements Engine<Address, CachableResource<Object>> {
 
     DataCenterConfiguration storeEngine;
     DbConfiguration dbEngine;
@@ -56,17 +56,17 @@ public class DataResourceEngine implements Engine<Address, Resource> {
     }
 
     @Override
-    public Resource resolve(Address target) {
+    public CachableResource<Object> resolve(Address target) {
         
         Path path = target.getPath();
         String typeName = path.getSegments()[1];
 
         if (path.getName() == null) {
-            Resource res = new TypeResource(typeStore.readData(typeName), storeEngine.get(typeName), templateEngine);
+            CachableResource<Object> res = new TypeResource(typeStore.readData(typeName), storeEngine.get(typeName), templateEngine);
             return res;
         } else {
             String key = path.getName();
-            Resource res = new EntityResource(typeStore.readData(typeName), storeEngine.get(typeName), key,
+            CachableResource<Object> res = new EntityResource(typeStore.readData(typeName), storeEngine.get(typeName), key,
                     templateEngine);
             return res;
         }

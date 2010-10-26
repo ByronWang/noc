@@ -14,18 +14,18 @@ import org.simpleframework.http.resource.Resource;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-public class DynamicResource implements Cachable<Object>, Resource {
+public class DynamicResource implements CachableResource<Object>, Resource {
     private static final Log log = LogFactory.getLog(DynamicResource.class);
 
     // /template/theme/ddd/type/language
 
-    final Cachable<?> dataResource;
-    final Cachable<Template> presentationResource;
+    final CachableResource<?> dataResource;
+    final CachableResource<Template> presentationResource;
 
     // final String sampleTemplateName;
     // Object underlyData;
 
-    public DynamicResource(Cachable<?> dataResource, Cachable<Template> presentationResource) {
+    public DynamicResource(CachableResource<?> dataResource, CachableResource<Template> presentationResource) {
         this.dataResource = dataResource;
         this.presentationResource = presentationResource;
     }

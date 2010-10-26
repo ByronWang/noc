@@ -14,7 +14,7 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.resource.Resource;
 
-public class StaticResource implements Cachable<File>, Resource {
+public class StaticResource implements CachableResource<File>, Resource {
     private static final Log log = LogFactory.getLog(StaticResource.class);
 
     private final File underlyFile;

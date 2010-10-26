@@ -25,7 +25,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-public class TemplateResource implements Cachable<Template>, Resource {
+public class TemplateResource implements CachableResource<Template>, Resource {
     private static final Log log = LogFactory.getLog(TemplateResource.class);
 
     final protected Configuration engine;

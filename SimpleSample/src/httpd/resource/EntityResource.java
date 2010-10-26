@@ -18,7 +18,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-public class EntityResource implements Cachable<Object>, Resource {
+public class EntityResource implements CachableResource<Object>, Resource {
     private static final Log log = LogFactory.getLog(EntityResource.class);
 
     // /template/theme/ddd/type/language
