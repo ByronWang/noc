@@ -28,13 +28,13 @@ public class ResourceEngine implements Engine<Address, Resource> {
         this.staticEngine = staticEngine;
         this.defaultEngine = dynamicEngine;
 
-        engines = new HashMap<String, Engine<Address, Resource>>();
+        engines = new HashMap<String, Engine<Address, ? extends Resource>>();
         this.register("js", staticEngine);
         this.register("css", staticEngine);
         this.register("images", staticEngine);
         this.register("noc", staticEngine);
         this.register("tempalte", staticEngine);
-//        this.register("presentation", new PresentationResourceEngine(this.root, null));
+        this.register("presentation", dynamicEngine.getPresentationEngine());
 
         resources = new HashMap<String, Resource>(1024 * 4);
 
@@ -42,9 +42,9 @@ public class ResourceEngine implements Engine<Address, Resource> {
 
     final Map<String, Resource> resources;
 
-    Map<String, Engine<Address, Resource>> engines;
+    Map<String, Engine<Address, ? extends Resource>> engines;
 
-    public void register(String key, Engine<Address, Resource> engine) {
+    public void register(String key, Engine<Address, ? extends Resource> engine) {
         engines.put(key, engine);
     }
 
@@ -71,7 +71,7 @@ public class ResourceEngine implements Engine<Address, Resource> {
             return staticEngine.resolve(target);
         }
 
-        Engine<Address, Resource> engine = engines.get(se[0]);
+        Engine<Address, ? extends Resource> engine = engines.get(se[0]);
         if (engine != null) {
             return engine.resolve(target);
         }

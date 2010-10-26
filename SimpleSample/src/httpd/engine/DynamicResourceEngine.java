@@ -21,6 +21,14 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 
 public class DynamicResourceEngine implements Engine<Address, Resource> {
+    public PresentationResourceEngine getPresentationEngine() {
+        return presentationEngine;
+    }
+
+    public DataResourceEngine getDataResourceEngine() {
+        return dataResourceEngine;
+    }
+
     private static final Log log = LogFactory.getLog(DynamicResourceEngine.class);
 
     final PresentationResourceEngine presentationEngine;
