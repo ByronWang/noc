@@ -41,12 +41,12 @@ public class TemplateResource implements CachableResource {
     protected Type type;
 
     // For Cache Check file
-    final protected int delay = 6000;
+    final protected int delay = 3000;
 
     protected long lastChecked;
-    
+
     protected long sourceTemplateLastModified;
-    
+
     protected long lastModified;
 
     public TemplateResource(Configuration engine, Store<String, Type> store, Address address, String refer) {
@@ -58,12 +58,13 @@ public class TemplateResource implements CachableResource {
         this.address = address;
         this.refer = refer + ".ftl";
         this.name = typeName + "-" + refer + ".ftl";
-        
+
         this.update();
     }
 
     protected void update() {
         try {
+            log.debug("update " + this.name);
 
             long srcLastModified = -1;
 
@@ -81,7 +82,7 @@ public class TemplateResource implements CachableResource {
             if (srcLastModified - sourceTemplateLastModified > 1000) {
                 reloadTemplate();
             }
-            
+
             lastChecked = System.currentTimeMillis();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -91,6 +92,8 @@ public class TemplateResource implements CachableResource {
     }
 
     synchronized protected void reloadTemplate() {
+        log.debug("check to reload " + this.name);
+
         try {
             TemplateLoader loader = engine.getTemplateLoader();
             Object o = loader.findTemplateSource(name);
@@ -118,17 +121,20 @@ public class TemplateResource implements CachableResource {
 
                 reader = new InputStreamReader(new ByteArrayInputStream(out.toByteArray()), "utf-8");
 
+                log.debug("reload from " + refer);
             } else {
                 sourceModified = loader.getLastModified(o);
                 if (sourceModified - this.sourceTemplateLastModified <= 1000) {
                     return;
                 }
                 reader = loader.getReader(o, "utf-8");
+
+                log.debug("reload from " + this.name);
             }
 
             // Create template
             Template tempTemplate = new Template(name, reader, engine);
-            
+
             // Create template source(HTML)
             Template viewSourceTemplate = engine.getTemplate("source-view.ftl");
             String source = tempTemplate.toString().replaceAll("<", "&lt;").replaceAll(">", "&gt;");
@@ -136,14 +142,16 @@ public class TemplateResource implements CachableResource {
             Map<String, Object> root = new HashMap<String, Object>();
             root.put("name", this.name);
             root.put("source", source);
-            viewSourceTemplate.process(root, new OutputStreamWriter( bufferStream));
+            viewSourceTemplate.process(root, new OutputStreamWriter(bufferStream));
             bufferStream.close();
 
-            // update instance variable         
-            this.sourceTemplateLastModified = sourceModified; 
+            // update instance variable
+            this.sourceTemplateLastModified = sourceModified;
             this.lastModified = System.currentTimeMillis();
             this.template = tempTemplate;
-            this.templateSource = bufferStream;  
+            this.templateSource = bufferStream;
+
+            log.debug("refresh template, bufferStream " + this.lastModified);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -181,14 +189,16 @@ public class TemplateResource implements CachableResource {
             }
 
             // normal parse
-            resp.set("Cache-Control", "max-age=60000000000");
+            resp.set("Cache-Control", "max-age=6000");
             resp.set("Content-Language", "zh-CN");
             resp.set("Content-Type", "text/html; charset=UTF-8");
-            // resp.setDate("Date", System.currentTimeMillis());
-            // resp.setDate("Last-Modified", lastModified);
-            // resp.set("ETag", "\"" + lastModified + "\"");
+            resp.setDate("Date", System.currentTimeMillis());
+            resp.setDate("Last-Modified", this.lastModified);
+            resp.set("ETag", "\"" + lastModified + "\"");
 
-           this.templateSource.writeTo(resp.getOutputStream());
+            this.templateSource.writeTo(resp.getOutputStream());
+            
+            log.debug(req.getPath() + " write source");
 
             resp.close();
             return;
