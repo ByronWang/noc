@@ -163,6 +163,7 @@ public class TemplateResource implements CachableResource {
             ps.print("<head>");
             ps.print("<link href=\"/js/prettify/prettify.css\" type=\"text/css\" rel=\"stylesheet\" />");
             ps.print("<script type=\"text/javascript\" src=\"/js/prettify/prettify.js\"></script>");
+            ps.print("<title>"+ this.name + "</title>");
             ps.print("</head>");
             
             ps.print("<body onload=\"prettyPrint()\">");
