@@ -57,17 +57,18 @@ public class DataResourceEngine implements Engine<Address, CachableResource<Obje
 
     @Override
     public CachableResource<Object> resolve(Address target) {
-        
+
         Path path = target.getPath();
         String typeName = path.getSegments()[1];
 
         if (path.getName() == null) {
-            CachableResource<Object> res = new TypeResource(typeStore.readData(typeName), storeEngine.get(typeName), templateEngine);
+            CachableResource<Object> res = new TypeResource(typeStore.readData(typeName), storeEngine.get(typeName),
+                    templateEngine);
             return res;
         } else {
             String key = path.getName();
-            CachableResource<Object> res = new EntityResource(typeStore.readData(typeName), storeEngine.get(typeName), key,
-                    templateEngine);
+            CachableResource<Object> res = new EntityResource(typeStore.readData(typeName), storeEngine.get(typeName),
+                    key, templateEngine);
             return res;
         }
     }

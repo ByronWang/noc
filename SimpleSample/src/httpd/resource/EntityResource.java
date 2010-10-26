@@ -34,7 +34,7 @@ public class EntityResource implements CachableResource<Object>, Resource {
     }
 
     // For Cache Check file
-    final int delay = 6000;
+    final int delay = 1000;
     long lastChecked = -1;
     long sourceLastModified = -1;
 

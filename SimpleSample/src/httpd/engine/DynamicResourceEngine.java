@@ -90,7 +90,8 @@ public class DynamicResourceEngine implements Engine<Address, Resource> {
             presentationreResource = presentationEngine.resolve(target);
             datareResource = dataResourceEngine.resolve(target);
         }
-        DynamicResource dynamicResource = new DynamicResource(datareResource, presentationreResource);
+        
+        DynamicResource dynamicResource = new DynamicResource(target, datareResource, presentationreResource);
         return dynamicResource;
     }
 

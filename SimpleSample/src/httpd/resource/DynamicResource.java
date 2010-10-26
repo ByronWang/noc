@@ -1,5 +1,6 @@
 package httpd.resource;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
@@ -7,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.simpleframework.http.Address;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.resource.Resource;
@@ -19,25 +21,30 @@ public class DynamicResource implements CachableResource<Object>, Resource {
 
     // /template/theme/ddd/type/language
 
+    final Address address;
     final CachableResource<?> dataResource;
     final CachableResource<Template> presentationResource;
 
     // final String sampleTemplateName;
     // Object underlyData;
 
-    public DynamicResource(CachableResource<?> dataResource, CachableResource<Template> presentationResource) {
+    public DynamicResource(Address address, CachableResource<?> dataResource,
+            CachableResource<Template> presentationResource) {
+        this.address = address;
         this.dataResource = dataResource;
         this.presentationResource = presentationResource;
     }
 
     // For Cache Check file
-    final int delay = 6000;
+    final int delay = 2000;
     long lastChecked = -1;
 
     long dataLastModified = -1;
     long presentationLastModified = -1;
 
     long lastModified = -1;
+
+    protected ByteArrayOutputStream bufferedResponse;
 
     public void update() {
         // log.debug("update " + this.type.getName() + " - " + this.key);
@@ -61,13 +68,37 @@ public class DynamicResource implements CachableResource<Object>, Resource {
         // log.debug("check to reload " + this.type.getName() + " - " +
         // this.key);
 
-        this.presentationLastModified = presentationResource.lastModified(); // TODO
-                                                                             // underlyFile.lastModified();
-        this.dataLastModified = dataResource.lastModified();
-        
-        this.lastModified = System.currentTimeMillis();
+        try {
+            long tempDataResourceLastModified = dataResource.lastModified();
+            long tempPresentionResourceLastModified = presentationResource.lastModified();
 
-        log.debug("refresh data " + this.presentationLastModified);
+            if (tempDataResourceLastModified - this.dataLastModified <= 1000
+                    && tempPresentionResourceLastModified - this.presentationLastModified <= 1000) {
+                return;
+            }
+
+            ByteArrayOutputStream bufferStream = new ByteArrayOutputStream();
+
+            Map<String, Object> root = new HashMap<String, Object>();
+            root.put("path", this.address.getPath().getPath());
+            root.put("data", dataResource.getUnderlyObject());
+            Template template = presentationResource.getUnderlyObject();
+            template.process(root, new OutputStreamWriter(bufferStream));
+            bufferStream.close();
+
+            // update instance variable
+            this.dataLastModified = tempDataResourceLastModified;
+            this.presentationLastModified = tempPresentionResourceLastModified;
+            this.lastModified = System.currentTimeMillis();
+            this.bufferedResponse = bufferStream;
+
+            log.debug("recreate response to bufferStream " + this.lastModified);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (TemplateException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -81,11 +112,11 @@ public class DynamicResource implements CachableResource<Object>, Resource {
 
     @Override
     public Object getUnderlyObject() {
-//        long now = System.currentTimeMillis();
-//        if (now - lastChecked >= delay) {
-//            update();
-//        }
-//        return this.underlyData;
+        // long now = System.currentTimeMillis();
+        // if (now - lastChecked >= delay) {
+        // update();
+        // }
+        // return this.underlyData;
         throw new UnsupportedOperationException();
     }
 
@@ -108,26 +139,37 @@ public class DynamicResource implements CachableResource<Object>, Resource {
                 }
             }
 
-            // normal parse
-            resp.set("Cache-Control", "max-age=6000");
-            resp.set("Content-Language", "zh-CN");
-            resp.set("Content-Type", "text/html; charset=UTF-8");
-            resp.setDate("Date", System.currentTimeMillis());
-            resp.setDate("Last-Modified", this.lastModified);
-            resp.set("ETag", "\"" + lastModified + "\"");
+            if ("get".endsWith(req.getMethod())) {
+                // normal parse
+                resp.set("Cache-Control", "max-age=6000");
+                resp.set("Content-Language", "zh-CN");
+                resp.set("Content-Type", "text/html; charset=UTF-8");
+                resp.setDate("Date", System.currentTimeMillis());
+                resp.setDate("Last-Modified", this.lastModified);
+                resp.set("ETag", "\"" + lastModified + "\"");
 
-            dataResource.handle(req, resp);
-            
-            Map<String, Object> root = new HashMap<String, Object>();
-            root.put("data", dataResource.getUnderlyObject());
-            Template template = presentationResource.getUnderlyObject();
-            template.process(root, new OutputStreamWriter(resp.getOutputStream()));
-            resp.close();
-        } catch (TemplateException e) {
-            throw new RuntimeException(e);
+                this.bufferedResponse.writeTo(resp.getOutputStream());
+
+                resp.close();
+            } else {
+                dataResource.handle(req, resp);
+
+                // normal parse
+                resp.set("Cache-Control", "max-age=6000");
+                resp.set("Content-Language", "zh-CN");
+                resp.set("Content-Type", "text/html; charset=UTF-8");
+                resp.setDate("Date", System.currentTimeMillis());
+                resp.setDate("Last-Modified", this.lastModified);
+                resp.set("ETag", "\"" + lastModified + "\"");
+
+                this.bufferedResponse.writeTo(resp.getOutputStream());
+
+                resp.close();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
 
 }

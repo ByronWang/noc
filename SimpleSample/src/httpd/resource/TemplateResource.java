@@ -116,6 +116,7 @@ public class TemplateResource implements CachableResource<Template>, Resource {
                 OutputStreamWriter writer = new OutputStreamWriter(out, "utf-8");
 
                 Map<String, Object> root = new HashMap<String, Object>();
+                root.put("path", this.address.getPath().getPath());
                 root.put("type", type);
                 combin.process(root, writer);
                 writer.close();

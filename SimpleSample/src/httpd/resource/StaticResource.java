@@ -87,7 +87,7 @@ public class StaticResource implements CachableResource<File>, Resource {
             long clientLastModified = req.getDate("If-Modified-Since");
             if (clientLastModified > 0) {
                 if (this.lastModified - clientLastModified <= 1000) {
-                    resp.set("Cache-Control", "max-age=6000");
+                    resp.set("Cache-Control", "max-age=60000");
                     resp.set("ETag", "\"" + underlyFile.lastModified() + "\"");
                     resp.setDate("Date", System.currentTimeMillis());
                     resp.setCode(304);

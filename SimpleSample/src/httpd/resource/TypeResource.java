@@ -34,7 +34,7 @@ public class TypeResource implements CachableResource<Object>, Resource {
     List<?> underlyList;
 
     // For Cache Check file
-    final int delay = 6000;
+    final int delay = 1000;
     long lastChecked = -1;
     long sourceLastModified = -1;
 

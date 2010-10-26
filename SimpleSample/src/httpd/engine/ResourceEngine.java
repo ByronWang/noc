@@ -34,7 +34,7 @@ public class ResourceEngine implements Engine<Address, Resource> {
         this.register("images", staticEngine);
         this.register("noc", staticEngine);
         this.register("tempalte", staticEngine);
-        this.register("presentation", dynamicEngine.getPresentationEngine());
+        this.register("p", dynamicEngine.getPresentationEngine());
 
         resources = new HashMap<String, Resource>(1024 * 4);
 

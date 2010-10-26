@@ -52,7 +52,7 @@
 
 [#macro submit]<input type="submit" class="submit" name="Submit" value="submit"/>[/#macro]
 [#macro backToList type]
-	<a href="/basic/${type.name?replace(".", "/")}/">Return to list</a>
+	<a href="./">Return to list</a>
 [/#macro]
 
 
@@ -60,14 +60,14 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<link rel='stylesheet' href='/noc/css/form.css' type='text/css'/>
-	<script type="text/javascript"  src="/noc/js/prototype.js"></script>
-	<script type="text/javascript"  src="/noc/js/popup.js"></script>	
+	<link rel='stylesheet' href='/css/form.css' type='text/css'/>
+	<script type="text/javascript"  src="/js/prototype.js"></script>
+	<script type="text/javascript"  src="/js/popup.js"></script>	
 	<title>${title}</title>
 </head>
 <body>
-<a style="float:right;position:absolute;right:0px;top:0px;" href="/noc/type/noc/lang/reflect/Type/${type.name}">Type</a>
-<a style="float:right;position:absolute;right:0px;top:20px;" href="/debug/${type.name?replace(".", "/")}/${r"${data.indentify!}"}">Template</a>
+<!--a style="float:right;position:absolute;right:0px;top:0px;" href="/type/noc/lang/reflect/Type/{type.name}">Type</a-->
+<!--a style="float:right;position:absolute;right:0px;top:20px;" href="/debug/{type.name?replace(".", "/")}/{r"{data.indentify!}"}">Template</a-->
 
 <h1>${title}</h1>
 
