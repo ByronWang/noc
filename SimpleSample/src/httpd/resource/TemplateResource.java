@@ -34,6 +34,7 @@ public class TemplateResource implements CachableResource {
     final protected String refer;
     protected String name;
     protected Template template;
+    protected ByteArrayOutputStream templateSource;
 
     final protected Store<String, Type> store;
     final protected String typeName;
@@ -55,6 +56,8 @@ public class TemplateResource implements CachableResource {
         this.address = address;
         this.refer = refer + ".ftl";
         this.name = typeName + "-" + refer + ".ftl";
+        
+        this.update();
     }
 
     protected void update() {
@@ -76,6 +79,8 @@ public class TemplateResource implements CachableResource {
             if (srcLastModified - lastModified > 1000) {
                 reloadTemplate();
             }
+            
+            lastChecked = System.currentTimeMillis();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
@@ -119,11 +124,23 @@ public class TemplateResource implements CachableResource {
                 reader = loader.getReader(o, "utf-8");
             }
 
+            // Create template
             Template tempTemplate = new Template(name, reader, engine);
             
+            // Create template source(HTML)
+            Template viewSourceTemplate = engine.getTemplate("source-view.ftl");
+            String source = tempTemplate.toString().replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+            ByteArrayOutputStream bufferStream = new ByteArrayOutputStream();
+            Map<String, Object> root = new HashMap<String, Object>();
+            root.put("name", this.name);
+            root.put("source", source);
+            viewSourceTemplate.process(root, new OutputStreamWriter( bufferStream));
+            bufferStream.close();
 
-            this.lastModified = sourceModified;
+            // update instance variable         
+            this.lastModified = sourceModified; 
             this.template = tempTemplate;
+            this.templateSource = bufferStream;  
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -169,25 +186,7 @@ public class TemplateResource implements CachableResource {
             // resp.setDate("Last-Modified", lastModified);
             // resp.set("ETag", "\"" + lastModified + "\"");
 
-            PrintStream ps = resp.getPrintStream();
-
-            ps.print("<html>");
-            ps.print("<head>");
-            ps.print("<link href=\"/js/prettify/prettify.css\" type=\"text/css\" rel=\"stylesheet\" />");
-            ps.print("<script type=\"text/javascript\" src=\"/js/prettify/prettify.js\"></script>");
-            ps.print("<title>" + this.name + "</title>");
-            ps.print("</head>");
-
-            ps.print("<body onload=\"prettyPrint()\">");
-            ps.print("<pre class=\"prettyprint lang-html\" >");
-
-            String ts = template.toString().replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-
-            ps.print(ts);
-
-            ps.print("</pre>");
-            ps.print("</body>");
-            ps.print("</html>");
+           this.templateSource.writeTo(resp.getOutputStream());
 
             resp.close();
             return;
