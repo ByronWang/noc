@@ -18,13 +18,14 @@ import org.apache.commons.logging.LogFactory;
 import org.simpleframework.http.Address;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
+import org.simpleframework.http.resource.Resource;
 
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-public class TemplateResource implements CachableResource {
+public class TemplateResource implements Cachable<Template>, Resource {
     private static final Log log = LogFactory.getLog(TemplateResource.class);
 
     final protected Configuration engine;
@@ -62,7 +63,7 @@ public class TemplateResource implements CachableResource {
         this.update();
     }
 
-    protected void update() {
+    public void update() {
         try {
             log.debug("update " + this.name);
 
@@ -80,7 +81,7 @@ public class TemplateResource implements CachableResource {
             }
 
             if (srcLastModified - sourceTemplateLastModified > 1000) {
-                reloadTemplate();
+                reload();
             }
 
             lastChecked = System.currentTimeMillis();
@@ -91,7 +92,7 @@ public class TemplateResource implements CachableResource {
         }
     }
 
-    synchronized protected void reloadTemplate() {
+    synchronized public void reload() {
         log.debug("check to reload " + this.name);
 
         try {
@@ -169,6 +170,15 @@ public class TemplateResource implements CachableResource {
         return this.lastModified;
     }
 
+    @Override
+    public Template getUnderlyObject() {
+        long now = System.currentTimeMillis();
+        if (now - lastChecked >= delay) {
+            update();
+        }
+        return this.template;
+    }
+    
     @Override
     public void handle(Request req, Response resp) {
         try {

@@ -12,44 +12,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
+import org.simpleframework.http.resource.Resource;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-public class EntityResource implements CachableResource {
+public class EntityResource implements Cachable<Object>, Resource {
     private static final Log log = LogFactory.getLog(EntityResource.class);
-
-    public EntityResource(Type type, Configuration templateEngine, Store<String, ?> store, String key) {
-        try {
-            this.templateEngine = templateEngine;
-            this.store = store;
-            this.type = type;
-            this.key = key;
-            this.data = store.readData(key);
-            template = templateEngine.getTemplate(type.getName() + "_" + "edit" + ".ftl");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    // For Cache Check file
-    final int delay = 6000;
-    long lastChecked;
-    
-    long lastModified;
-    @Override
-    public long lastModified() {
-//        long now = System.currentTimeMillis();
-//        if (now - lastChecked >= delay) {
-//            lastModified = f.lastModified();
-//            log.debug("Check File[ " + f.getPath() + "] LastModified : " + lastModified);
-//            lastChecked = now;
-//        }
-//        return lastModified;
-        
-        return -1;
-    }
 
     // /template/theme/ddd/type/language
     final Configuration templateEngine;
@@ -58,23 +28,94 @@ public class EntityResource implements CachableResource {
     final Type type;
     final String key;
 
-    final Template template;
-    Object data;
+    final String sampleTemplateName;
+    Object underlyData;
+
+    public EntityResource(Type type, Configuration templateEngine, Store<String, ?> store, String primaryKey) {
+        this.templateEngine = templateEngine;
+        this.store = store;
+        this.type = type;
+        this.key = primaryKey;
+        this.underlyData = store.readData(primaryKey);
+        this.sampleTemplateName = type.getName() + "_" + "edit" + ".ftl";
+    }
+
+    // For Cache Check file
+    final int delay = 6000;
+    long lastChecked = -1;
+    long sourceLastModified = -1;
+
+    long lastModified = -1;
+
+    public void update() {
+        log.debug("update " + this.type.getName() + " - " + this.key);
+
+        long srcLastModified = System.currentTimeMillis(); // TODO
+                                                           // underlyFile.lastModified();
+
+        if (srcLastModified - sourceLastModified > 1000) {
+            reload();
+        }
+
+        lastChecked = System.currentTimeMillis();
+    }
+
+    synchronized public void reload() {
+        log.debug("check to reload " + this.type.getName() + " - " + this.key);
+
+        this.sourceLastModified = System.currentTimeMillis(); // TODO
+                                                              // underlyFile.lastModified();
+        this.lastModified = System.currentTimeMillis();
+
+        log.debug("refresh data " + this.sourceLastModified);
+    }
+
+    @Override
+    public long lastModified() {
+        long now = System.currentTimeMillis();
+        if (now - lastChecked >= delay) {
+            update();
+        }
+        return this.lastModified;
+    }
+
+    @Override
+    public Object getUnderlyObject() {
+        long now = System.currentTimeMillis();
+        if (now - lastChecked >= delay) {
+            update();
+        }
+        return this.underlyData;
+    }
 
     @Override
     public void handle(Request req, Response resp) {
-        log.debug("Data : " + this.key);
-        
         try {
+            long now = System.currentTimeMillis();
+            if (now - lastChecked >= delay) {
+                update();
+            }
+
+            // Cache
+            long clientLastModified = req.getDate("If-Modified-Since");
+            if (clientLastModified > 0) {
+                if (this.lastModified - clientLastModified <= 1000) {
+                    resp.setCode(304);
+                    resp.close();
+                    log.debug(req.getPath() + " Response 304 no change");
+                    return;
+                }
+            }
+
             Map<String, Object> root = new HashMap<String, Object>();
-            root.put("data", data);
-            template.process(root, new OutputStreamWriter(resp.getOutputStream()));
+            root.put("data", underlyData);
+            Template sampleTemplate = templateEngine.getTemplate(this.sampleTemplateName);
+            sampleTemplate.process(root, new OutputStreamWriter(resp.getOutputStream()));
         } catch (TemplateException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
 
 }
