@@ -52,7 +52,7 @@ public class StaticResource implements CachableResource<File>, Resource {
         log.debug("check to reload " + this.underlyFile.getName());
 
         this.sourceLastModified = underlyFile.lastModified();
-        this.lastModified = System.currentTimeMillis();
+        this.lastModified =  this.sourceLastModified; // System.currentTimeMillis();
 
         log.debug("refresh template, bufferStream " + this.sourceLastModified);
     }
