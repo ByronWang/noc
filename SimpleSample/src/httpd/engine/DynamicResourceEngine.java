@@ -1,7 +1,5 @@
 package httpd.engine;
 
-import httpd.resource.EntityResource;
-import httpd.resource.NullResource;
 import httpd.resource.TypeResource;
 
 import java.io.File;
@@ -22,24 +20,21 @@ import org.apache.commons.logging.LogFactory;
 import org.simpleframework.http.Address;
 import org.simpleframework.http.resource.Resource;
 
-import frame.AbstractEngine;
-import freemarker.TypeTemplateLoader;
-import freemarker.cache.FileTemplateLoader;
-import freemarker.cache.MultiTemplateLoader;
-import freemarker.cache.TemplateLoader;
+import frame.Engine;
 import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapper;
 
-public class DynamicResourceEngine extends AbstractEngine {
+public class DynamicResourceEngine implements Engine<Address, Resource> {
     private static final Log log = LogFactory.getLog(DynamicResourceEngine.class);
 
     TypeReadonlyStore typeStore;
     Configuration templateEngine;
     DataCenterConfiguration storeEngine;
     DbConfiguration dbEngine;
+    
+    PresentationResourceEngine presentationEngine;
+    
 
-    protected final File homeDir;
-    protected final Resource unknownResource;
+    protected final File homeFolder;
 
     static final String APP_DEFINE_PATH = "app_define_path";
 
@@ -50,29 +45,13 @@ public class DynamicResourceEngine extends AbstractEngine {
 
     static final String DEBUG_MODE = "debug";
 
-    static final String TEMPLATE_PATH = "template_path";
-    static final String TEMPLATE_WORK_PATH = "template_work_path";
-
-    public Resource getUnknownResource() {
-        return unknownResource;
-    }
-
-    public DynamicResourceEngine() {
-        this(new File("./htdocs"));
-    }
-
-    public DynamicResourceEngine(String root) {
-        this(new File(root));
-    }
-
     public DynamicResourceEngine(File root) {
-        this.homeDir = root;
-        unknownResource = new NullResource(new File(this.homeDir, "404.html"));
+        this.homeFolder = root;
         this.init();
     }
 
     public File getRealPath(String path) {
-        return new File(homeDir, path);
+        return new File(homeFolder, path);
     }
 
     // Extension
@@ -91,9 +70,9 @@ public class DynamicResourceEngine extends AbstractEngine {
             typeStore = new TypeReadonlyStore();
             typeStore.setUp();
 
-            File root = new File(props.getProperty(APP_DEFINE_PATH));
+            File definePath = new File(props.getProperty(APP_DEFINE_PATH));
 
-            typeStore.load(root);
+            typeStore.load(definePath);
 
             storeEngine = new DataCenterConfiguration(typeStore) {
                 @Override
@@ -106,25 +85,9 @@ public class DynamicResourceEngine extends AbstractEngine {
                     return store;
                 }
             };
-
-            File tempateFolder = getRealPath("template");
-            File templateWorkFolder = getRealPath("work_template");
-
-            if (templateWorkFolder.exists())
-                templateWorkFolder.delete();
-            templateWorkFolder.mkdir();
-
-            TemplateLoader[] loaders = new TemplateLoader[] { new FileTemplateLoader(tempateFolder),
-                    new FileTemplateLoader(templateWorkFolder),
-                    new TypeTemplateLoader(typeStore, tempateFolder, templateWorkFolder) };
-
-            /* Create and adjust the configuration */
-            templateEngine = new Configuration();
-            templateEngine.setTemplateUpdateDelay(10);
-            templateEngine.setTemplateLoader(new MultiTemplateLoader(loaders));
-            // templateEngine.setSharedVariable("contextPath",
-            // context.getContextPath());
-            templateEngine.setObjectWrapper(new DefaultObjectWrapper());
+            
+            File templateFolder= new File(this.homeFolder, "template");
+            presentationEngine = new PresentationResourceEngine(templateFolder, typeStore);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -133,24 +96,22 @@ public class DynamicResourceEngine extends AbstractEngine {
     }
 
     @Override
-    public Resource make(Address target) {
+    public Resource resolve(Address target) {
         String[] segments = target.getPath().getSegments();
         // http://localhost/Customer/200100
 
-        String typeName = segments[0];
+        String typeName = segments[1];
         Type type = typeStore.readData(typeName);
-        log.debug("ADDRESS : " + target.toString());
+        log.debug("ADDRESS : " + target.toString());        
         
         Store<String, ?> store = (Store<String, ?>) storeEngine.get(type.getName());
-        switch (segments.length) {
-        case 1:
+        
+        String key;
+        if((key=target.getPath().getName())!=null){
+            return presentationEngine.resolve(target);//Temp test
+        }else{
             return new TypeResource(type, templateEngine, store);
-        case 2:
-            return new EntityResource(type, templateEngine, store,segments[1]);
-        }
-
-        throw new RuntimeException();
-
+        }        
     }
 
 }

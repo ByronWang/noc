@@ -8,9 +8,9 @@ import java.io.File;
 import org.simpleframework.http.Address;
 import org.simpleframework.http.resource.Resource;
 
-import frame.AbstractEngine;
+import frame.Engine;
 
-public class StaticResourceEngine extends AbstractEngine {
+public class StaticResourceEngine  implements Engine<Address, Resource>  {
 
     protected final File homeDir;    
     protected final Resource unknownResource;
@@ -19,21 +19,13 @@ public class StaticResourceEngine extends AbstractEngine {
         return unknownResource;
     }
 
-    public StaticResourceEngine() {
-        this(new File("./htdocs"));
-    }
-
-    public StaticResourceEngine(String root) {
-        this(new File(root));
-    }
-
     public StaticResourceEngine(File root) {
         this.homeDir = root;
-        unknownResource = new NullResource(new File(this.homeDir,"404.html"));
+        unknownResource = new NullResource(new File(this.homeDir,"404.htm"));
     }
 
     @Override
-    public Resource make(Address target) {
+    public Resource resolve(Address target) {
         File f = new File(homeDir,target.getPath().getPath());
         if(f.exists()){
             return new StaticResource(f, target);
