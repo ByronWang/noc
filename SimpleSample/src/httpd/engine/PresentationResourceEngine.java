@@ -9,6 +9,7 @@ import noc.frame.Store;
 import noc.lang.reflect.Type;
 
 import org.simpleframework.http.Address;
+import org.simpleframework.http.Path;
 import org.simpleframework.http.resource.Resource;
 
 import frame.Engine;
@@ -19,12 +20,12 @@ public class PresentationResourceEngine implements Engine<Address, Resource> {
     Configuration templateEngine;
     Store<String, Type> typeStore;
 
-    public PresentationResourceEngine(File root, Store<String, Type> typeStore) {
+    public PresentationResourceEngine(File appHome, Store<String, Type> typeStore) {
         try {
             /* Create and adjust the configuration */
             templateEngine = new Configuration();
             templateEngine.setTemplateUpdateDelay(10);
-            templateEngine.setDirectoryForTemplateLoading(root);
+            templateEngine.setDirectoryForTemplateLoading(appHome);
             this.typeStore = typeStore;
 
         } catch (IOException e) {
@@ -35,10 +36,14 @@ public class PresentationResourceEngine implements Engine<Address, Resource> {
 
     @Override
     public Resource resolve(Address target) {
-        // target.getPath().
-//        String typeName = target.getPath().getSegments()[1];
-        Resource res = new TemplateResource(templateEngine, typeStore, target, "edit");
-        return res;
+        Path path = target.getPath();
+        if(path.getName() == null){
+            Resource res = new TemplateResource(templateEngine, typeStore, target, "list");
+            return res;
+        }else{
+            Resource res = new TemplateResource(templateEngine, typeStore, target, "edit");
+            return res;
+        }
     }
 
 }

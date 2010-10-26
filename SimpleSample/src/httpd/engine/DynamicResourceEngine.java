@@ -1,7 +1,5 @@
 package httpd.engine;
 
-import httpd.resource.TypeResource;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
@@ -30,9 +28,8 @@ public class DynamicResourceEngine implements Engine<Address, Resource> {
     Configuration templateEngine;
     DataCenterConfiguration storeEngine;
     DbConfiguration dbEngine;
-    
+
     PresentationResourceEngine presentationEngine;
-    
 
     protected final File homeFolder;
 
@@ -85,8 +82,8 @@ public class DynamicResourceEngine implements Engine<Address, Resource> {
                     return store;
                 }
             };
-            
-            File templateFolder= new File(this.homeFolder, "template");
+
+            File templateFolder = new File(this.homeFolder, "template");
             presentationEngine = new PresentationResourceEngine(templateFolder, typeStore);
 
         } catch (Exception e) {
@@ -97,21 +94,23 @@ public class DynamicResourceEngine implements Engine<Address, Resource> {
 
     @Override
     public Resource resolve(Address target) {
-        String[] segments = target.getPath().getSegments();
+        // String[] segments = target.getPath().getSegments();
         // http://localhost/Customer/200100
 
-        String typeName = segments[1];
-        Type type = typeStore.readData(typeName);
-        log.debug("ADDRESS : " + target.toString());        
-        
-        Store<String, ?> store = (Store<String, ?>) storeEngine.get(type.getName());
-        
-        String key;
-        if((key=target.getPath().getName())!=null){
-            return presentationEngine.resolve(target);//Temp test
-        }else{
-            return new TypeResource(type, templateEngine, store);
-        }        
+        // String typeName = segments[1];
+        // Type type = typeStore.readData(typeName);
+        log.debug("ADDRESS : " + target.toString());
+
+        // Store<String, ?> store = (Store<String, ?>)
+        // storeEngine.get(type.getName());
+
+        // String key;
+        if (target.getPath().getName() != null) {
+            return presentationEngine.resolve(target);// Temp test
+        } else {
+            return presentationEngine.resolve(target);// Temp test
+            // return new TypeResource(type, templateEngine, store);
+        }
     }
 
 }

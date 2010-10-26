@@ -15,17 +15,17 @@ import frame.Engine;
 
 public class ResourceEngine implements Engine<Address, Resource> {
     private static final Log log = LogFactory.getLog(StaticResource.class);
-    final File root;
+    final File appHome;
     final Engine<Address, Resource> defaultEngine;
-    final Engine<Address, Resource> rootDirectoryEngine;
+    final Engine<Address, Resource> staticEngine;
 
-    public ResourceEngine(File root) {
-        this(root,new StaticResourceEngine(root), new DynamicResourceEngine(root));
+    public ResourceEngine(File appHome) {
+        this(appHome,new StaticResourceEngine(appHome), new DynamicResourceEngine(appHome));
     }
 
-    public ResourceEngine(File root,StaticResourceEngine staticEngine, DynamicResourceEngine dynamicEngine) {
-        this.root = root;
-        this.rootDirectoryEngine = staticEngine;
+    public ResourceEngine(File appHome,StaticResourceEngine staticEngine, DynamicResourceEngine dynamicEngine) {
+        this.appHome = appHome;
+        this.staticEngine = staticEngine;
         this.defaultEngine = dynamicEngine;
 
         engines = new HashMap<String, Engine<Address, Resource>>();
@@ -36,11 +36,11 @@ public class ResourceEngine implements Engine<Address, Resource> {
         this.register("tempalte", staticEngine);
 //        this.register("presentation", new PresentationResourceEngine(this.root, null));
 
-        map = new HashMap<String, Resource>();
+        resources = new HashMap<String, Resource>();
 
     }
 
-    final Map<String, Resource> map;
+    final Map<String, Resource> resources;
 
     Map<String, Engine<Address, Resource>> engines;
 
@@ -53,11 +53,11 @@ public class ResourceEngine implements Engine<Address, Resource> {
         String path = target.getPath().getPath();
         log.debug("Client request : " + target.toString());
 
-        Resource o = map.get(path);
+        Resource o = resources.get(path);
         if (o == null) {
             o = this.make(target);
-            map.put(path, o);
-            o = map.get(path);
+            resources.put(path, o);
+            o = resources.get(path);
         }
         return o;
     }
@@ -68,7 +68,7 @@ public class ResourceEngine implements Engine<Address, Resource> {
         // TODO 需要改善性能
         String[] se = target.getPath().getSegments();
         if (se.length == 1) {
-            return rootDirectoryEngine.resolve(target);
+            return staticEngine.resolve(target);
         }
 
         Engine<Address, Resource> engine = engines.get(se[0]);
