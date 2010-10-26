@@ -44,6 +44,9 @@ public class TemplateResource implements CachableResource {
     final protected int delay = 6000;
 
     protected long lastChecked;
+    
+    protected long sourceTemplateLastModified;
+    
     protected long lastModified;
 
     public TemplateResource(Configuration engine, Store<String, Type> store, Address address, String refer) {
@@ -75,7 +78,7 @@ public class TemplateResource implements CachableResource {
                 }
             }
 
-            if (srcLastModified - lastModified > 1000) {
+            if (srcLastModified - sourceTemplateLastModified > 1000) {
                 reloadTemplate();
             }
             
@@ -99,7 +102,7 @@ public class TemplateResource implements CachableResource {
                 Object o1 = loader.findTemplateSource(refer);
                 sourceModified = loader.getLastModified(o1);
 
-                if (sourceModified - this.lastModified <= 1000) {
+                if (sourceModified - this.sourceTemplateLastModified <= 1000) {
                     return;
                 }
 
@@ -117,7 +120,7 @@ public class TemplateResource implements CachableResource {
 
             } else {
                 sourceModified = loader.getLastModified(o);
-                if (sourceModified - this.lastModified <= 1000) {
+                if (sourceModified - this.sourceTemplateLastModified <= 1000) {
                     return;
                 }
                 reader = loader.getReader(o, "utf-8");
@@ -137,7 +140,8 @@ public class TemplateResource implements CachableResource {
             bufferStream.close();
 
             // update instance variable         
-            this.lastModified = sourceModified; 
+            this.sourceTemplateLastModified = sourceModified; 
+            this.lastModified = System.currentTimeMillis();
             this.template = tempTemplate;
             this.templateSource = bufferStream;  
 
@@ -168,8 +172,7 @@ public class TemplateResource implements CachableResource {
             // Cache
             long clientLastModified = req.getDate("If-Modified-Since");
             if (clientLastModified > 0) {
-
-                if (lastModified - clientLastModified <= 1000) {
+                if (this.lastModified - clientLastModified <= 1000) {
                     resp.setCode(304);
                     resp.close();
                     log.debug(req.getPath() + " Response 304 no change");
