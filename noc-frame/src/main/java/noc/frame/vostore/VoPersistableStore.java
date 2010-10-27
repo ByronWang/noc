@@ -16,7 +16,7 @@ public class VoPersistableStore extends VoStore {
 
 	public Persister<String, Vo> persister;
 
-	public VoPersistableStore(Factory parent, Type clz, Persister<String, Vo> persister) {
+	public VoPersistableStore(Factory<?> parent, Type clz, Persister<String, Vo> persister) {
 		super(parent, clz);
 		this.persister = persister;
 	}

@@ -4,7 +4,6 @@ import noc.annotation.DisplayName;
 import noc.annotation.PrimaryKey;
 import noc.lang.Attr;
 import noc.lang.Code;
-import noc.lang.Name;
 
 @DisplayName("产品")
 public class Product50 {

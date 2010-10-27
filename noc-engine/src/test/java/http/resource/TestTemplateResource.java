@@ -5,12 +5,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.io.Reader;
-import java.nio.ByteBuffer;
 
 import junit.framework.TestCase;
 

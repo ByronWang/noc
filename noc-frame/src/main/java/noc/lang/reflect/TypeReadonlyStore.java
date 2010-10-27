@@ -17,12 +17,9 @@ import noc.frame.Store;
 import noc.lang.Bool;
 import noc.lang.Name;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public class TypeReadonlyStore implements Store<String,Type> {
 
-	private static final Log log =LogFactory.getLog(TypeReadonlyStore.class);
+//	private static final Log log =LogFactory.getLog(TypeReadonlyStore.class);
 	
 	ClassPool pool;
 	Map<String, Type> types;
