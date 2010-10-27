@@ -254,7 +254,7 @@ table.popup a {
 
 body {
 	background: url("/css/images/beauty.jpg") fixed;
-	background-size: 100%;
+	/*background-size: 100%;*/
 	/*background-color: yellow;*/
 	padding: 10px;
 }
