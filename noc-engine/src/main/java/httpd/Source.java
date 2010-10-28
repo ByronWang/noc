@@ -7,10 +7,9 @@ public class Source {
     private final Object source;
     private final NestLoader loader;
     private final String name;
-    private int length;
 
-    public int getLength() {
-        return length;
+    public long getLength() {
+        return loader.getLength(source);
     }
 
     Source(String name,Object source, NestLoader loader) {
@@ -27,8 +26,8 @@ public class Source {
         return loader.getLastModified(source);
     }
 
-    public InputStream getInputStream(String encoding) throws IOException {
-        return loader.getInputStream(source, encoding);
+    public InputStream getInputStream() throws IOException {
+        return loader.getInputStream(source);
     }
 
     public void closeSource() throws IOException {

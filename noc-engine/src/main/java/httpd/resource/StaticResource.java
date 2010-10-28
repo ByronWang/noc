@@ -109,7 +109,7 @@ public class StaticResource implements CachableResource<Source>, Resource {
             resp.set("ETag", "\"" + this.lastModified + "\"");
             // max-age
             log.debug("Load file [" + underlySource.getName() + "] contents to client by [[" + req.getPath() + "]]");
-            InputStream in = underlySource.getInputStream(null);
+            InputStream in = underlySource.getInputStream();
             OutputStream out = resp.getOutputStream();
             byte[] buffer = new byte[1024];
             int length = -1;

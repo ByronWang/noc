@@ -4,7 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class ClassPathLoader implements NestLoader {
+    private static final Log log = LogFactory.getLog(ClassPathLoader.class);
+
     final protected ClassLoader classLoader;
     final protected String appHome;
 
@@ -15,8 +20,12 @@ public class ClassPathLoader implements NestLoader {
 
     @Override
     public Source findSource(String name) {
-        URL url = classLoader.getResource(appHome + "/" + name);
-        return new Source(name, url, this);
+        URL url = classLoader.getResource(appHome + name);
+        if (url != null) {
+            log.debug("findSrouce " + appHome + name + " --  SUCCEED");
+            return new Source(name, url, this);
+        }
+        return null;
     }
 
     @Override
@@ -30,7 +39,7 @@ public class ClassPathLoader implements NestLoader {
     }
 
     @Override
-    public InputStream getInputStream(Object source, String encoding) throws IOException {
+    public InputStream getInputStream(Object source) throws IOException {
         URL urlSource = (URL) source;
         return urlSource.openStream();
     }

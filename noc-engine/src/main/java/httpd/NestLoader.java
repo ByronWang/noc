@@ -8,7 +8,7 @@ interface NestLoader extends Loader {
     long getLastModified(Object source);
     long getLength(Object source);
 
-    InputStream getInputStream(Object source, String encoding) throws IOException;
+    InputStream getInputStream(Object source) throws IOException;
 
     void closeSource(Object source) throws IOException;
 }

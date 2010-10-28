@@ -18,25 +18,25 @@ public class ClassPathLoaderTest_2 extends TestCase {
     }
 
     public void testFindSource() throws IOException {
-        Object o = loader.findSource("login.htm");
+        Object o = loader.findSource("/login.htm");
         assertNotNull(o);
     }
 
     public void testGetLastModified() throws IOException {
-        Source o = loader.findSource("login.htm");
+        Source o = loader.findSource("/login.htm");
         long lm = o.getLastModified();
         System.out.println(lm);
     }
 
     public void testGetReader() throws IOException {
-        Source o = loader.findSource("login.htm");
-        InputStream in = o.getInputStream(null);
+        Source o = loader.findSource("/login.htm");
+        InputStream in = o.getInputStream();
         assertEquals(true, in.read() > 0);
         in.close();
     }
 
     public void testCloseSource() throws IOException {
-        Source o = loader.findSource("login.htm");
+        Source o = loader.findSource("/login.htm");
         o.closeSource();
     }
 

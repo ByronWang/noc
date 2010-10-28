@@ -83,7 +83,7 @@ public class DynamicResource implements CachableResource<Object>, Resource {
             root.put("path", this.address.getPath().getPath());
             root.put("data", dataResource.getUnderlyObject());
             Template template = presentationResource.getUnderlyObject();
-            template.process(root, new OutputStreamWriter(bufferStream));
+            template.process(root, new OutputStreamWriter(bufferStream,"utf-8"));
             bufferStream.close();
 
             // update instance variable

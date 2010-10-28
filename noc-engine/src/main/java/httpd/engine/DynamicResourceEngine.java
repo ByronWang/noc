@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Locale;
 import java.util.Properties;
 
 import noc.lang.reflect.TypeReadonlyStore;
@@ -52,7 +53,7 @@ public class DynamicResourceEngine implements Engine<Address, Resource> {
         try {
             this.appHome = new File(appHome);
             this.loader = loader;
-            props.load(loader.findSource("WEB-INF/web.properties").getInputStream(null));
+            props.load(loader.findSource("/WEB-INF/web.properties").getInputStream());
 
             TypeReadonlyStore typeStore;
             typeStore = new TypeReadonlyStore();
@@ -67,17 +68,18 @@ public class DynamicResourceEngine implements Engine<Address, Resource> {
             final Loader innerLoader = this.loader;
             /* Create and adjust the configuration */
             templateEngine = new Configuration();
+            templateEngine.setEncoding(Locale.CHINA, "UTF-8");
             templateEngine.setTemplateUpdateDelay(10);
             templateEngine.setTemplateLoader(
 
             new TemplateLoader() {
                 @Override
                 public Object findTemplateSource(String name) throws IOException {
-                    return innerLoader.findSource("template/" + name);
+                    return innerLoader.findSource("/template/" + name);
                 }
                 @Override
                 public Reader getReader(Object templateSource, String encoding) throws IOException {
-                    return new InputStreamReader(((Source) templateSource).getInputStream(encoding));
+                    return new InputStreamReader(((Source) templateSource).getInputStream(),encoding);
                 }
                 @Override
                 public long getLastModified(Object templateSource) {

@@ -5,7 +5,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class FileSystemLoader implements NestLoader {
+    private static final Log log = LogFactory.getLog(FileSystemLoader.class);
+
     final protected File appHome;
 
     public FileSystemLoader(File rootPath) {
@@ -13,23 +18,25 @@ public class FileSystemLoader implements NestLoader {
     }
 
     @Override
-    public Source findSource(String name){
-        File file = new File(appHome, name);
+    public Source findSource(String name) {
+        File file = new File(appHome.getPath() +  name);
+        log.debug("findSrouce " + file.getPath());
         if (file.exists()) {
-            return new Source(name,file, this);
+            log.debug("findSrouce " + file.getPath() + " --  SUCCEED");
+            return new Source(name, file, this);
         }
         return null;
     }
 
     @Override
     public long getLastModified(Object source) {
-        File fileSource= (File)source;
+        File fileSource = (File) source;
         return fileSource.lastModified();
     }
 
     @Override
-    public InputStream getInputStream(Object source, String encoding) throws IOException {
-        File fileSource= (File)source;
+    public InputStream getInputStream(Object source) throws IOException {
+        File fileSource = (File) source;
         return new FileInputStream(fileSource);
     }
 
@@ -39,8 +46,8 @@ public class FileSystemLoader implements NestLoader {
     }
 
     @Override
-    public long getLength(Object source) {   
-        File fileSource= (File)source;
+    public long getLength(Object source) {
+        File fileSource = (File) source;
         return fileSource.length();
     }
 
