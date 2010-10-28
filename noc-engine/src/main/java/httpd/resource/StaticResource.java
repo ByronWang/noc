@@ -1,9 +1,10 @@
 package httpd.resource;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.nio.channels.FileChannel;
-import java.nio.channels.WritableByteChannel;
+import httpd.Loader;
+import httpd.Source;
+
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 
@@ -14,16 +15,16 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.resource.Resource;
 
-public class StaticResource implements CachableResource<File>, Resource {
+public class StaticResource implements CachableResource<Source>, Resource {
     private static final Log log = LogFactory.getLog(StaticResource.class);
 
-    private final File underlyFile;
+    private final Source underlySource;
     // private final Address address;
     private final String mime;
+    Loader loader;
 
-
-    public StaticResource(File file, Address address) {
-        this.underlyFile = file;
+    public StaticResource(Source source, Address address) {
+        this.underlySource = source;
         this.mime = theMimeTypes.get(address.getPath().getExtension());
 
         this.update();
@@ -35,11 +36,11 @@ public class StaticResource implements CachableResource<File>, Resource {
     long sourceLastModified = -1;
 
     long lastModified = -1;
-    
-    public void update() {
-        log.debug("check update " + this.underlyFile.getName());
 
-        long srcLastModified = underlyFile.lastModified();
+    public void update() {
+        log.debug("check update " + this.underlySource.getName());
+
+        long srcLastModified = underlySource.getLastModified();
 
         if (srcLastModified - sourceLastModified > 1000) {
             reload();
@@ -49,10 +50,10 @@ public class StaticResource implements CachableResource<File>, Resource {
     }
 
     synchronized public void reload() {
-        log.debug("check to reload " + this.underlyFile.getName());
+        log.debug("check to reload " + this.underlySource.getName());
 
-        this.sourceLastModified = underlyFile.lastModified();
-        this.lastModified =  this.sourceLastModified; // System.currentTimeMillis();
+        this.sourceLastModified = underlySource.getLastModified();
+        this.lastModified = this.sourceLastModified; // System.currentTimeMillis();
 
         log.debug("refresh template, bufferStream " + this.sourceLastModified);
     }
@@ -67,29 +68,30 @@ public class StaticResource implements CachableResource<File>, Resource {
     }
 
     @Override
-    public File getUnderlyObject() {
+    public Source getUnderlyObject() {
         long now = System.currentTimeMillis();
         if (now - lastChecked >= delay) {
             update();
         }
-        return this.underlyFile;
+        return this.underlySource;
     }
 
     @Override
     public void handle(Request req, Response resp) {
-        try {            
+        try {
             long now = System.currentTimeMillis();
             if (now - lastChecked >= delay) {
                 update();
             }
-            
+
             // Cache
             long clientLastModified = req.getDate("If-Modified-Since");
             if (clientLastModified > 0) {
                 if (this.lastModified - clientLastModified <= 1000) {
                     resp.set("Cache-Control", "max-age=60000");
-//                    resp.set("ETag", "\"" + underlyFile.lastModified() + "\"");
-//                    resp.setDate("Date", System.currentTimeMillis());
+                    // resp.set("ETag", "\"" + underlyFile.lastModified() +
+                    // "\"");
+                    // resp.setDate("Date", System.currentTimeMillis());
                     resp.setCode(304);
                     resp.close();
                     log.debug(req.getPath() + " 304 : The document has not been modified! ");
@@ -101,18 +103,22 @@ public class StaticResource implements CachableResource<File>, Resource {
             resp.set("Cache-Control", "max-age=6000");
             resp.set("Content-Language", "en-US");
             resp.set("Content-Type", mime);
-            resp.setContentLength((int) underlyFile.length());
+            resp.setContentLength((int) underlySource.getLength());
             resp.setDate("Date", System.currentTimeMillis());
-            resp.setDate("Last-Modified", underlyFile.lastModified());
-            resp.set("ETag", "\"" + underlyFile.lastModified() + "\"");
+            resp.setDate("Last-Modified", this.lastModified);
+            resp.set("ETag", "\"" + this.lastModified + "\"");
             // max-age
-            log.debug("Transfer file [" + underlyFile.getPath() + "] contents to client by [[" + req.getPath() + "]]");
-            FileChannel in = new FileInputStream(underlyFile).getChannel();
-            WritableByteChannel out = resp.getByteChannel();
-            in.transferTo(0, underlyFile.length(), out);
-
+            log.debug("Load file [" + underlySource.getName() + "] contents to client by [[" + req.getPath() + "]]");
+            InputStream in = underlySource.getInputStream(null);
+            OutputStream out = resp.getOutputStream();
+            byte[] buffer = new byte[1024];
+            int length = -1;
+            while ((length = in.read(buffer)) > 0) {
+                out.write(buffer, 0, length);
+            }
             in.close();
             resp.close();
+
             return;
         } catch (Exception e) {
             throw new RuntimeException(e);

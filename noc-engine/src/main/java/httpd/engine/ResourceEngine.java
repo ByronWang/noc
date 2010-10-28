@@ -2,7 +2,6 @@ package httpd.engine;
 
 import httpd.resource.StaticResource;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,15 +14,15 @@ import frame.Engine;
 
 public class ResourceEngine implements Engine<Address, Resource> {
     private static final Log log = LogFactory.getLog(StaticResource.class);
-    final File appHome;
+    final String appHome;
     final Engine<Address, Resource> defaultEngine;
     final Engine<Address, Resource> staticEngine;
 
-    public ResourceEngine(File appHome) {
+    public ResourceEngine(String appHome) {
         this(appHome,new StaticResourceEngine(appHome), new DynamicResourceEngine(appHome));
     }
 
-    public ResourceEngine(File appHome,StaticResourceEngine staticEngine, DynamicResourceEngine dynamicEngine) {
+    public ResourceEngine(String appHome,StaticResourceEngine staticEngine, DynamicResourceEngine dynamicEngine) {
         this.appHome = appHome;
         this.staticEngine = staticEngine;
         this.defaultEngine = dynamicEngine;

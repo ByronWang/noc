@@ -43,9 +43,9 @@ public class DynamicResourceEngine implements Engine<Address, Resource> {
 
     static final String DEBUG_MODE = "debug";
 
-    public DynamicResourceEngine(File appHome) {
+    public DynamicResourceEngine(String appHome) {
         try {
-            this.appHome = appHome;
+            this.appHome =  new File(appHome);
             props.load(new FileInputStream(new File(this.appHome, "../conf/web.properties")));
 
             TypeReadonlyStore typeStore;
@@ -64,7 +64,7 @@ public class DynamicResourceEngine implements Engine<Address, Resource> {
             templateEngine.setDirectoryForTemplateLoading(new File(this.appHome, "template"));
 
             presentationEngine = new PresentationResourceEngine(templateEngine, typeStore);
-            dataResourceEngine = new DataResourceEngine(appHome, props, typeStore, templateEngine);
+            dataResourceEngine = new DataResourceEngine(this.appHome, props, typeStore, templateEngine);
 
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);

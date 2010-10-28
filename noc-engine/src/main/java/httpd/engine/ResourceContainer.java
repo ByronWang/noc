@@ -2,7 +2,6 @@ package httpd.engine;
 
 import help.PrintObejct;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.simpleframework.http.Address;
@@ -17,7 +16,7 @@ public class ResourceContainer implements Container {
     private final Engine<Address, Resource> engine;
 
     public ResourceContainer() {
-        this(new ResourceEngine(new File("./htdocs")));
+        this(new ResourceEngine("htdocs"));
     }
 
     public ResourceContainer(Engine<Address, Resource> engine) {
