@@ -8,11 +8,8 @@ import java.io.InputStream;
 public class FileSystemLoader implements NestLoader {
     final protected File appHome;
 
-    public FileSystemLoader(String rootPath) {
-        this.appHome = new File(rootPath);
-        if(!this.appHome.exists()){
-            throw new RuntimeException();
-        }
+    public FileSystemLoader(File rootPath) {
+        this.appHome = rootPath;
     }
 
     @Override

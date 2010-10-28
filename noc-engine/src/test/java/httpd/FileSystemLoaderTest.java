@@ -1,5 +1,6 @@
 package httpd;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -11,33 +12,33 @@ public class FileSystemLoaderTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        loader = new FileSystemLoader("src/main/resources/htdocs");
+        loader = new FileSystemLoader(new File("src/main/resources/htdocs"));
     }
 
     public void testClassPathLoader() {
     }
 
     public void testFindSource() throws IOException {
-        Object o = loader.findSource("login.htm");
+        Source o = loader.findSource("login.htm");
         assertNotNull(o);
     }
 
     public void testGetLastModified() throws IOException {
-        Object o = loader.findSource("login.htm");
-        long lm = loader.getLastModified(o);
+        Source o = loader.findSource("login.htm");
+        long lm = o.getLastModified();
         System.out.println(lm);
     }
 
     public void testGetReader() throws IOException {
-        Object o = loader.findSource("login.htm");
-        InputStream in = loader.getInputStream(o, null);
+        Source o = loader.findSource("login.htm");
+        InputStream in = o.getInputStream(null);
         assertEquals(true, in.read() > 0);
         in.close();
     }
 
     public void testCloseSource() throws IOException {
-        Object o = loader.findSource("login.htm");
-        loader.closeSource(o);
+        Source o = loader.findSource("login.htm");
+        o.closeSource();
     }
 
 }

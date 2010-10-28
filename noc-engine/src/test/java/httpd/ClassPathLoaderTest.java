@@ -18,26 +18,26 @@ public class ClassPathLoaderTest extends TestCase {
     }
 
     public void testFindSource() throws IOException {
-        Object o = loader.findSource("TemplateLoader.class");
+        Source o = loader.findSource("TemplateLoader.class");
         assertNotNull(o);
     }
 
     public void testGetLastModified() throws IOException {
-        Object o = loader.findSource("TemplateLoader.class");
-        long lm = loader.getLastModified(o);
+        Source o = loader.findSource("TemplateLoader.class");
+        long lm = o.getLastModified();
         System.out.println(lm);
     }
 
     public void testGetReader() throws IOException {
-        Object o = loader.findSource("TemplateLoader.class");
-        InputStream in = loader.getInputStream(o, null);
+        Source o = loader.findSource("TemplateLoader.class");
+        InputStream in = o.getInputStream(null);
         assertEquals(true, in.read() > 0);
         in.close();
     }
 
     public void testCloseSource() throws IOException {
-        Object o = loader.findSource("TemplateLoader.class");
-        loader.closeSource(o);
+        Source o = loader.findSource("TemplateLoader.class");
+        o.closeSource();
     }
 
 }

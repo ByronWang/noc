@@ -17,7 +17,7 @@ import frame.Engine;
 
 public class StaticResourceEngine implements Engine<Address, Resource> {
 
-//    protected final File homeDir;
+    // protected final File homeDir;
     protected final Resource unknownResource;
     protected final Loader loader;
 
@@ -26,10 +26,11 @@ public class StaticResourceEngine implements Engine<Address, Resource> {
     }
 
     public StaticResourceEngine(String path) {
-//        this.homeDir = root;
-        this.loader = new MultiLoader(new FileSystemLoader("src/main/resources/" + path),
-                new FileSystemLoader(path), new ClassPathLoader(this.getClass().getClassLoader(),
-                        path));
+        // this.homeDir = root;
+
+        this.loader = new MultiLoader(new FileSystemLoader(new File("src/main/resources/", path)),
+                new FileSystemLoader(new File(path)),
+                new ClassPathLoader(this.getClass().getClassLoader(), path));
         unknownResource = new NullResource(new File(path, "404.htm"));
     }
 
