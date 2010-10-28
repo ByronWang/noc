@@ -2,7 +2,6 @@
 [#include "./tags.ftl" /]
 
 [#macro list field parent="data" readonly=false]
-	<table> 
 		<thead >
 			<tr>
 				<th>++</th>
@@ -45,32 +44,21 @@
 			<tr><td colspan="${field.type.fields?size + 1}">No Record</td></tr>[#t]
 		</#if>
 		</tbody>
-	</table>
 [/#macro]
 
 
 [#macro object type parent="data"]
-<ol>[#list type.fields as f]
-	<li>[#if f.array]
-			[#switch f.refer]
-				[#case "Scala"]			
-					[@label field=f /] @TODO List ${f.name} : ${f.type.displayName}		
-					[#break]
-				[#case "Inline"]
-					[@label field=f/]		
-					[@list field=f /]
-					[#break]
-				[#case "Reference"]
-				[#case "Cascade"]
-		 			[@label field=f /]
-					[@list field=f /]
-					[#break]
-			[/#switch]
+<table class="form">
+<caption>基本信息</caption>
+<tbody>
+[#list type.fields as f]
+	[#if f.array]
 		[#else]
 			[#switch f.refer]
 				[#case "Scala"]
-					[@label field=f /]
+					<tr><td>${f.displayName}</td><td>
 					[#if f.importance == "PrimaryKey"]<#if data.${f.name}?? && data.${f.name}?length gt 0>[@readonlyinput field=f /]<#else>[@input field=f /]</#if>[#else][@input field=f /][/#if]
+					</td></tr>
 					[#break]
 				[#case "Inline"]
 					[@label field=f /]
@@ -84,18 +72,45 @@
 						[/#if]
 						[#if rF.name == "name" || rF.name == "名称"]
 							[#assign showField=rF/]
-						[/#if]
-						
-					[/#list]										
-					[@label field=f /]
-					[@refInput field=f valueField=valueField  showField=showField/]					
+						[/#if]						
+					[/#list]	
+														
+					<tr><td>${f.displayName}</td><td>
+					[@refInput field=f valueField=valueField  showField=showField/]		
+					</td></tr>			
 					</#compress>
 					[#break]			
 			[/#switch]	
 		[/#if]
-	</li>[/#list][#lt]
-</ol>
+	[/#list][#lt]
+</tbody></table>
 [/#macro]
+
+[#macro object_innerlist type parent="data"]
+[#list type.fields as f]
+	[#if f.array]
+		[#switch f.refer]
+			[#case "Scala"]			
+				[@label field=f /]@TODO List ${f.name} : ${f.type.displayName}		
+				[#break]
+			[#case "Inline"]
+				<table>
+					<caption>${f.displayName}</caption>
+				[@list field=f /]
+				</table>
+				[#break]
+			[#case "Reference"]
+			[#case "Cascade"]
+				<table>
+					<caption>${f.displayName}</caption>
+					[@list field=f /]
+				</table>
+				[#break]
+		[/#switch]
+	[/#if]
+[/#list][#lt]
+[/#macro]
+
 
 [#macro refInput field valueField showField parent="data"]<#compress>
 		<#if ${parent}.${field.name}??>
@@ -124,7 +139,9 @@
 [@body title=type.displayName]
 <form name="form1" method="POST" action="${path}" title="Hello Title">
 	[@object type=type parent="data" /]	
+	[@object_innerlist type=type parent="data" /]	
 	[@submit/]
+	
 </form>
 
 <div class="action">

@@ -5,8 +5,6 @@
 [/#macro]
 [#macro typeinfo tp][#if tp.master == "Scala"]<!--$ {tp.name?replace("noc.lang.", "")}-->[#else]<a href="/basic/${tp.name?replace(".", "/")}/">${tp.displayName}</a>[/#if][/#macro]
 
-
-
 [#macro label field]<label>${field.name}</label>[/#macro]
 
 [#macro input field parent="data"]<#compress>
@@ -47,27 +45,22 @@
 	</#compress>
 [/#macro]
 
-
-
-
 [#macro submit]<input type="submit" class="submit" name="Submit" value="submit"/>[/#macro]
 [#macro backToList type]
 	<a href="./">Return to list</a>
 [/#macro]
 
-
 [#macro body title]
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<link rel='stylesheet' href='/css/form.css' type='text/css'/>
+	<link rel='stylesheet' href='/css/plainform.css' type='text/css'/>
 	<script type="text/javascript"  src="/js/prototype.js"></script>
 	<script type="text/javascript"  src="/js/popup.js"></script>	
 	<title>${title}</title>
 </head>
 <body>
-<!--a style="float:right;position:absolute;right:0px;top:0px;" href="/type/noc/lang/reflect/Type/{type.name}">Type</a-->
-<!--a style="float:right;position:absolute;right:0px;top:20px;" href="/debug/{type.name?replace(".", "/")}/{r"{data.indentify!}"}">Template</a-->
 
 <h1>${title}</h1>
 
