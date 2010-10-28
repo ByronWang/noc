@@ -19,6 +19,7 @@ public class Type {
 	public static final String Scala = "Scala";
 	public static final String Eembedded = "Eembedded";
 
+	@DisplayName("名称")
 	String name;
 	String displayName;
 
@@ -30,6 +31,7 @@ public class Type {
 	Type declaringType = null;
 
 	final @Inline
+	@DisplayName("字段")
 	List<Field> fields;
 
 	// Type declaringType;
