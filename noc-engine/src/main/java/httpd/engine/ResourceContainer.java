@@ -1,7 +1,11 @@
 package httpd.engine;
 
 import help.PrintObejct;
+import httpd.ClassPathLoader;
+import httpd.FileSystemLoader;
+import httpd.MultiLoader;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.simpleframework.http.Address;
@@ -16,7 +20,8 @@ public class ResourceContainer implements Container {
     private final Engine<Address, Resource> engine;
 
     public ResourceContainer() {
-        this(new ResourceEngine("htdocs"));
+        this(new ResourceEngine(new MultiLoader(new FileSystemLoader(new File("htdocs")), new ClassPathLoader(
+                ResourceEngine.class.getClassLoader(), "htdocs"))));
     }
 
     public ResourceContainer(Engine<Address, Resource> engine) {
@@ -24,10 +29,10 @@ public class ResourceContainer implements Container {
     }
 
     public void handle(Request req, Response resp) {
-        try{
-        PrintObejct.print(Address.class, req.getAddress());
-        engine.resolve(req.getAddress()).handle(req, resp);
-        }catch(RuntimeException e){
+        try {
+            PrintObejct.print(Address.class, req.getAddress());
+            engine.resolve(req.getAddress()).handle(req, resp);
+        } catch (RuntimeException e) {
             e.printStackTrace();
             resp.setCode(404);
             try {

@@ -1,12 +1,15 @@
 package httpd.engine;
 
+import httpd.Loader;
+import httpd.Source;
 import httpd.resource.CachableResource;
 import httpd.resource.DynamicResource;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Properties;
 
 import noc.lang.reflect.TypeReadonlyStore;
@@ -17,6 +20,7 @@ import org.simpleframework.http.Address;
 import org.simpleframework.http.resource.Resource;
 
 import frame.Engine;
+import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -42,11 +46,13 @@ public class DynamicResourceEngine implements Engine<Address, Resource> {
     static final String APP_DEFINE_PATH = "app_define_path";
 
     static final String DEBUG_MODE = "debug";
+    final Loader loader;
 
-    public DynamicResourceEngine(String appHome) {
+    public DynamicResourceEngine(Loader loader, String appHome) {
         try {
-            this.appHome =  new File(appHome);
-            props.load(new FileInputStream(new File(this.appHome, "../conf/web.properties")));
+            this.appHome = new File(appHome);
+            this.loader = loader;
+            props.load(loader.findSource("WEB-INF/web.properties").getInputStream(null));
 
             TypeReadonlyStore typeStore;
             typeStore = new TypeReadonlyStore();
@@ -58,10 +64,34 @@ public class DynamicResourceEngine implements Engine<Address, Resource> {
                 typeStore.load(new File(this.appHome, props.getProperty(APP_DEFINE_PATH)));
             }
 
+            final Loader innerLoader = this.loader;
             /* Create and adjust the configuration */
             templateEngine = new Configuration();
             templateEngine.setTemplateUpdateDelay(10);
-            templateEngine.setDirectoryForTemplateLoading(new File(this.appHome, "template"));
+            templateEngine.setTemplateLoader(
+
+            new TemplateLoader() {
+                @Override
+                public Object findTemplateSource(String name) throws IOException {
+                    return innerLoader.findSource("template/" + name);
+                }
+                @Override
+                public Reader getReader(Object templateSource, String encoding) throws IOException {
+                    return new InputStreamReader(((Source) templateSource).getInputStream(encoding));
+                }
+                @Override
+                public long getLastModified(Object templateSource) {
+                    return ((Source) templateSource).getLastModified();
+                }
+                @Override
+                public void closeTemplateSource(Object templateSource) throws IOException {
+                    ((Source) templateSource).closeSource();
+                }
+            });
+//            
+//            
+//            templateEngine.setDirectoryForTemplateLoading(new File(
+//                    "D:\\linux\\workspace\\noc-engine\\target\\classes\\htdocs"));
 
             presentationEngine = new PresentationResourceEngine(templateEngine, typeStore);
             dataResourceEngine = new DataResourceEngine(this.appHome, props, typeStore, templateEngine);
@@ -90,7 +120,7 @@ public class DynamicResourceEngine implements Engine<Address, Resource> {
             presentationreResource = presentationEngine.resolve(target);
             datareResource = dataResourceEngine.resolve(target);
         }
-        
+
         DynamicResource dynamicResource = new DynamicResource(target, datareResource, presentationreResource);
         return dynamicResource;
     }

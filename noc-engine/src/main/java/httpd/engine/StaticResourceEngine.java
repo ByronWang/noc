@@ -1,14 +1,8 @@
 package httpd.engine;
 
-import httpd.ClassPathLoader;
-import httpd.FileSystemLoader;
 import httpd.Loader;
-import httpd.MultiLoader;
 import httpd.Source;
-import httpd.resource.NullResource;
 import httpd.resource.StaticResource;
-
-import java.io.File;
 
 import org.simpleframework.http.Address;
 import org.simpleframework.http.resource.Resource;
@@ -18,20 +12,10 @@ import frame.Engine;
 public class StaticResourceEngine implements Engine<Address, Resource> {
 
     // protected final File homeDir;
-    protected final Resource unknownResource;
     protected final Loader loader;
 
-    public Resource getUnknownResource() {
-        return unknownResource;
-    }
-
-    public StaticResourceEngine(String path) {
-        // this.homeDir = root;
-
-        this.loader = new MultiLoader(new FileSystemLoader(new File("src/main/resources/", path)),
-                new FileSystemLoader(new File(path)),
-                new ClassPathLoader(this.getClass().getClassLoader(), path));
-        unknownResource = new NullResource(new File(path, "404.htm"));
+    public StaticResourceEngine(Loader loader) {
+        this.loader = loader;
     }
 
     @Override
@@ -40,7 +24,7 @@ public class StaticResourceEngine implements Engine<Address, Resource> {
         if (source != null) {
             return new StaticResource(source, target);
         } else {
-            return unknownResource;
+            throw new RuntimeException();
         }
     }
 
