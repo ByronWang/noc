@@ -49,7 +49,6 @@ table th {
 }
 
 table.form td:FIRST-CHILD {
-	font-weight: bold;
 	border: 0px;
 }
 
@@ -80,10 +79,12 @@ input[type='submit'] {
 }
 
 div.action {
-	padding: .6em .3em .6em 2em;
+	padding: .6em .3em .6em 1em;
 }
 
 div.action a {
+	display:block;
+	float:right;
 	right: 1em;
 }
 
