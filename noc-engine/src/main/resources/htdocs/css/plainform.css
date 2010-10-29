@@ -83,13 +83,11 @@ div.action {
 }
 
 div.action a {
-	display:block;
-	float:right;
-	right: 1em;
+	padding: .4em 1.2em;
 }
 
 div.action,table caption { /*transparent*/
-	background-color: silver;
+	background-color: #808080;
 	background-color: rgba(240, 240, 240, .6);
 }
 
