@@ -21,11 +21,29 @@ table {
 table caption {
 	text-align: left;
 	vertical-align: bottom;
-	padding-left: .3em;
+	padding:.3em .3em .2em .4em;
 	margin-bottom: .3em;
 	font-weight: bold;
 	font-size: 120%;
-	background-color:silver;
+	background-color: silver;
+	background-color: rgba(240, 240, 240, .6);
+
+	/*
+	box-shadow: 3px 3px 4px #555;
+	-moz-box-shadow: 3px 3px 4px #555;
+	-webkit-box-shadow: 3px 3px 4px #555;
+	*/
+
+box-shadow: 2px 2px 3px #999;
+-moz-box-shadow: 2px 2px 3px #999;
+-webkit-box-shadow: 2px 2px 3px #999;
+filter: progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#333333');
+-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#333333')";
+
+	
+	-moz-border-radius: 3px; /* FF1+ */
+	-webkit-border-radius: 3px; /* Saf3+, Chrome */
+	border-radius: 3px; /* Opera 10.5, IE 9 */
 }
 
 table td.form {
