@@ -1,6 +1,7 @@
 package noc.lang.reflect;
 
 import noc.annotation.Dependent;
+import noc.annotation.DisplayName;
 import noc.annotation.RealType;
 
 @Dependent
@@ -16,15 +17,21 @@ public class Field {
 	public static final String Important = "Important";
 	public static final String Normal = "Normal";
 //	importance
-	
+
+    @DisplayName("名称")
 	String name;
+    @DisplayName("显示名称")
 	String displayName;
+    @DisplayName("重要性")
 	String importance = Normal;
 
+    @DisplayName("类型")
 	Type type;
+    @DisplayName("数组")
 	boolean array = false;
 
 	@RealType(FieldReferType.class)
+    @DisplayName("引用类型")
 	String refer;
 
 	public Field(String name, Type type) {
@@ -34,52 +41,53 @@ public class Field {
 		this.type = type;
 	}
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public Type getType() {
-		return type;
-	}
+    public String getDisplayName() {
+        return displayName;
+    }
 
-	public void setType(Type type) {
-		this.type = type;
-	}
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
 
-	public String getRefer() {
-		return refer;
-	}
+    public String getImportance() {
+        return importance;
+    }
 
-	public void setRefer(String refer) {
-		this.refer = refer;
-	}
+    public void setImportance(String importance) {
+        this.importance = importance;
+    }
 
-	public boolean isArray() {
-		return array;
-	}
+    public Type getType() {
+        return type;
+    }
 
-	public void setArray(boolean array) {
-		this.array = array;
-	}
+    public void setType(Type type) {
+        this.type = type;
+    }
 
-	public String getDisplayName() {
-		return this.name;
-	}
+    public boolean isArray() {
+        return array;
+    }
 
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
+    public void setArray(boolean array) {
+        this.array = array;
+    }
 
-	public String getImportance() {
-		return importance;
-	}
+    public String getRefer() {
+        return refer;
+    }
 
-	public void setImportance(String importance) {
-		this.importance = importance;
-	}
+    public void setRefer(String refer) {
+        this.refer = refer;
+    }
+
 
 }

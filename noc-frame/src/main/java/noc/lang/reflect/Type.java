@@ -21,13 +21,17 @@ public class Type {
 
 	@DisplayName("名称")
 	String name;
+    @DisplayName("显示名称")
 	String displayName;
 
+    @DisplayName("独立")
 	boolean standalone = true;
 
+    @DisplayName("实体类型")
 	@RealType(TypeMaterType.class)
 	String master;
 
+    @DisplayName("定义在")
 	Type declaringType = null;
 
 	final @Inline
