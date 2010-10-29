@@ -1,6 +1,6 @@
 
 <html><head>
-<link rel='stylesheet' href='/css/form.css' type='text/css'/>
+<link rel='stylesheet' href='/css/plainform.css' type='text/css'/>
 <title>noc.lang.reflect.Type</title>
 </head>
 <body>

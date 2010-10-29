@@ -140,11 +140,10 @@
 <form name="form1" method="POST" action="${path}" title="Hello Title">
 	[@object type=type parent="data" /]	
 	[@object_innerlist type=type parent="data" /]	
-	[@submit/]
-	
+	<div class="action">
+		[@submit/]
+		[@backToList type=type/]
+	</div>	
 </form>
 
-<div class="action">
-[@backToList type=type/]
-</div >
 [/@body]

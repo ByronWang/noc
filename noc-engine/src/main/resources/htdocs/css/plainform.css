@@ -5,6 +5,7 @@
 
 body {
 	padding: 1em;
+	background: url("/css/images/beauty.jpg") no-repeat;
 }
 
 table,tr,td {
@@ -21,29 +22,15 @@ table {
 table caption {
 	text-align: left;
 	vertical-align: bottom;
-	padding:.3em .3em .2em .4em;
+	padding: .3em .3em .2em .4em;
 	margin-bottom: .3em;
 	font-weight: bold;
 	font-size: 120%;
-	background-color: silver;
-	background-color: rgba(240, 240, 240, .6);
+	text-shadow: 2px 2px 3px #888888;
+}
 
-	/*
-	box-shadow: 3px 3px 4px #555;
-	-moz-box-shadow: 3px 3px 4px #555;
-	-webkit-box-shadow: 3px 3px 4px #555;
-	*/
-
-box-shadow: 2px 2px 3px #999;
--moz-box-shadow: 2px 2px 3px #999;
--webkit-box-shadow: 2px 2px 3px #999;
-filter: progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#333333');
--ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#333333')";
-
-	
-	-moz-border-radius: 3px; /* FF1+ */
-	-webkit-border-radius: 3px; /* Saf3+, Chrome */
-	border-radius: 3px; /* Opera 10.5, IE 9 */
+table {
+	background-color: rgba(240, 240, 240, .7);
 }
 
 table td.form {
@@ -58,6 +45,7 @@ table td {
 table th {
 	padding: .2em 0em;
 	border-bottom: gray 1px solid;
+	text-shadow: 2px 2px 3px #888888;
 }
 
 table.form td:FIRST-CHILD {
@@ -75,6 +63,7 @@ input {
 	vertical-align: bottom;
 	padding: .1em;
 	padding-left: .4em;
+	background: transparent;
 }
 
 input[type="checkbox"] {
@@ -85,6 +74,37 @@ input[readonly] {
 	
 }
 
-input[type='submit']{
+input[type='submit'] {
 	padding: .4em 1.2em;
+	background-color: green;
+}
+
+div.action {
+	padding: .6em .3em .6em 2em;
+}
+
+div.action a {
+	right: 1em;
+}
+
+div.action,table caption { /*transparent*/
+	background-color: silver;
+	background-color: rgba(240, 240, 240, .6);
+}
+
+div.action,table caption,table tbody, input[type='submit'] { /* radius */
+	-moz-border-radius: 3px; /* FF1+ */
+	-webkit-border-radius: 3px; /* Saf3+, Chrome */
+	border-radius: 3px; /* Opera 10.5, IE 9 */
+}
+
+div.action,table caption,input[type='submit'] { /*  shadow*/
+	box-shadow: 2px 2px 3px #777;
+	-moz-box-shadow: 2px 2px 3px #777;
+	-webkit-box-shadow: 2px 2px 3px #777;
+	filter: progid :       DXImageTransform.Microsoft.Shadow (      
+		Strength = 
+		     2, Direction =       135, Color =       '#333333' );
+	-ms-filter:
+		"progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#333333')";
 }
