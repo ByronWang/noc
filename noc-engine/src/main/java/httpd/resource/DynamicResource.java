@@ -141,6 +141,8 @@ public class DynamicResource implements CachableResource<Object>, Resource {
             if (clientLastModified > 0) {
                 if (this.lastModified - clientLastModified <= 1000) {
                     resp.setCode(304);
+                    resp.set("Cache-Control", "max-age=3");
+                    resp.setDate("Date", System.currentTimeMillis());
                     resp.close();
                     log.debug(req.getPath() + " Response 304 no change");
                     return;
@@ -149,7 +151,7 @@ public class DynamicResource implements CachableResource<Object>, Resource {
 
             if ("GET".endsWith(req.getMethod())) {
                 // normal parse
-                resp.set("Cache-Control", "max-age=6000");
+                resp.set("Cache-Control", "max-age=3");
                 resp.set("Content-Language", "zh-CN");
                 resp.set("Content-Type", "text/html; charset=UTF-8");
                 resp.setDate("Date", System.currentTimeMillis());
@@ -165,7 +167,7 @@ public class DynamicResource implements CachableResource<Object>, Resource {
                 dataResource.handle(req, resp);
 
                 // normal parse
-                resp.set("Cache-Control", "max-age=6000");
+                resp.set("Cache-Control", "max-age=3");
                 resp.set("Content-Language", "zh-CN");
                 resp.set("Content-Type", "text/html; charset=UTF-8");
                 resp.setDate("Date", System.currentTimeMillis());

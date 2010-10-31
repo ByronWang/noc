@@ -90,9 +90,9 @@ public class StaticResource implements CachableResource<Source>, Resource {
             if (clientLastModified > 0) {
                 if (this.lastModified - clientLastModified <= 1000) {
                     resp.set("Cache-Control", "max-age=60000");
-                    // resp.set("ETag", "\"" + underlyFile.lastModified() +
+//                     resp.set("ETag", "\"" + underlyFile.lastModified() +
                     // "\"");
-                    // resp.setDate("Date", System.currentTimeMillis());
+                     resp.setDate("Date", System.currentTimeMillis());
                     resp.setCode(304);
                     resp.close();
                     log.debug(req.getPath() + " 304 : The document has not been modified! ");
