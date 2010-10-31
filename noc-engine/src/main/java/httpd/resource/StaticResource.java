@@ -89,7 +89,7 @@ public class StaticResource implements CachableResource<Source>, Resource {
             long clientLastModified = req.getDate("If-Modified-Since");
             if (clientLastModified > 0) {
                 if (this.lastModified - clientLastModified <= 1000) {
-                    resp.set("Cache-Control", "max-age=100");
+                    resp.set("Cache-Control", "max-age=60000");
                     // resp.set("ETag", "\"" + underlyFile.lastModified() +
                     // "\"");
                     // resp.setDate("Date", System.currentTimeMillis());
@@ -101,7 +101,7 @@ public class StaticResource implements CachableResource<Source>, Resource {
             }
 
             // normal parse
-            resp.set("Cache-Control", "max-age=60");
+            resp.set("Cache-Control", "max-age=60000");
             resp.set("Content-Language", "en-US");
             resp.set("Content-Type", mime);
 //            resp.setContentLength((int) underlySource.getLength());

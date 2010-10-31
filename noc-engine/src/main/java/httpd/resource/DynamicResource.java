@@ -127,6 +127,7 @@ public class DynamicResource implements CachableResource<Object>, Resource {
         throw new UnsupportedOperationException();
     }
 
+    int count = 0;
     @Override
     public void handle(Request req, Response resp) {
         try {
@@ -146,14 +147,14 @@ public class DynamicResource implements CachableResource<Object>, Resource {
                 }
             }
 
-            if ("get".endsWith(req.getMethod())) {
+            if ("GET".endsWith(req.getMethod())) {
                 // normal parse
                 resp.set("Cache-Control", "max-age=6000");
                 resp.set("Content-Language", "zh-CN");
                 resp.set("Content-Type", "text/html; charset=UTF-8");
                 resp.setDate("Date", System.currentTimeMillis());
                 resp.setDate("Last-Modified", this.lastModified);
-                resp.set("ETag", "\"" + lastModified + "\"");
+                resp.set("ETag", "\"" + lastModified +  "-" + (++count) + "\"");
                 resp.set("Content-Encoding", "gzip");
                 resp.set("Vary", "Accept-Encoding");
 
