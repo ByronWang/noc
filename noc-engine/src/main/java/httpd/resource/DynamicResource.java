@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -78,12 +79,18 @@ public class DynamicResource implements CachableResource<Object>, Resource {
             }
 
             ByteArrayOutputStream bufferStream = new ByteArrayOutputStream();
+            GZIPOutputStream gzipStream = new GZIPOutputStream(bufferStream);
+            OutputStreamWriter  writer =new OutputStreamWriter(gzipStream,"utf-8");
+            
 
             Map<String, Object> root = new HashMap<String, Object>();
             root.put("path", this.address.getPath().getPath());
             root.put("data", dataResource.getUnderlyObject());
             Template template = presentationResource.getUnderlyObject();
-            template.process(root, new OutputStreamWriter(bufferStream,"utf-8"));
+            template.process(root, writer);
+            writer.flush();
+            gzipStream.flush();
+            gzipStream.finish();
             bufferStream.close();
 
             // update instance variable
@@ -147,6 +154,8 @@ public class DynamicResource implements CachableResource<Object>, Resource {
                 resp.setDate("Date", System.currentTimeMillis());
                 resp.setDate("Last-Modified", this.lastModified);
                 resp.set("ETag", "\"" + lastModified + "\"");
+                resp.set("Content-Encoding", "gzip");
+                resp.set("Vary", "Accept-Encoding");
 
                 this.bufferedResponse.writeTo(resp.getOutputStream());
 
@@ -161,6 +170,8 @@ public class DynamicResource implements CachableResource<Object>, Resource {
                 resp.setDate("Date", System.currentTimeMillis());
                 resp.setDate("Last-Modified", this.lastModified);
                 resp.set("ETag", "\"" + lastModified + "\"");
+                resp.set("Content-Encoding", "gzip");
+                resp.set("Vary", "Accept-Encoding");
 
                 this.bufferedResponse.writeTo(resp.getOutputStream());
 

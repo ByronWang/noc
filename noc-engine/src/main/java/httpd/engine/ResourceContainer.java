@@ -39,6 +39,20 @@ public class ResourceContainer implements Container {
                 resp.close();
             } catch (IOException e1) {
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.setCode(404);
+            try {
+                resp.close();
+            } catch (IOException e1) {
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+            resp.setCode(404);
+            try {
+                resp.close();
+            } catch (IOException e1) {
+            }
         }
     }
 }

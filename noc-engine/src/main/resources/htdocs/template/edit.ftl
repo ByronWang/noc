@@ -56,7 +56,7 @@
 		[#else]
 			[#switch f.refer]
 				[#case "Scala"]
-					<tr><td>${f.displayName}</td><td>
+					<tr><th>${f.displayName}</th><td>
 					[#if f.importance == "PrimaryKey"]<#if data.${f.name}?? && data.${f.name}?length gt 0>[@readonlyinput field=f /]<#else>[@input field=f /]</#if>[#else][@input field=f /][/#if]
 					</td></tr>
 					[#break]
@@ -75,7 +75,7 @@
 						[/#if]						
 					[/#list]	
 														
-					<tr><td>${f.displayName}</td><td>
+					<tr><th>${f.displayName}</th><td>
 					[@refInput field=f valueField=valueField  showField=showField/]		
 					</td></tr>			
 					</#compress>
