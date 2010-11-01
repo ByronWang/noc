@@ -19,12 +19,13 @@ import noc.frame.vostore.VoPersistableStore;
 import noc.lang.reflect.Type;
 import noc.lang.reflect.TypeReadonlyStore;
 
+import org.simpleframework.http.Address;
 import org.simpleframework.http.Path;
 
 import frame.Engine;
 import freemarker.template.Configuration;
 
-public class DataResourceEngine implements Engine<Path, CachableResource<Object>> {
+public class DataResourceEngine implements Engine<Address, CachableResource<Object>> {
 
     DataCenterConfiguration storeEngine;
     DbConfiguration dbEngine;
@@ -60,7 +61,8 @@ public class DataResourceEngine implements Engine<Path, CachableResource<Object>
     final Map<String, CachableResource<Object>> resources;
 
     @Override
-    public CachableResource<Object> resolve(Path path) {
+    public CachableResource<Object> resolve(Address address) {
+        Path path = address.getPath();
         CachableResource<Object> o = resources.get(path);
         if (o == null) {
             o = this.make(path);

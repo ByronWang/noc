@@ -116,10 +116,10 @@ public class DynamicResourceEngine implements Engine<Address, Resource> {
         CachableResource<Template> presentationreResource;
         CachableResource<Object> datareResource;
         if (target.getPath().getName() != null) {
-            datareResource = dataResourceEngine.resolve(target.getPath());
+            datareResource = dataResourceEngine.resolve(target);
             presentationreResource = presentationEngine.resolve(target);
         } else {
-            datareResource = dataResourceEngine.resolve(target.getPath());
+            datareResource = dataResourceEngine.resolve(target);
             presentationreResource = presentationEngine.resolve(target);
         }
 
