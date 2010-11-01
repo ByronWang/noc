@@ -3,6 +3,8 @@ package noc.http;
 import java.io.File;
 import java.io.IOException;
 
+import javax.servlet.ServletContext;
+
 import noc.frame.Findable;
 import noc.frame.Persister;
 import noc.frame.Store;
@@ -10,8 +12,6 @@ import noc.frame.dbpersister.DbConfiguration;
 import noc.frame.vo.Vo;
 import noc.frame.vostore.DataCenterConfiguration;
 import noc.frame.vostore.VoPersistableStore;
-import noc.http.Fact.DebugRule;
-import noc.http.Fact.Rule;
 import noc.lang.reflect.Type;
 import noc.lang.reflect.TypeReadonlyStore;
 import freemarker.cache.MultiTemplateLoader;
