@@ -16,13 +16,15 @@ import noc.frame.vostore.VoPersistableStore;
 import noc.lang.reflect.Type;
 import noc.lang.reflect.TypeReadonlyStore;
 
-import org.simpleframework.http.Address;
 import org.simpleframework.http.Path;
+import org.simpleframework.http.Request;
+import org.simpleframework.http.Response;
 
 import frame.Engine;
+import freemarker.DefaultModel;
 import freemarker.template.Configuration;
 
-public class DataResourceEngine implements Engine<Address, CachableResource<Object>> {
+public class DataResourceEngine implements Engine<Path, CachableResource<Object>> {
 
     DataCenterConfiguration storeEngine;
     DbConfiguration dbEngine;
@@ -56,20 +58,51 @@ public class DataResourceEngine implements Engine<Address, CachableResource<Obje
     }
 
     @Override
-    public CachableResource<Object> resolve(Address target) {
+    public CachableResource<Object> resolve(Path path) {
 
-        Path path = target.getPath();
         String typeName = path.getSegments()[1];
+        String name = path.getName();
 
-        if (path.getName() == null) {
+        if (name == null) {
             CachableResource<Object> res = new TypeResource(typeStore.readData(typeName), storeEngine.get(typeName),
                     templateEngine);
             return res;
-        } else {
+        } else if (name.charAt(0) != '~') {
             String key = path.getName();
             CachableResource<Object> res = new EntityResource(typeStore.readData(typeName), storeEngine.get(typeName),
                     key, templateEngine);
             return res;
+        } else {
+            String key = name.substring(1);
+            if ("new".equals(key)) {
+                CachableResource<Object> res = new CachableResource<Object>() {
+                    @Override
+                    public void handle(Request req, Response resp) {
+
+                    }
+
+                    @Override
+                    public void update() {
+                    }
+
+                    @Override
+                    public void reload() {
+                    }
+
+                    @Override
+                    public long lastModified() {
+                        return 2000;
+                    }
+
+                    @Override
+                    public Object getUnderlyObject() {
+                        return new DefaultModel("");
+                    }
+                };
+                return res;
+            } else {
+                throw new UnsupportedOperationException(path.toString() + " - " + key);
+            }
         }
     }
 

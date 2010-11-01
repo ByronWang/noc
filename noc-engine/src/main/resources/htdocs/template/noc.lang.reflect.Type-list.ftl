@@ -33,7 +33,4 @@
 
 <br/>
 
-<div class="action">
-<a href="/noc/noc/lang/reflect/Type/?new">Add New<a>
-</div>
 </body></html>

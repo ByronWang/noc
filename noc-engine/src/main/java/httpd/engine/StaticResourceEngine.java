@@ -24,7 +24,7 @@ public class StaticResourceEngine implements Engine<Address, Resource> {
         if (source != null) {
             return new StaticResource(source, target);
         } else {
-            throw new RuntimeException();
+            throw new RuntimeException(target.toString());
         }
     }
 

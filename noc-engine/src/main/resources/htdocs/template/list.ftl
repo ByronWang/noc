@@ -99,6 +99,6 @@
 </#compress>[/#macro]
 
 <div class="action">
-<a href="/basic/${type.name?replace(".","/")}/?new">Add New</a>
+<a href="/basic/${type.name}/~new">Add New</a>
 </div>
 [/@body]
