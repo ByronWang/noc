@@ -14,6 +14,7 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.resource.Resource;
 
+import freemarker.DefaultModel;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
@@ -84,8 +85,14 @@ public class DynamicResource implements CachableResource<Object>, Resource {
             
 
             Map<String, Object> root = new HashMap<String, Object>();
-            root.put("path", this.address.getPath().getPath());
-            root.put("data", dataResource.getUnderlyObject());
+            Object data = dataResource.getUnderlyObject();
+            if(data == null){
+//                root.put("path", this.address.getPath().getDirectory());
+                data = new DefaultModel("");
+            }else{
+//                root.put("path", this.address.getPath().getPath());                
+            }
+            root.put("data", data);
             Template template = presentationResource.getUnderlyObject();
             template.process(root, writer);
             writer.flush();
@@ -131,25 +138,27 @@ public class DynamicResource implements CachableResource<Object>, Resource {
     @Override
     public void handle(Request req, Response resp) {
         try {
-            long now = System.currentTimeMillis();
-            if (now - lastChecked >= delay) {
-                update();
-            }
-
-            // Cache
-            long clientLastModified = req.getDate("If-Modified-Since");
-            if (clientLastModified > 0) {
-                if (this.lastModified - clientLastModified <= 1000) {
-                    resp.setCode(304);
-                    resp.set("Cache-Control", "max-age=3");
-                    resp.setDate("Date", System.currentTimeMillis());
-                    resp.close();
-                    log.debug(req.getPath() + " Response 304 no change");
-                    return;
-                }
-            }
 
             if ("GET".endsWith(req.getMethod())) {
+
+                long now = System.currentTimeMillis();
+                if (now - lastChecked >= delay) {
+                    update();
+                }
+
+                // Cache
+                long clientLastModified = req.getDate("If-Modified-Since");
+                if (clientLastModified > 0) {
+                    if (this.lastModified - clientLastModified <= 1000) {
+                        resp.setCode(304);
+                        resp.set("Cache-Control", "max-age=3");
+                        resp.setDate("Date", System.currentTimeMillis());
+                        resp.close();
+                        log.debug(req.getPath() + " Response 304 no change");
+                        return;
+                    }
+                }
+                
                 // normal parse
                 resp.set("Cache-Control", "max-age=3");
                 resp.set("Content-Language", "zh-CN");
@@ -165,19 +174,9 @@ public class DynamicResource implements CachableResource<Object>, Resource {
                 resp.close();
             } else {
                 dataResource.handle(req, resp);
-
-                // normal parse
-                resp.set("Cache-Control", "max-age=3");
-                resp.set("Content-Language", "zh-CN");
-                resp.set("Content-Type", "text/html; charset=UTF-8");
-                resp.setDate("Date", System.currentTimeMillis());
-                resp.setDate("Last-Modified", this.lastModified);
-                resp.set("ETag", "\"" + lastModified + "\"");
-                resp.set("Content-Encoding", "gzip");
-                resp.set("Vary", "Accept-Encoding");
-
-                this.bufferedResponse.writeTo(resp.getOutputStream());
-
+                resp.setCode(303);
+                resp.setText("Redirect");
+                resp.set("Location", address.toString());
                 resp.close();
             }
         } catch (IOException e) {

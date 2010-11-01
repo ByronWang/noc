@@ -49,6 +49,9 @@ public class TemplateResource implements CachableResource<Template>, Resource {
     protected long sourceTemplateLastModified;
 
     protected long lastModified;
+    
+    final String path;
+    final String actionPath;
 
     public TemplateResource(Configuration engine, Store<String, Type> store, Address address, String refer) {
         this.engine = engine;
@@ -57,6 +60,14 @@ public class TemplateResource implements CachableResource<Template>, Resource {
         this.type = store.readData(typeName);
 
         this.address = address;
+        this.path = address.getPath().toString()+ "?"  +  address.getQuery().toString();
+        String name = address.getPath().getName();
+        if(name!=null && name.charAt(0)=='~'){
+            this.actionPath = address.getPath().getDirectory() +  "?"  +  address.getQuery().toString();   
+        }else{
+            this.actionPath = address.getPath().toString()+ "?"  +  address.getQuery().toString();            
+        }
+        
         this.refer = refer + ".ftl";
         this.name = typeName + "-" + refer + ".ftl";
 
@@ -116,7 +127,8 @@ public class TemplateResource implements CachableResource<Template>, Resource {
                 OutputStreamWriter writer = new OutputStreamWriter(out, "utf-8");
 
                 Map<String, Object> root = new HashMap<String, Object>();
-                root.put("path", this.address.getPath().getPath());
+                root.put("path", this.path);
+                root.put("actionPath", this.actionPath);
                 root.put("type", type);
                 combin.process(root, writer);
                 writer.close();

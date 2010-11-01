@@ -2,9 +2,12 @@ package httpd.engine;
 
 import httpd.resource.CachableResource;
 import httpd.resource.EntityResource;
+import httpd.resource.NewEmptyEntityResource;
 import httpd.resource.TypeResource;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import noc.frame.Persister;
@@ -17,11 +20,8 @@ import noc.lang.reflect.Type;
 import noc.lang.reflect.TypeReadonlyStore;
 
 import org.simpleframework.http.Path;
-import org.simpleframework.http.Request;
-import org.simpleframework.http.Response;
 
 import frame.Engine;
-import freemarker.DefaultModel;
 import freemarker.template.Configuration;
 
 public class DataResourceEngine implements Engine<Path, CachableResource<Object>> {
@@ -54,51 +54,39 @@ public class DataResourceEngine implements Engine<Path, CachableResource<Object>
                 return store;
             }
         };
-
+        resources = new HashMap<String, CachableResource<Object>>();
     }
+
+    final Map<String, CachableResource<Object>> resources;
 
     @Override
     public CachableResource<Object> resolve(Path path) {
+        CachableResource<Object> o = resources.get(path);
+        if (o == null) {
+            o = this.make(path);
+            resources.put(path.getPath().toString(), o);
+            o = resources.get(path.getPath().toString());
+        }
+        return o;
+    }
+
+    public CachableResource<Object> make(Path path) {
 
         String typeName = path.getSegments()[1];
         String name = path.getName();
 
         if (name == null) {
-            CachableResource<Object> res = new TypeResource(typeStore.readData(typeName), storeEngine.get(typeName),
-                    templateEngine);
+            CachableResource<Object> res = new TypeResource(typeStore.readData(typeName), storeEngine.get(typeName));
             return res;
         } else if (name.charAt(0) != '~') {
             String key = path.getName();
             CachableResource<Object> res = new EntityResource(typeStore.readData(typeName), storeEngine.get(typeName),
-                    key, templateEngine);
+                    key);
             return res;
         } else {
             String key = name.substring(1);
             if ("new".equals(key)) {
-                CachableResource<Object> res = new CachableResource<Object>() {
-                    @Override
-                    public void handle(Request req, Response resp) {
-
-                    }
-
-                    @Override
-                    public void update() {
-                    }
-
-                    @Override
-                    public void reload() {
-                    }
-
-                    @Override
-                    public long lastModified() {
-                        return 2000;
-                    }
-
-                    @Override
-                    public Object getUnderlyObject() {
-                        return new DefaultModel("");
-                    }
-                };
+                CachableResource<Object> res = new NewEmptyEntityResource(typeStore.readData(typeName), typeStore);
                 return res;
             } else {
                 throw new UnsupportedOperationException(path.toString() + " - " + key);

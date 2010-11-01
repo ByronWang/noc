@@ -10,7 +10,7 @@
 
 [#macro body title]
 <html><head>
-<link rel='stylesheet' href='/css/form.css' type='text/css'/>
+<link rel='stylesheet' href='/css/plainform.css' type='text/css'/>
 <title>${title}</title>
 </head>
 <body>

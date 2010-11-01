@@ -41,6 +41,7 @@ table td {
 
 
 table th {
+	min-width: 6em;
 	text-shadow: 2px 2px 3px #888888;
 	font-family: Arial;
 	font-size: 13px;

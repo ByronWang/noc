@@ -1,6 +1,11 @@
 package httpd.resource;
 
+import help.PrintObejct;
+
+import java.io.IOException;
+
 import noc.frame.Store;
+import noc.frame.vo.Vo;
 import noc.lang.reflect.Type;
 
 import org.apache.commons.logging.Log;
@@ -9,28 +14,22 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.resource.Resource;
 
-import freemarker.template.Configuration;
-
 public class EntityResource implements CachableResource<Object>, Resource {
     private static final Log log = LogFactory.getLog(EntityResource.class);
 
-    // /template/theme/ddd/type/language
-    final Configuration templateEngine;
-    final Store<String, ?> store;
+    final Store<String, Object> store;
 
     final Type type;
     final String key;
 
-    final String sampleTemplateName;
     Object underlyData;
 
-    public EntityResource(Type type, Store<String, ?> store, String primaryKey, Configuration templateEngine) {
-        this.templateEngine = templateEngine;
-        this.store = store;
+    @SuppressWarnings("unchecked")
+    public EntityResource(Type type, Store<String, ?> store, String primaryKey) {
+        this.store = (Store<String, Object>) store;
         this.type = type;
         this.key = primaryKey;
         this.underlyData = store.readData(primaryKey);
-        this.sampleTemplateName = type.getName() + "_" + "edit" + ".ftl";
     }
 
     // For Cache Check file
@@ -44,7 +43,6 @@ public class EntityResource implements CachableResource<Object>, Resource {
         log.debug("update " + this.type.getName() + " - " + this.key);
 
         long srcLastModified = System.currentTimeMillis(); // TODO
-                                                           // underlyFile.lastModified();
 
         if (srcLastModified - sourceLastModified > 1000) {
             reload();
@@ -83,11 +81,29 @@ public class EntityResource implements CachableResource<Object>, Resource {
 
     @Override
     public void handle(Request req, Response resp) {
-//        try {
-            long now = System.currentTimeMillis();
-            if (now - lastChecked >= delay) {
-                update();
+        try {
+            if ("GET".equals(req.getMethod())) {
+                long now = System.currentTimeMillis();
+                if (now - lastChecked >= delay) {
+                    update();
+                }
+            } else if ("POST".equals(req.getMethod())) {
+                // Form f = req.getForm();
+                // f.
+                this.store.borrowData(null);
+                Vo dest = (Vo) store.borrowData(this.key);
+                PrintObejct.print(Request.class, req);
+                dest = VoHelper.putAll(req.getForm(), dest, this.type);
+                store.returnData(dest.getIndentify(), dest);
+                this.underlyData = store.readData(key);
+                lastModified = 2000;
+                this.sourceLastModified = System.currentTimeMillis(); // TODO
+                this.lastModified = System.currentTimeMillis();
+                // this.update();
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

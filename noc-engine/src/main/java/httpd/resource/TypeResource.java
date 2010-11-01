@@ -1,8 +1,12 @@
 package httpd.resource;
 
+import help.PrintObejct;
+
+import java.io.IOException;
 import java.util.List;
 
 import noc.frame.Store;
+import noc.frame.vo.Vo;
 import noc.lang.reflect.Type;
 
 import org.apache.commons.logging.Log;
@@ -11,25 +15,17 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.resource.Resource;
 
-import freemarker.template.Configuration;
-
 public class TypeResource implements CachableResource<Object>, Resource {
     private static final Log log = LogFactory.getLog(TypeResource.class);
 
-    public TypeResource(Type type, Store<String, ?> store, Configuration templateEngine) {
-            this.store = store;
-            this.type = type;
-
-            this.templateEngine = templateEngine;
-            sampleTemplateName = type.getName() + "_" + "list" + ".ftl";
+    @SuppressWarnings("unchecked")
+    public TypeResource(Type type, Store<String, ?> store) {
+        this.store = (Store<String, Object>) store;
+        this.type = type;
     }
 
-    Store<String, ?> store;
+    Store<String, Object> store;
     Type type;
-    
-    // System aid
-    Configuration templateEngine;
-    final String sampleTemplateName;
 
     List<?> underlyList;
 
@@ -83,10 +79,29 @@ public class TypeResource implements CachableResource<Object>, Resource {
 
     @Override
     public void handle(Request req, Response resp) {
-            long now = System.currentTimeMillis();
-            if (now - lastChecked >= delay) {
-                update();
+        try {
+            if ("GET".equals(req.getMethod())) {
+                long now = System.currentTimeMillis();
+                if (now - lastChecked >= delay) {
+                    update();
+                }
+            } else if ("POST".equals(req.getMethod())) {
+                // Form f = req.getForm();
+                // f.
+                this.store.borrowData(null);
+                Vo dest = (Vo) store.borrowData(null);
+                PrintObejct.print(Request.class, req);
+                dest = VoHelper.putAll(req.getForm(), dest, this.type);
+                store.returnData(dest.getIndentify(), (Object) dest);
+                this.underlyList = store.list();
+                lastModified = 2000;
+                this.sourceLastModified = System.currentTimeMillis(); // TODO
+                this.lastModified = System.currentTimeMillis();
+//                this.update();
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

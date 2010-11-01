@@ -137,7 +137,7 @@
 </#compress>[/#macro]
 
 [@body title=type.displayName]
-<form name="form1" method="POST" action="${path}" title="Hello Title">
+<form name="form1" method="POST" action="${actionPath}" title="Hello Title">
 	[@object type=type parent="data" /]	
 	[@object_innerlist type=type parent="data" /]	
 	<div class="action">
