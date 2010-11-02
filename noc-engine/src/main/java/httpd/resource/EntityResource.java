@@ -1,7 +1,5 @@
 package httpd.resource;
 
-import help.PrintObejct;
-
 import java.io.IOException;
 
 import noc.frame.Store;
@@ -52,7 +50,7 @@ public class EntityResource implements CachableResource<Object>, Resource {
     }
 
     synchronized public void reload() {
-        log.debug("check to reload " + this.type.getName() + " - " + this.key);
+        log.debug("Reload " + this.type.getName() + " - " + this.key);
 
         this.sourceLastModified = System.currentTimeMillis(); // TODO
                                                               // underlyFile.lastModified();
@@ -88,18 +86,13 @@ public class EntityResource implements CachableResource<Object>, Resource {
                     update();
                 }
             } else if ("POST".equals(req.getMethod())) {
-                // Form f = req.getForm();
-                // f.
                 this.store.borrowData(null);
                 Vo dest = (Vo) store.borrowData(this.key);
-                PrintObejct.print(Request.class, req);
                 dest = VoHelper.putAll(req.getForm(), dest, this.type);
                 store.returnData(dest.getIndentify(), dest);
                 this.underlyData = store.readData(key);
-                lastModified = 2000;
                 this.sourceLastModified = System.currentTimeMillis(); // TODO
                 this.lastModified = System.currentTimeMillis();
-                // this.update();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
