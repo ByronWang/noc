@@ -102,7 +102,7 @@ public class EntityResourceTest extends TestCase {
            //代码  名称  单位  箱装
 //        form.put("code02", new Date().toString());
 
-        System.out.println("Update START - " + store.list().size());
+        System.out.println("Update START");
 
         int outloop = 100;
         int loop = 1000;
@@ -137,7 +137,7 @@ public class EntityResourceTest extends TestCase {
             }
             end = System.currentTimeMillis();
             costu = end-start;
-            System.out.println((j * loop) +  " : " + costa + " - " + costu);
+            System.out.println((j * loop) +  "\t" + costa + "\t" + costu);
         }
     }
 
