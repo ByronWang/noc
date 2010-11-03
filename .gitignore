@@ -1,0 +1,7 @@
+/.metadata
+/*/.gitignore
+/*/*.log*
+/*/db
+/*/.settings
+/*/.externalToolBuilders
+/*/target
