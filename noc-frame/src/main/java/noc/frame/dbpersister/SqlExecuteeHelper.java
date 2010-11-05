@@ -71,7 +71,7 @@ public abstract class SqlExecuteeHelper<T> {
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		} finally {
-			log.debug("== SUCCEED When exec " + sql);
+			log.debug("== SUCCEED When exec [[ " + sql + " ]]");
 			
 			try {
 				if (res != null) res.close();

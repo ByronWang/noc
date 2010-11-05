@@ -30,7 +30,6 @@ public class VoPersistableStore extends VoStore {
 		log.debug("  List Size : " + list.size());
 		for (Vo v : list) {
 			this.items.put(v.getIndentify(), v);
-			log.debug(v);
 		}
 	}
 
@@ -47,14 +46,16 @@ public class VoPersistableStore extends VoStore {
 		if (v instanceof VoAgent) {
 			VoAgent vo = (VoAgent) v;
 			if (vo.isBeModified()) {
-				items.put(key, v);
-				return persister.returnData(key, v);
+			    Vo resultVo = persister.returnData(key, v);
+			    items.put(key, resultVo);
+				return new VoAgent(resultVo);
 			} else {
-				return vo.getSource();
+				return v;
 			}
 		} else {
-			items.put(key, v);
-			return persister.returnData(key, v);
+            Vo resultVo = persister.returnData(key, v);            
+			items.put(key, resultVo);
+			return new VoAgent(resultVo);
 
 		}
 	}
