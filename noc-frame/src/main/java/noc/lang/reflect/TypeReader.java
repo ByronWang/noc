@@ -42,7 +42,7 @@ public class TypeReader {
     Type fillFrom(CtClass clz, Type type) throws ClassNotFoundException, NotFoundException {
         Object an = null;
         an = clz.getAnnotation(DisplayName.class);
-        log.debug(type.name + " : " + an);
+        log.debug(type.name);
         if (an != null) {
             type.displayName = ((DisplayName) an).value();
         } else {
@@ -294,7 +294,7 @@ public class TypeReader {
 
         String typename = sig.substring(start, pos).replace('/', '.');
 
-        assert typename.equals(noc.lang.List.class.getName());
+        assert typename.equals(noc.lang.List.class.getName()) || typename.equals(java.util.List.class.getName());
         pos++;
 
         do {
