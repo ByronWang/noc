@@ -4,9 +4,6 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import javassist.CtClass;
 import javassist.CtField;
 import javassist.Modifier;
@@ -27,6 +24,9 @@ import noc.annotation.Reference;
 import noc.annotation.Sequence;
 import noc.frame.Store;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class TypeReader {
 
     private static final Log log = LogFactory.getLog(TypeReader.class);
@@ -44,10 +44,15 @@ public class TypeReader {
         an = clz.getAnnotation(DisplayName.class);
         log.debug(type.name + " : " + an);
         if (an != null) {
+            log.trace("DisplayName Annotation: " + an);
+            log.trace("DisplayName Annotation Value: " + ((DisplayName) an).value());
             type.displayName = ((DisplayName) an).value();
         } else {
             type.displayName = type.getName();
         }
+
+        log.trace("Start Prase - " + type.name);
+        log.trace("DisplayName: " + type.displayName);
 
         // type.displayName = (an = clz.getAnnotation(DisplayName.class)) !=
         // null ? ((DisplayName) an).value() : clz
@@ -68,6 +73,7 @@ public class TypeReader {
             return type;
         }
 
+        log.trace("DeclaringClass: " + clz.getDeclaringClass());
         if (clz.getDeclaringClass() != null) {
             type.master = Type.Eembedded;
             type.declaringType = types.readData(clz.getDeclaringClass().getName());
@@ -83,17 +89,21 @@ public class TypeReader {
         } else if (clz.getAnnotation(Attribute.class) != null) {
             type.master = Type.Attribute;
         }
+        log.trace("master: " + type.master);
 
         if (clz.getAnnotation(Dependent.class) != null) {
             type.standalone = false;
             type.master = Type.Eembedded;
         }
 
+        log.trace("standalone: " + type.standalone);
+
         // Construct type
         CtField[] cfs = clz.getFields();
 
         // type = types.get(name);
 
+        log.trace("Fields length: " + cfs.length);
         List<Field> fs = type.fields;
         for (int i = 0; i < cfs.length; i++) {
             if (!Modifier.isStatic(cfs[i].getModifiers())) {
@@ -106,6 +116,7 @@ public class TypeReader {
             if (f.importance == Field.PrimaryKey)
                 countKey++;
         }
+        log.trace("Before resign countKey: " + countKey);
 
         // 如果没有Key的话,按字段名称寻找PrimaryKey中定义的可以默认作为Key的字段
         if (countKey <= 0 && (an = PrimaryKey.class.getAnnotation(AutoWireByName.class)) != null) {
@@ -119,6 +130,8 @@ public class TypeReader {
             }
         }
 
+        log.trace("After resign by AutoWireByName countKey: " + countKey);
+        
         // 如果没有Key的话,并且是独立实体的话,设定第一个字段为Key
         if (fs.size() > 0 && type.standalone) {
             if (countKey <= 0) {
@@ -136,10 +149,12 @@ public class TypeReader {
         // }
 
         String name = ctField.getName();
+        log.trace("Start parse: " + name);
 
         String displayName = (an = ctField.getAnnotation(DisplayName.class)) != null ? ((DisplayName) an).value()
                 : name;
 
+        log.trace("displayName: " + displayName);
         /* Handle type */
         CtClass fieldTypeClazz = ctField.getType();
 
@@ -148,20 +163,25 @@ public class TypeReader {
 
         /* construct field */
         if (fieldTypeClazz.isArray()) {
+            log.trace("Is Array :" + fieldTypeClazz.getComponentType().getName());
             array = true;
             fieldType = types.readData(fieldTypeClazz.getComponentType().getName());
         } else if (fieldTypeClazz.getName().equals(java.util.List.class.getName())
                 || fieldTypeClazz.getName().equals(noc.lang.List.class.getName())) {
+            log.trace("Is Generic field :" + fieldTypeClazz.getName());
             // Generic field
             array = true;
             fieldType = types.readData(decorateActualTypeArguments(ctField).get(0));
         } else {
+            log.trace("Normal :" + fieldTypeClazz.getName());
             fieldType = types.readData(fieldTypeClazz.getName());
         }
 
         if (ctField.hasAnnotation(RealType.class)) {
             fieldType = types.readData(((RealType) ctField.getAnnotation(RealType.class)).value().getName());
+            log.trace("change type to defined RealType :" + fieldType);
         }
+        
         assert fieldType != null;
 
         Field field = new Field(name, fieldType);
@@ -276,9 +296,12 @@ public class TypeReader {
     }
 
     protected ArrayList<String> decorateActualTypeArguments(CtField v) {
+
+        log.trace("v.getFieldInfo().getName()" + v.getFieldInfo().getName());
+        
         SignatureAttribute s = (SignatureAttribute) v.getFieldInfo().getAttribute(SignatureAttribute.tag);
         assert s != null;
-
+        
         String sig = s.getSignature();
         ArrayList<String> params = new ArrayList<String>();
 
@@ -294,7 +317,7 @@ public class TypeReader {
 
         String typename = sig.substring(start, pos).replace('/', '.');
 
-        assert typename.equals(noc.lang.List.class.getName());
+        assert typename.equals(noc.lang.List.class.getName()) || typename.equals(java.util.List.class.getName());
         pos++;
 
         do {
