@@ -21,25 +21,25 @@ import org.apache.commons.logging.LogFactory;
 public class DBVoPersister implements Persister<String,Vo> {
 	private static final Log log = LogFactory.getLog(DBVoPersister.class);
 
-	private final Connection conn;
+	final private Connection conn;
 
-	final Type type;
-	final String tableName;
-	final String SQL_DROP;
-	final String SQL_CREATE;
+	final private Type type;
+	final private String tableName;
+//	final private String SQL_DROP;
+	final private String SQL_CREATE;
 
-	final String SQL_GET;
-	final String SQL_GETMETA;
-	final String SQL_INSERT;
-	final String SQL_UPDATE;
-	final String SQL_DELETE;
-	final String SQL_LIST;
-	final String SQL_COUNT;
+	final private String SQL_GET;
+	final private String SQL_GETMETA;
+	final private String SQL_INSERT;
+	final private String SQL_UPDATE;
+	final private String SQL_DELETE;
+	final private String SQL_LIST;
+//	final private String SQL_COUNT;
 
-	final DbColumn[] columns;
-	final String[] realFields;
-	final DbColumn[] keyColumns;
-	final SqlHelper builder;
+	final private DbColumn[] columns;
+	final private String[] realFields;
+	final private DbColumn[] keyColumns;
+	final private SqlHelper builder;
 	
 	final Map<String,Integer> map;
 	
@@ -52,7 +52,7 @@ public class DBVoPersister implements Persister<String,Vo> {
 			int i = 0;
 			for (; i < columns.length; i++) {
 				prepareStatement.setString(i + 1, String.valueOf(v.get(columns[i].name)));
-				log.debug((i + 1) + ": " + String.valueOf(v.get(columns[i].name)));
+				log.trace((i + 1) + ": " + String.valueOf(v.get(columns[i].name)));
 			}
 			return i;
 		}
@@ -79,7 +79,7 @@ public class DBVoPersister implements Persister<String,Vo> {
 		builder = helper;
 		this.tableName = builder.getTableName();
 
-		SQL_DROP = builder.builderDrop();
+//		SQL_DROP = builder.builderDrop();
 		SQL_CREATE = builder.builderCreate();
 
 		SQL_GET = builder.builderGet();
@@ -95,7 +95,7 @@ public class DBVoPersister implements Persister<String,Vo> {
 			realFields[i] = columns[i].name;
 		}
 		
-		SQL_COUNT = builder.builderCount();
+//		SQL_COUNT = builder.builderCount();
 		SQL_LIST = builder.builderList();
 
 		keyColumns = builder.getKeyColumns();
@@ -169,6 +169,8 @@ public class DBVoPersister implements Persister<String,Vo> {
 		for (int i = 0; i < keyColumns.length; i++) {
 			keys[i] = value.get(keyColumns[i].name).toString();
 		}
+		log.debug("Vo" + value.getClass().getName());
+		
 		Vo v = this.get((Object[])keys);
 
 		if (v == null) {
