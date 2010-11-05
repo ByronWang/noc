@@ -64,6 +64,7 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.16</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.simpleframework</groupId>
@@ -76,6 +77,12 @@
 			<version>0.1.1</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derby</artifactId>
+			<version>10.6.2.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.noc.app</groupId>
 			<artifactId>noc-frame</artifactId>
 			<version>0.1.1</version>
@@ -84,6 +91,7 @@
 			<groupId>com.noc.app</groupId>
 			<artifactId>test-kao</artifactId>
 			<version>0.1.1</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

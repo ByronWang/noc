@@ -27,7 +27,7 @@ public class VoHelper {
 						}
 					} else {
 						v.put(key, value);
-						log.debug(key + ": " + value);
+						log.trace(key + ": " + value);
 					}
 				}
 			} else if (field.getRefer() == Field.Inline) {
