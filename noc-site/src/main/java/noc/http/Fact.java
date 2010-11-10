@@ -195,8 +195,8 @@ public class Fact extends Findable<String, Fact.Rule> {
 		}
 	}
 
-	public void destroy() {
-		dbEngine.destroy();
+	public void shutdown() {
+		dbEngine.shutdown();
 	}
 
 	@Override
