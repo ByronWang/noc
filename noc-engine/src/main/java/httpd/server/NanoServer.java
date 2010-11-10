@@ -12,16 +12,14 @@ import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
 
 public class NanoServer {
-	private static final Log log = LogFactory.getLog(NanoServer.class);
+    private static final Log log = LogFactory.getLog(NanoServer.class);
 
     public static void main(String[] list) throws Exception {
-                
-        log.info("start at 8081");
+        int port = 80;
         Container container = new ResourceContainer();
-        log.info("container at 8081");
         Connection connection = new SocketConnection(container);
-        SocketAddress address1 = new InetSocketAddress(80);
+        SocketAddress address1 = new InetSocketAddress(port);
         connection.connect(address1);
-        log.info("listing at 80");
+        log.info("== listen at " + port);
     }
 }

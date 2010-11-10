@@ -56,7 +56,7 @@ public abstract class DbConfiguration {
 
 	public abstract <T> Persister<String, T> getPersister(Class<T> t, Type type);
 
-	public void destroy() {
+	public void shutdown() {
 		try {
 			if (conn != null) {
 				conn.commit();
@@ -68,10 +68,14 @@ public abstract class DbConfiguration {
 			log.debug(e);
 		}
 	}
+	
+	public Connection getConntion(){
+	    return this.conn;
+	}
 
 	@Override
 	protected void finalize() throws Throwable {
-		this.destroy();
+		this.shutdown();
 	}
 
 }

@@ -24,8 +24,8 @@ public class DerbyConfiguration extends DbConfiguration {
 		return (Persister<String, T>) new DBVoPersister(conn, type, new DerbySQLHelper(type));
 	}
 
-	public void destroy() {
-		super.destroy();
+	public void shutdown() {
+		super.shutdown();
 		
 		try { // perform a clean shutdown
 			DriverManager.getConnection("jdbc:derby:;shutdown=true");
@@ -36,7 +36,7 @@ public class DerbyConfiguration extends DbConfiguration {
 
 	@Override
 	protected void finalize() throws Throwable {
-		this.destroy();
+		this.shutdown();
 	}
 
 }

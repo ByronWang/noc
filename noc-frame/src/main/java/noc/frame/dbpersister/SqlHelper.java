@@ -109,9 +109,13 @@ public class SqlHelper {
 
 		sb.append("CREATE TABLE ").append(this.tableName).append("(");
 
-		for (DbColumn column : this.columns) {
-			sb.append(column.name).append(" varchar(40)").append(",");
-		}
+        for (DbColumn column : this.columns) {
+            if (column.key) {
+                sb.append(column.name).append(" varchar(40) PRIMARY KEY").append(",");
+            } else {
+                sb.append(column.name).append(" varchar(40)").append(",");
+            }
+        }
 		sb.append("TIMESTAMP_").append(" TIMESTAMP");
 		sb.append(")");
 

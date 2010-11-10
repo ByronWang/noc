@@ -13,212 +13,212 @@ import java.util.Map;
 
 import noc.frame.Persister;
 import noc.frame.vo.Vo;
+import noc.frame.vostore.VoAgent;
 import noc.lang.reflect.Type;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class DBVoPersister implements Persister<String,Vo> {
-	private static final Log log = LogFactory.getLog(DBVoPersister.class);
+public class DBVoPersister implements Persister<String, Vo> {
+    private static final Log log = LogFactory.getLog(DBVoPersister.class);
 
-	private final Connection conn;
+    final private Connection conn;
 
-	final Type type;
-	final String tableName;
-	final String SQL_DROP;
-	final String SQL_CREATE;
+    final private Type type;
+    final private String tableName;
+    // final private String SQL_DROP;
+    final private String SQL_CREATE;
 
-	final String SQL_GET;
-	final String SQL_GETMETA;
-	final String SQL_INSERT;
-	final String SQL_UPDATE;
-	final String SQL_DELETE;
-	final String SQL_LIST;
-	final String SQL_COUNT;
+    final private String SQL_GET;
+    final private String SQL_GETMETA;
+    final private String SQL_INSERT;
+    final private String SQL_UPDATE;
+    final private String SQL_DELETE;
+    final private String SQL_LIST;
+    // final private String SQL_COUNT;
 
-	final DbColumn[] columns;
-	final String[] realFields;
-	final DbColumn[] keyColumns;
-	final SqlHelper builder;
-	
-	final Map<String,Integer> map;
-	
+    final private DbColumn[] columns;
+    final private String[] realFields;
+    final private DbColumn[] keyColumns;
+    final private SqlHelper builder;
 
-	final String[] systemFields = new String[]{"TIMESTAMP_"};
-	SqlExecuteeHelper<Vo> helper = new SqlExecuteeHelper<Vo>() {
+    // final private Map<String, Integer> map;
 
-		@Override
-		int fillParameter(PreparedStatement prepareStatement, Vo v) throws SQLException {
-			int i = 0;
-			for (; i < columns.length; i++) {
-				prepareStatement.setString(i + 1, String.valueOf(v.get(columns[i].name)));
-				log.debug((i + 1) + ": " + String.valueOf(v.get(columns[i].name)));
-			}
-			return i;
-		}
+    final private String[] systemFields = new String[] { "TIMESTAMP_" };
+    final private SqlExecuteeHelper<Vo> helper = new SqlExecuteeHelper<Vo>() {
 
-		@Override
-		Vo fillObject(ResultSet resultSet) throws SQLException {
-			List<Object> data = new ArrayList<Object>(realFields.length + systemFields.length);
+        @Override
+        int fillParameter(PreparedStatement prepareStatement, Vo v) throws SQLException {
+            int i = 0;
+            for (; i < columns.length; i++) {
+                prepareStatement.setString(i + 1, String.valueOf(v.get(columns[i].name)));
+                log.trace((i + 1) + ": " + String.valueOf(v.get(columns[i].name)));
+            }
+            return i;
+        }
 
-			int i = 0;
-			for (; i < columns.length; i++) {
-				data.add(resultSet.getString(i + 1));
-				log.trace(columns[i].name + ": " + resultSet.getString(i + 1));
-			}
-			data.add(resultSet.getTimestamp(i + 1));
+        @Override
+        Vo fillObject(ResultSet resultSet) throws SQLException {
+            List<Object> data = new ArrayList<Object>(realFields.length + systemFields.length);
 
-			return new DBReadOnlyVO(type, realFields, data);
-		}
-	};
+            int i = 0;
+            for (; i < columns.length; i++) {
+                data.add(resultSet.getString(i + 1));
+                log.trace(columns[i].name + ": " + resultSet.getString(i + 1));
+            }
+            data.add(resultSet.getTimestamp(i + 1));
 
-	public DBVoPersister(Connection conn,Type type,SqlHelper helper) {
-		this.type = type;
-		this.conn = conn;
+            return new DBReadOnlyVO(type, realFields, data);
+        }
+    };
 
-		builder = helper;
-		this.tableName = builder.getTableName();
+    public DBVoPersister(Connection conn, Type type, SqlHelper helper) {
+        this.type = type;
+        this.conn = conn;
 
-		SQL_DROP = builder.builderDrop();
-		SQL_CREATE = builder.builderCreate();
+        builder = helper;
+        this.tableName = builder.getTableName();
 
-		SQL_GET = builder.builderGet();
-		SQL_GETMETA = builder.builderGetMeta();
-		SQL_INSERT = builder.builderInsert();
-		SQL_UPDATE = builder.builderUpdate();
-		SQL_DELETE = builder.builderDelete();
+        // SQL_DROP = builder.builderDrop();
+        SQL_CREATE = builder.builderCreate();
 
-		columns = builder.builderColumns();
-		
-		realFields = new String[columns.length];
-		for(int i=0;i<columns.length;i++){
-			realFields[i] = columns[i].name;
-		}
-		
-		SQL_COUNT = builder.builderCount();
-		SQL_LIST = builder.builderList();
+        SQL_GET = builder.builderGet();
+        SQL_GETMETA = builder.builderGetMeta();
+        SQL_INSERT = builder.builderInsert();
+        SQL_UPDATE = builder.builderUpdate();
+        SQL_DELETE = builder.builderDelete();
 
-		keyColumns = builder.getKeyColumns();
-				
-		Map<String,Integer> tmpMap = new HashMap<String, Integer>();
-		for(int i=0;i<realFields.length;i++){
-			tmpMap.put(realFields[i], i);
-		}
-		map = tmpMap;
-	}
+        columns = builder.builderColumns();
 
-	public void setUp() {
-		try {
-			Statement st = conn.createStatement();
+        realFields = new String[columns.length];
+        for (int i = 0; i < columns.length; i++) {
+            realFields[i] = columns[i].name;
+        }
 
-			boolean exist = false;
-			try {
-				ResultSet rs = st.executeQuery(SQL_GETMETA);
-				exist = true;
-				ResultSetMetaData metaData = rs.getMetaData();
-				int rowCount = metaData.getColumnCount();
+        // SQL_COUNT = builder.builderCount();
+        SQL_LIST = builder.builderList();
 
-				Map<String, String> cols = new HashMap<String, String>();
-				log.debug("== Before update column ");
-				for (int i = 0; i < rowCount; i++) {
-					cols.put(metaData.getColumnName(i + 1).toUpperCase(), metaData.getColumnTypeName(i + 1));
-					log.debug(metaData.getColumnName(i + 1) + "  \t");
-					log.debug(metaData.getColumnDisplaySize(i + 1) + "\t");
-					log.debug(metaData.getColumnTypeName(i + 1));
-				}
+        keyColumns = builder.getKeyColumns();
 
-				ArrayList<String> noCol = new ArrayList<String>();
-				for (DbColumn f : columns) {
-					if (!cols.containsKey(f.name.toUpperCase())) {
-						noCol.add(f.name);
-					}
-				}
+        // Map<String, Integer> tmpMap = new HashMap<String, Integer>();
+        // for (int i = 0; i < realFields.length; i++) {
+        // tmpMap.put(realFields[i], i);
+        // }
+        // map = tmpMap;
+    }
 
-				if (noCol.size() > 0) {
-					for (String fieldName : noCol) {
-						st.addBatch("ALTER TABLE " + this.tableName + " ADD COLUMN " + fieldName + " VARCHAR(40)");
-					}
-					st.executeBatch();
+    public void setUp() {
+        try {
+            Statement st = conn.createStatement();
 
-					rs = st.executeQuery(SQL_GETMETA);
-					metaData = rs.getMetaData();
-					rowCount = metaData.getColumnCount();
-					log.debug("== After update column ");
-					for (int i = 0; i < rowCount; i++) {
-						log.debug(metaData.getColumnName(i + 1) + "  \t");
-						log.debug(metaData.getColumnDisplaySize(i + 1) + "\t");
-						log.debug(metaData.getColumnTypeName(i + 1));
-					}
-				}
-				conn.commit();
-			} catch (SQLException e) {
-			}
+            boolean exist = false;
+            try {
+                ResultSet rs = st.executeQuery(SQL_GETMETA);
+                exist = true;
+                ResultSetMetaData metaData = rs.getMetaData();
+                int rowCount = metaData.getColumnCount();
 
-			if (!exist) {
-				st.execute(SQL_CREATE);
-			}
-			conn.commit();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
+                Map<String, String> cols = new HashMap<String, String>();
+                log.debug("== Before update column ");
+                for (int i = 0; i < rowCount; i++) {
+                    cols.put(metaData.getColumnName(i + 1).toUpperCase(), metaData.getColumnTypeName(i + 1));
+                    log.debug(metaData.getColumnName(i + 1) + "  \t");
+                    log.debug(metaData.getColumnDisplaySize(i + 1) + "\t");
+                    log.debug(metaData.getColumnTypeName(i + 1));
+                }
 
-	@Override
-	public Vo returnData(String key, Vo value) {
-		String[] keys = new String[keyColumns.length];
-		for (int i = 0; i < keyColumns.length; i++) {
-			keys[i] = value.get(keyColumns[i].name).toString();
-		}
-		Vo v = this.get((Object[])keys);
+                ArrayList<String> noCol = new ArrayList<String>();
+                for (DbColumn f : columns) {
+                    if (!cols.containsKey(f.name.toUpperCase())) {
+                        noCol.add(f.name);
+                    }
+                }
 
-		if (v == null) {
-			this.doInsert(value);
-		} else {
-			this.doUpdate(value, (Object[])keys);
-		}
-		return (Vo) this.get((Object[])keys);
-	}
+                if (noCol.size() > 0) {
+                    for (String fieldName : noCol) {
+                        st.addBatch("ALTER TABLE " + this.tableName + " ADD COLUMN " + fieldName + " VARCHAR(40)");
+                    }
+                    st.executeBatch();
 
-	protected void doUpdate(Vo value, Object... keys) {
-		log.debug(SQL_UPDATE + " : " +  value);
-		helper.execute(conn, SQL_UPDATE, value, keys);
-	}
+                    rs = st.executeQuery(SQL_GETMETA);
+                    metaData = rs.getMetaData();
+                    rowCount = metaData.getColumnCount();
+                    log.debug("== After update column ");
+                    for (int i = 0; i < rowCount; i++) {
+                        log.debug(metaData.getColumnName(i + 1) + "  \t");
+                        log.debug(metaData.getColumnDisplaySize(i + 1) + "\t");
+                        log.debug(metaData.getColumnTypeName(i + 1));
+                    }
+                }
+                conn.commit();
+            } catch (SQLException e) {
+            }
 
-	protected void doInsert(Vo value) {
-		log.debug(SQL_INSERT + " : " +  value);
-		helper.execute(conn, SQL_INSERT, value);
-	}
+            if (!exist) {
+                st.execute(SQL_CREATE);
+            }
+            conn.commit();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	public void delete(Vo value) {
-		log.debug(SQL_DELETE + " : " +  value);
-		helper.execute(conn, SQL_DELETE, value);
-	}
+    @Override
+    public Vo returnData(String key, Vo value) {
 
-	public Vo get(Object... keys) {
-		log.debug(SQL_GET + " : " +  keys);
-		return helper.get(conn, SQL_GET, keys);
-	}
+        String[] keys = new String[keyColumns.length];
+        for (int i = 0; i < keyColumns.length; i++) {
+            keys[i] = value.get(keyColumns[i].name).toString();
+        }
+        log.debug("Vo" + value.getClass().getName());
 
-	@Override
-	public List<Vo> list() {
-		return helper.query(conn, SQL_LIST);
-	}
+        if (value instanceof VoAgent) {
+            this.doUpdate(value, (Object[]) keys);
+        } else {
+            this.doInsert(value);
+        }
 
-	@Override
-	public void tearDown() {
-		// TODO Auto-generated method stub
+        return (Vo) this.get((Object[]) keys);
+    }
 
-	}
+    protected void doUpdate(Vo value, Object... keys) {
+        log.debug(SQL_UPDATE + " : " + value);
+        helper.execute(conn, SQL_UPDATE, value, keys);
+    }
 
-	@Override
-	public Vo borrowData(String key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    protected void doInsert(Vo value) {
+        log.debug(SQL_INSERT + " : " + value);
+        helper.execute(conn, SQL_INSERT, value);
+    }
 
-	@Override
-	public Vo readData(String key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public void delete(Vo value) {
+        log.debug(SQL_DELETE + " : " + value);
+        helper.execute(conn, SQL_DELETE, value);
+    }
+
+    public Vo get(Object... keys) {
+        log.debug(SQL_GET + " : " + keys);
+        return helper.get(conn, SQL_GET, keys);
+    }
+
+    @Override
+    public List<Vo> list() {
+        return helper.query(conn, SQL_LIST);
+    }
+
+    @Override
+    public void tearDown() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public Vo borrowData(String key) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Vo readData(String key) {
+        throw new UnsupportedOperationException();
+    }
 }

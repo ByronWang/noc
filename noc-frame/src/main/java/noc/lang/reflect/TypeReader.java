@@ -42,7 +42,7 @@ public class TypeReader {
     Type fillFrom(CtClass clz, Type type) throws ClassNotFoundException, NotFoundException {
         Object an = null;
         an = clz.getAnnotation(DisplayName.class);
-        log.debug(type.name + " : " + an);
+        log.debug(type.name);
         if (an != null) {
             log.trace("DisplayName Annotation: " + an);
             log.trace("DisplayName Annotation Value: " + ((DisplayName) an).value());
