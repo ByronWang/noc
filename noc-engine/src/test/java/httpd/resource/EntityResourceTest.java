@@ -59,9 +59,9 @@ public class EntityResourceTest extends TestCase {
             dbEngine = DbConfiguration.getEngine(props.getProperty(DB_DRIVERCLASS), props.getProperty(DB_URL),
                     props.getProperty(DB_USERNAME), props.getProperty(DB_PASSWORD));
 
-            String sqlDrop = new SqlHelper(type).builderDrop();
             try {
-                Connection conn = dbEngine.getConntion();
+                String sqlDrop = new SqlHelper(type).builderDrop();
+                Connection conn = dbEngine.getConnection();
                 conn.createStatement().execute(sqlDrop);
                 conn.commit();
             } catch (Exception e) {

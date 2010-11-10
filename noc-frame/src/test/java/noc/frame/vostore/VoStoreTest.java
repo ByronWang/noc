@@ -52,12 +52,14 @@ public class VoStoreTest extends TestCase {
             conn.setAutoCommit(false);
             sqlhelper = new SqlHelper(type);
 
+            try {
+                String sqlDrop = sqlhelper.builderDrop();
+				conn.createStatement().execute(sqlDrop);
+				conn.commit();
+			} catch (Exception e) {
+			}
+
             persister = new DBVoPersister(conn, type, sqlhelper);
-            String sqlDrop = sqlhelper.builderDrop();
-
-            conn.createStatement().execute(sqlDrop);
-            conn.commit();
-
             persister.setUp();
 
             voStroe = new VoPersistableStore(null, type, persister);

@@ -69,7 +69,7 @@ public abstract class DbConfiguration {
         }
     }
 
-    public Connection getConntion() {
+    public Connection getConnection() {
         return this.conn;
     }
 
