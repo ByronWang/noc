@@ -40,7 +40,7 @@ public class DBReadOnlyVO implements Vo {
             map.put(realFields[i], data.get(i));
         }
 
-        m_Timestamp = (Timestamp)data.get(data.size() - 1);
+        m_Timestamp = (Timestamp) data.get(data.size() - 1);
         map.put("TIMESTAMP_", m_Timestamp);
 
         String indentify = null;

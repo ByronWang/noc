@@ -48,6 +48,7 @@ public class DynamicResource implements CachableResource<Object>, Resource {
 
     protected ByteArrayOutputStream bufferedResponse;
 
+    @Override
     public void update() {
         // log.debug("update " + this.type.getName() + " - " + this.key);
 
@@ -66,6 +67,7 @@ public class DynamicResource implements CachableResource<Object>, Resource {
         lastChecked = System.currentTimeMillis();
     }
 
+    @Override
     synchronized public void reload() {
         // log.debug("check to reload " + this.type.getName() + " - " +
         // this.key);
@@ -81,16 +83,15 @@ public class DynamicResource implements CachableResource<Object>, Resource {
 
             ByteArrayOutputStream bufferStream = new ByteArrayOutputStream();
             GZIPOutputStream gzipStream = new GZIPOutputStream(bufferStream);
-            OutputStreamWriter  writer =new OutputStreamWriter(gzipStream,"utf-8");
-            
+            OutputStreamWriter writer = new OutputStreamWriter(gzipStream, "utf-8");
 
             Map<String, Object> root = new HashMap<String, Object>();
             Object data = dataResource.getUnderlyObject();
-            if(data == null){
-//                root.put("path", this.address.getPath().getDirectory());
+            if (data == null) {
+                // root.put("path", this.address.getPath().getDirectory());
                 data = new DefaultModel("");
-            }else{
-//                root.put("path", this.address.getPath().getPath());                
+            } else {
+                // root.put("path", this.address.getPath().getPath());
             }
             root.put("data", data);
             Template template = presentationResource.getUnderlyObject();
@@ -135,6 +136,7 @@ public class DynamicResource implements CachableResource<Object>, Resource {
     }
 
     int count = 0;
+
     @Override
     public void handle(Request req, Response resp) {
         try {
@@ -158,14 +160,14 @@ public class DynamicResource implements CachableResource<Object>, Resource {
                         return;
                     }
                 }
-                
+
                 // normal parse
                 resp.set("Cache-Control", "max-age=3");
                 resp.set("Content-Language", "zh-CN");
                 resp.set("Content-Type", "text/html; charset=UTF-8");
                 resp.setDate("Date", System.currentTimeMillis());
                 resp.setDate("Last-Modified", this.lastModified);
-                resp.set("ETag", "\"" + lastModified +  "-" + (++count) + "\"");
+                resp.set("ETag", "\"" + lastModified + "-" + (++count) + "\"");
                 resp.set("Content-Encoding", "gzip");
                 resp.set("Vary", "Accept-Encoding");
 

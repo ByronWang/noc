@@ -1,3 +1,4 @@
 package noc.lang;
 
-public interface Text extends Literal {}
+public interface Text extends Literal {
+}

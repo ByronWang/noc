@@ -11,109 +11,115 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public abstract class SqlExecuteeHelper<T> {
-	private static final Log log = LogFactory.getLog(SqlExecuteeHelper.class);
+    private static final Log log = LogFactory.getLog(SqlExecuteeHelper.class);
 
-	T get(Connection conn, String sql, Object... keys) {
-		PreparedStatement statement = null;
-		ResultSet res = null;
-		try {
-			statement = conn.prepareStatement(sql);
+    T get(Connection conn, String sql, Object... keys) {
+        PreparedStatement statement = null;
+        ResultSet res = null;
+        try {
+            statement = conn.prepareStatement(sql);
 
-			for (int i = 1; i <= keys.length; i++) {
-				statement.setObject(i, keys[i - 1]);
-			}
+            for (int i = 1; i <= keys.length; i++) {
+                statement.setObject(i, keys[i - 1]);
+            }
 
-			res = statement.executeQuery();
+            res = statement.executeQuery();
 
-			if (!res.next()) {
-				return null;
-			}
+            if (!res.next()) {
+                return null;
+            }
 
-			T v = fillObject(res);
+            T v = fillObject(res);
 
-			if (res.next()) {
-				throw new RuntimeException("Can not find record key:");
-			}
+            if (res.next()) {
+                throw new RuntimeException("Can not find record key:");
+            }
 
-			return v;
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			try {
-				if (res != null) res.close();
-				if (statement != null) statement.close();
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
+            return v;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (res != null)
+                    res.close();
+                if (statement != null)
+                    statement.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
-	List<T> query(Connection conn, String sql, Object... keys) {
-		PreparedStatement statement = null;
-		ResultSet res = null;
-		try {
+    List<T> query(Connection conn, String sql, Object... keys) {
+        PreparedStatement statement = null;
+        ResultSet res = null;
+        try {
 
-			statement = conn.prepareStatement(sql);
+            statement = conn.prepareStatement(sql);
 
-			for (int i = 1; i <= keys.length; i++) {
-				statement.setObject(i, keys[i]);
-			}
+            for (int i = 1; i <= keys.length; i++) {
+                statement.setObject(i, keys[i]);
+            }
 
-			res = statement.executeQuery();
-			List<T> list = new ArrayList<T>();
+            res = statement.executeQuery();
+            List<T> list = new ArrayList<T>();
 
-			while (res.next()) {
-				T v = fillObject(res);
-				list.add(v);
-			}
+            while (res.next()) {
+                T v = fillObject(res);
+                list.add(v);
+            }
 
-			return list;
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			log.debug("== SUCCEED When exec [[ " + sql + " ]]");
-			
-			try {
-				if (res != null) res.close();
-				if (statement != null) statement.close();
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            log.debug("== SUCCEED When exec [[ " + sql + " ]]");
 
-	protected void execute(Connection conn, String sql, T v, Object... keys) {
-		PreparedStatement statement = null;
-		ResultSet res = null;
-		try {
+            try {
+                if (res != null)
+                    res.close();
+                if (statement != null)
+                    statement.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
-			statement = conn.prepareStatement(sql);
+    protected void execute(Connection conn, String sql, T v, Object... keys) {
+        PreparedStatement statement = null;
+        ResultSet res = null;
+        try {
 
-			int pos = fillParameter(statement, v);
+            statement = conn.prepareStatement(sql);
 
-			for (int i = 0; i < keys.length; i++) {
-				statement.setObject(pos + i + 1, keys[i]);
-			}
+            int pos = fillParameter(statement, v);
 
-			statement.execute();
+            for (int i = 0; i < keys.length; i++) {
+                statement.setObject(pos + i + 1, keys[i]);
+            }
 
-			conn.commit();
+            statement.execute();
 
-			log.debug("== SUCCEED When exec " + sql);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			try {
-				if (res != null) res.close();
-				if (statement != null) statement.close();
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
+            conn.commit();
 
-	abstract int fillParameter(PreparedStatement prepareStatement, T v) throws SQLException;
+            log.debug("== SUCCEED When exec " + sql);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (res != null)
+                    res.close();
+                if (statement != null)
+                    statement.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
-	abstract T fillObject(ResultSet result) throws SQLException;
+    abstract int fillParameter(PreparedStatement prepareStatement, T v) throws SQLException;
+
+    abstract T fillObject(ResultSet result) throws SQLException;
 
 }

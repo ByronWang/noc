@@ -7,39 +7,39 @@ import noc.annotation.RealType;
 @Dependent
 public class Field {
 
-	public static final String Scala = "Scala";
-	public static final String Inline = "Inline";
-	public static final String Reference = "Reference";
-	public static final String Cascade = "Cascade";
-	
-	public static final String PrimaryKey = "PrimaryKey";
-	public static final String Core = "Core";
-	public static final String Important = "Important";
-	public static final String Normal = "Normal";
-//	importance
+    public static final String Scala = "Scala";
+    public static final String Inline = "Inline";
+    public static final String Reference = "Reference";
+    public static final String Cascade = "Cascade";
+
+    public static final String PrimaryKey = "PrimaryKey";
+    public static final String Core = "Core";
+    public static final String Important = "Important";
+    public static final String Normal = "Normal";
+    // importance
 
     @DisplayName("名称")
-	String name;
+    String name;
     @DisplayName("显示名称")
-	String displayName;
+    String displayName;
     @DisplayName("重要性")
-	String importance = Normal;
+    String importance = Normal;
 
     @DisplayName("类型")
-	Type type;
+    Type type;
     @DisplayName("数组")
-	boolean array = false;
+    boolean array = false;
 
-	@RealType(FieldReferType.class)
+    @RealType(FieldReferType.class)
     @DisplayName("引用类型")
-	String refer;
+    String refer;
 
-	public Field(String name, Type type) {
-		super();
-		this.name = name;
-		this.displayName = name;
-		this.type = type;
-	}
+    public Field(String name, Type type) {
+        super();
+        this.name = name;
+        this.displayName = name;
+        this.type = type;
+    }
 
     public String getName() {
         return name;
@@ -88,6 +88,5 @@ public class Field {
     public void setRefer(String refer) {
         this.refer = refer;
     }
-
 
 }

@@ -9,9 +9,9 @@ import noc.lang.NumberValue;
 
 @DisplayName("产品")
 public class Product {
-	@PrimaryKey
-	Code 代码;
-	Name 名称;
-	Attr 单位;
-	NumberValue 箱装;
+    @PrimaryKey
+    Code 代码;
+    Name 名称;
+    Attr 单位;
+    NumberValue 箱装;
 }

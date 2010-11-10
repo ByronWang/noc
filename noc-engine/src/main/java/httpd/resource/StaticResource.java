@@ -38,6 +38,7 @@ public class StaticResource implements CachableResource<Source>, Resource {
 
     long lastModified = -1;
 
+    @Override
     public void update() {
         log.debug("check update " + this.underlySource.getName());
 
@@ -50,6 +51,7 @@ public class StaticResource implements CachableResource<Source>, Resource {
         lastChecked = System.currentTimeMillis();
     }
 
+    @Override
     synchronized public void reload() {
         log.debug("check to reload " + this.underlySource.getName());
 
@@ -90,9 +92,9 @@ public class StaticResource implements CachableResource<Source>, Resource {
             if (clientLastModified > 0) {
                 if (this.lastModified - clientLastModified <= 1000) {
                     resp.set("Cache-Control", "max-age=60000");
-//                     resp.set("ETag", "\"" + underlyFile.lastModified() +
+                    // resp.set("ETag", "\"" + underlyFile.lastModified() +
                     // "\"");
-                     resp.setDate("Date", System.currentTimeMillis());
+                    resp.setDate("Date", System.currentTimeMillis());
                     resp.setCode(304);
                     resp.close();
                     log.debug(req.getPath() + " 304 : The document has not been modified! ");
@@ -104,7 +106,7 @@ public class StaticResource implements CachableResource<Source>, Resource {
             resp.set("Cache-Control", "max-age=60000");
             resp.set("Content-Language", "en-US");
             resp.set("Content-Type", mime);
-//            resp.setContentLength((int) underlySource.getLength());
+            // resp.setContentLength((int) underlySource.getLength());
             resp.setDate("Date", System.currentTimeMillis());
             resp.setDate("Last-Modified", this.lastModified);
             resp.set("ETag", "\"" + (this.lastModified + System.currentTimeMillis()) + "\"");
@@ -155,26 +157,13 @@ public class StaticResource implements CachableResource<Source>, Resource {
      */
     private static Hashtable<String, String> theMimeTypes = new Hashtable<String, String>();
     static {
-        StringTokenizer st = new StringTokenizer(
-                "htm          text/html " 
-                + "css        text/css "
-                + "js         application/x-javascript " 
-                + "html       text/html " 
-                + "txt        text/plain "
-                + "java       text/plain " 
-                + "ftl        text/plain " 
-                + "asc        text/plain "
-                + "gif        image/gif " 
-                + "jpg        image/jpeg " 
-                + "jpeg       image/jpeg "
-                + "png        image/png " 
-                + "mp3        audio/mpeg " 
-                + "m3u        audio/mpeg-url "
-                + "pdf        application/pdf " 
-                + "doc        application/msword " 
-                + "ogg        application/x-ogg "
-                + "zip        application/octet-stream " 
-                + "exe        application/octet-stream "
+        StringTokenizer st = new StringTokenizer("htm          text/html " + "css        text/css "
+                + "js         application/x-javascript " + "html       text/html " + "txt        text/plain "
+                + "java       text/plain " + "ftl        text/plain " + "asc        text/plain "
+                + "gif        image/gif " + "jpg        image/jpeg " + "jpeg       image/jpeg "
+                + "png        image/png " + "mp3        audio/mpeg " + "m3u        audio/mpeg-url "
+                + "pdf        application/pdf " + "doc        application/msword " + "ogg        application/x-ogg "
+                + "zip        application/octet-stream " + "exe        application/octet-stream "
                 + "class      application/octet-stream ");
         // "htm        text/html " +
         // "html       text/html " +

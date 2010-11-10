@@ -12,52 +12,52 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class VoPersistableStore extends VoStore {
-	private static final Log log = LogFactory.getLog(VoPersistableStore.class);
+    private static final Log log = LogFactory.getLog(VoPersistableStore.class);
 
-	public Persister<String, Vo> persister;
+    public Persister<String, Vo> persister;
 
-	public VoPersistableStore(Factory<?> parent, Type clz, Persister<String, Vo> persister) {
-		super(parent, clz);
-		this.persister = persister;
-	}
+    public VoPersistableStore(Factory<?> parent, Type clz, Persister<String, Vo> persister) {
+        super(parent, clz);
+        this.persister = persister;
+    }
 
-	@Override
-	public void setUp() {
-		super.setUp();
+    @Override
+    public void setUp() {
+        super.setUp();
 
-		List<Vo> list = this.persister.list();
-		log.debug("== Load init data from Persister ==");
-		log.debug("  List Size : " + list.size());
-		for (Vo v : list) {
-			this.items.put(v.getIndentify(), v);
-		}
-	}
+        List<Vo> list = this.persister.list();
+        log.debug("== Load init data from Persister ==");
+        log.debug("  List Size : " + list.size());
+        for (Vo v : list) {
+            this.items.put(v.getIndentify(), v);
+        }
+    }
 
-	@Override
-	public Vo borrowData(String key) {
-		if (key == null) {
-			return new VOImp(type);
-		}
-		return new VoAgent(this.readData(key));
-	}
+    @Override
+    public Vo borrowData(String key) {
+        if (key == null) {
+            return new VOImp(type);
+        }
+        return new VoAgent(this.readData(key));
+    }
 
-	@Override
-	public Vo returnData(String key, Vo v) {
-		if (v instanceof VoAgent) {
-			VoAgent vo = (VoAgent) v;
-			if (vo.isBeModified()) {
-			    Vo resultVo = persister.returnData(key, v);
-			    items.put(key, resultVo);
-				return new VoAgent(resultVo);
-			} else {
-				return v;
-			}
-		} else {
-            Vo resultVo = persister.returnData(key, v);            
-			items.put(key, resultVo);
-			return new VoAgent(resultVo);
+    @Override
+    public Vo returnData(String key, Vo v) {
+        if (v instanceof VoAgent) {
+            VoAgent vo = (VoAgent) v;
+            if (vo.isBeModified()) {
+                Vo resultVo = persister.returnData(key, v);
+                items.put(key, resultVo);
+                return new VoAgent(resultVo);
+            } else {
+                return v;
+            }
+        } else {
+            Vo resultVo = persister.returnData(key, v);
+            items.put(key, resultVo);
+            return new VoAgent(resultVo);
 
-		}
-	}
+        }
+    }
 
 }

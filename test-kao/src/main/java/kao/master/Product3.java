@@ -7,9 +7,9 @@ import noc.lang.Code;
 
 @DisplayName("产品")
 public class Product3 {
-	@PrimaryKey
-	Code code;
-	Attr code01;
-	Attr code02;
-	Attr code03;
+    @PrimaryKey
+    Code code;
+    Attr code01;
+    Attr code02;
+    Attr code03;
 }

@@ -107,6 +107,7 @@ public class DBVoPersister implements Persister<String, Vo> {
         // map = tmpMap;
     }
 
+    @Override
     public void setUp() {
         try {
             Statement st = conn.createStatement();
@@ -178,7 +179,7 @@ public class DBVoPersister implements Persister<String, Vo> {
             this.doInsert(value);
         }
 
-        return (Vo) this.get((Object[]) keys);
+        return this.get((Object[]) keys);
     }
 
     protected void doUpdate(Vo value, Object... keys) {

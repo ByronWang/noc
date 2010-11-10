@@ -131,7 +131,7 @@ public class TypeReader {
         }
 
         log.trace("After resign by AutoWireByName countKey: " + countKey);
-        
+
         // 如果没有Key的话,并且是独立实体的话,设定第一个字段为Key
         if (fs.size() > 0 && type.standalone) {
             if (countKey <= 0) {
@@ -181,7 +181,7 @@ public class TypeReader {
             fieldType = types.readData(((RealType) ctField.getAnnotation(RealType.class)).value().getName());
             log.trace("change type to defined RealType :" + fieldType);
         }
-        
+
         assert fieldType != null;
 
         Field field = new Field(name, fieldType);
@@ -298,10 +298,10 @@ public class TypeReader {
     protected ArrayList<String> decorateActualTypeArguments(CtField v) {
 
         log.trace("v.getFieldInfo().getName()" + v.getFieldInfo().getName());
-        
+
         SignatureAttribute s = (SignatureAttribute) v.getFieldInfo().getAttribute(SignatureAttribute.tag);
         assert s != null;
-        
+
         String sig = s.getSignature();
         ArrayList<String> params = new ArrayList<String>();
 

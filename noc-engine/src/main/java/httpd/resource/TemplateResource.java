@@ -49,7 +49,7 @@ public class TemplateResource implements CachableResource<Template>, Resource {
     protected long sourceTemplateLastModified;
 
     protected long lastModified;
-    
+
     final String path;
     final String actionPath;
 
@@ -60,20 +60,21 @@ public class TemplateResource implements CachableResource<Template>, Resource {
         this.type = store.readData(typeName);
 
         this.address = address;
-        this.path = address.getPath().toString()+ "?"  +  address.getQuery().toString();
+        this.path = address.getPath().toString() + "?" + address.getQuery().toString();
         String name = address.getPath().getName();
-        if(name!=null && name.charAt(0)=='~'){
-            this.actionPath = address.getPath().getDirectory() +  "?"  +  address.getQuery().toString();   
-        }else{
-            this.actionPath = address.getPath().toString()+ "?"  +  address.getQuery().toString();            
+        if (name != null && name.charAt(0) == '~') {
+            this.actionPath = address.getPath().getDirectory() + "?" + address.getQuery().toString();
+        } else {
+            this.actionPath = address.getPath().toString() + "?" + address.getQuery().toString();
         }
-        
+
         this.refer = refer + ".ftl";
         this.name = typeName + "-" + refer + ".ftl";
 
         this.update();
     }
 
+    @Override
     public void update() {
         try {
             log.debug("update " + this.name);
@@ -103,6 +104,7 @@ public class TemplateResource implements CachableResource<Template>, Resource {
         }
     }
 
+    @Override
     synchronized public void reload() {
         log.debug("check to reload " + this.name);
 
@@ -191,7 +193,7 @@ public class TemplateResource implements CachableResource<Template>, Resource {
         }
         return this.template;
     }
-    
+
     @Override
     public void handle(Request req, Response resp) {
         try {
@@ -220,7 +222,7 @@ public class TemplateResource implements CachableResource<Template>, Resource {
             resp.set("ETag", "\"" + lastModified + "\"");
 
             this.templateSource.writeTo(resp.getOutputStream());
-            
+
             log.debug(req.getPath() + " write source");
 
             resp.close();

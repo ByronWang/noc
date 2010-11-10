@@ -8,7 +8,8 @@ import org.simpleframework.http.Response;
 import org.simpleframework.http.resource.Resource;
 
 public class NewEmptyEntityResource implements CachableResource<Object>, Resource {
-//    private static final Log log = LogFactory.getLog(NewEmptyEntityResource.class);
+    // private static final Log log =
+    // LogFactory.getLog(NewEmptyEntityResource.class);
 
     final Store<String, ?> store;
     final Type type;
@@ -25,9 +26,11 @@ public class NewEmptyEntityResource implements CachableResource<Object>, Resourc
 
     long lastModified = -1;
 
+    @Override
     public void update() {
     }
 
+    @Override
     synchronized public void reload() {
     }
 

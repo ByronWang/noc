@@ -19,7 +19,7 @@ public class BenchmarkTest {
         new BenchmarkTest(new ReentrantLockBeanchmark(false), 3000).test();
         new BenchmarkTest(new SynchronizeBenchmark(), 3000).test();
         new BenchmarkTest(new ReentrantLockBeanchmark(false), 3000).test();
-//        new BenchmarkTest(new ReentrantLockBeanchmark(true), 1000).test();
+        // new BenchmarkTest(new ReentrantLockBeanchmark(true), 1000).test();
     }
 
     public void test() {
@@ -45,6 +45,7 @@ public class BenchmarkTest {
             this.counter = counter;
         }
 
+        @Override
         public void run() {
             try {
                 barrier.await();

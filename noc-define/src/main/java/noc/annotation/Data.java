@@ -1,36 +1,35 @@
 package noc.annotation;
 
-
 public @interface Data {
-	@interface Length{
-		int value();
-	}
-	
-	@interface Required{
-	}
+    @interface Length {
+        int value();
+    }
 
-	@interface Range{
-		String[] value();
-	}
-	
-	@interface DefaultValue{
-		String value();
-	}
-	
-	@interface ValueList{
-		String[] value();
-	}
+    @interface Required {
+    }
 
-	@interface BasicInfo{
-	}
-	
-	@interface DetailInfo{
-	}
-	
-	@interface DescriptionInfo{
-	}
-	
-	@interface ExtendsInfo{
-	}
-	
+    @interface Range {
+        String[] value();
+    }
+
+    @interface DefaultValue {
+        String value();
+    }
+
+    @interface ValueList {
+        String[] value();
+    }
+
+    @interface BasicInfo {
+    }
+
+    @interface DetailInfo {
+    }
+
+    @interface DescriptionInfo {
+    }
+
+    @interface ExtendsInfo {
+    }
+
 }

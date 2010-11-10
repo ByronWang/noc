@@ -36,6 +36,7 @@ public class TypeResource implements CachableResource<Object>, Resource {
 
     long lastModified = -1;
 
+    @Override
     public void update() {
         log.debug("update " + this.type.getName());
 
@@ -49,6 +50,7 @@ public class TypeResource implements CachableResource<Object>, Resource {
         lastChecked = System.currentTimeMillis();
     }
 
+    @Override
     synchronized public void reload() {
         log.debug("check to reload " + this.type.getName());
 
@@ -92,12 +94,12 @@ public class TypeResource implements CachableResource<Object>, Resource {
                 Vo dest = (Vo) store.borrowData(null);
                 PrintObejct.print(Request.class, req);
                 dest = VoHelper.putAll(req.getForm(), dest, this.type);
-                store.returnData(dest.getIndentify(), (Object) dest);
+                store.returnData(dest.getIndentify(), dest);
                 this.underlyList = store.list();
                 lastModified = 2000;
                 this.sourceLastModified = System.currentTimeMillis(); // TODO
                 this.lastModified = System.currentTimeMillis();
-//                this.update();
+                // this.update();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

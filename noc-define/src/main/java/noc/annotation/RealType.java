@@ -10,7 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { FIELD })
+@Target({ FIELD })
 public @interface RealType {
-	Class<?> value();
+    Class<?> value();
 }

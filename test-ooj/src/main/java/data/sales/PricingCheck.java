@@ -16,18 +16,18 @@ import data.master.product.ProductForm;
  */
 @DisplayName("检查过程")
 public class PricingCheck {
-	ID 检查过程编号;
-	Desc 描述;
-	Attr 检查点;
-	Status 状态;
+    ID 检查过程编号;
+    Desc 描述;
+    Attr 检查点;
+    Status 状态;
 
-	List<Item> 卷平价差;
+    List<Item> 卷平价差;
 
-	class Item {
-		ProductForm 检查类别;
-		Attr 是否检查;
-		Attr 检查元素;
-		Attr 动作;
-		Attr 参数设置;
-	}
+    class Item {
+        ProductForm 检查类别;
+        Attr 是否检查;
+        Attr 检查元素;
+        Attr 动作;
+        Attr 参数设置;
+    }
 }

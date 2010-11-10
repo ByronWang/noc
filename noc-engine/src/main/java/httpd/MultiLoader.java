@@ -1,6 +1,5 @@
 package httpd;
 
-
 public class MultiLoader implements Loader {
     final protected Loader[] loaders;
 
@@ -9,7 +8,7 @@ public class MultiLoader implements Loader {
     }
 
     @Override
-    public Source findSource(String name){
+    public Source findSource(String name) {
         Source source = loaders[0].findSource(name);
         if (source != null) {
             return source;

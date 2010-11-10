@@ -77,23 +77,26 @@ public class DynamicResourceEngine implements Engine<Address, Resource> {
                 public Object findTemplateSource(String name) throws IOException {
                     return innerLoader.findSource("/template/" + name);
                 }
+
                 @Override
                 public Reader getReader(Object templateSource, String encoding) throws IOException {
-                    return new InputStreamReader(((Source) templateSource).getInputStream(),encoding);
+                    return new InputStreamReader(((Source) templateSource).getInputStream(), encoding);
                 }
+
                 @Override
                 public long getLastModified(Object templateSource) {
                     return ((Source) templateSource).getLastModified();
                 }
+
                 @Override
                 public void closeTemplateSource(Object templateSource) throws IOException {
                     ((Source) templateSource).closeSource();
                 }
             });
-//            
-//            
-//            templateEngine.setDirectoryForTemplateLoading(new File(
-//                    "D:\\linux\\workspace\\noc-engine\\target\\classes\\htdocs"));
+            //
+            //
+            // templateEngine.setDirectoryForTemplateLoading(new File(
+            // "D:\\linux\\workspace\\noc-engine\\target\\classes\\htdocs"));
 
             presentationEngine = new PresentationResourceEngine(templateEngine, typeStore);
             dataResourceEngine = new DataResourceEngine(this.appHome, props, typeStore, templateEngine);

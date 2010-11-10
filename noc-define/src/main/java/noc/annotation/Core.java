@@ -11,8 +11,9 @@ import java.lang.annotation.Target;
 
 import noc.lang.Name;
 
-@Retention(RetentionPolicy.RUNTIME) 
-@Target( { FIELD }) 
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ FIELD })
 @AutoWireByName("key;name;Name;NAME;姓名;名称;")
-@AutoWireByType({Name.class})
-public @interface Core {}
+@AutoWireByType({ Name.class })
+public @interface Core {
+}

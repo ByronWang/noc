@@ -1,3 +1,4 @@
 package noc.lang;
 
-public interface Desc extends Literal {}
+public interface Desc extends Literal {
+}

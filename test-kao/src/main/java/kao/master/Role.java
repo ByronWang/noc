@@ -5,5 +5,5 @@ import noc.lang.Name;
 
 @DisplayName("角色")
 public class Role {
-	Name 名称;
+    Name 名称;
 }

@@ -64,7 +64,7 @@ public class PrintObejct {
                             || m.getName().endsWith("Writer")) {
                         log.trace(indent(level) + m.getName() + "[[ " + m.getReturnType().getName() + " ]]");
                     } else {
-                        Object returnValue = (Object) m.invoke(instance);
+                        Object returnValue = m.invoke(instance);
                         if (returnValue == null) {
                             log.trace(indent(level) + m.getName() + ": " + null);
                         } else if (returnValue instanceof String) {

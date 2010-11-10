@@ -15,27 +15,27 @@ import noc.lang.NumberValue;
 
 @DisplayName("订单")
 public class Order {
-	ID id;
-	Date 订货日期;
-	Date 发货日期;
-	Date 定价日期;
-	Day 送货天数;
-	Customer 售达方;
-	Customer 送达方;
-	Customer 付款方;
-	CustomerGroup 物料组;
-	@DisplayName("PO")
-	ID po;
-	Desc 备注;
-	@DisplayName("明细")
-	List<OrderItem> items;
-	
-	class OrderItem{
-		Code 客户产品号;
-		Code 花王产品号;
-		NumberValue 数量;
-		Attr 单位;
-		Currency 单价;
-		Currency  金额;		
-	}
+    ID id;
+    Date 订货日期;
+    Date 发货日期;
+    Date 定价日期;
+    Day 送货天数;
+    Customer 售达方;
+    Customer 送达方;
+    Customer 付款方;
+    CustomerGroup 物料组;
+    @DisplayName("PO")
+    ID po;
+    Desc 备注;
+    @DisplayName("明细")
+    List<OrderItem> items;
+
+    class OrderItem {
+        Code 客户产品号;
+        Code 花王产品号;
+        NumberValue 数量;
+        Attr 单位;
+        Currency 单价;
+        Currency 金额;
+    }
 }

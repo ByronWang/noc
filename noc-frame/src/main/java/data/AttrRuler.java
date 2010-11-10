@@ -8,13 +8,17 @@ import noc.lang.List;
 import noc.lang.Name;
 import noc.lang.reflect.Type;
 
-@FrameType public class AttrRuler {
-	@Catalog Type type;
-	@PrimaryKey Name name;
-	@Inline List<Item> items;
+@FrameType
+public class AttrRuler {
+    @Catalog
+    Type type;
+    @PrimaryKey
+    Name name;
+    @Inline
+    List<Item> items;
 
-	public class Item {
-		Name name;
-		Name displayName;
-	}
+    public class Item {
+        Name name;
+        Name displayName;
+    }
 }

@@ -1,5 +1,5 @@
 package frame;
 
 public interface Engine<P, O> {
-	public O resolve(P target);
+    public O resolve(P target);
 }

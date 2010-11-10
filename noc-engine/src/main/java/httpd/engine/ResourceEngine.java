@@ -15,14 +15,14 @@ import frame.Engine;
 
 public class ResourceEngine implements Engine<Address, Resource> {
     private static final Log log = LogFactory.getLog(StaticResource.class);
-//    String appHome;
+    // String appHome;
     Engine<Address, Resource> defaultEngine;
     Engine<Address, Resource> staticEngine;
 
     public ResourceEngine(Loader loader) {
-        this(new StaticResourceEngine(loader), new DynamicResourceEngine(loader,"htdocs"));
+        this(new StaticResourceEngine(loader), new DynamicResourceEngine(loader, "htdocs"));
     }
-    
+
     public ResourceEngine(StaticResourceEngine staticEngine, DynamicResourceEngine dynamicEngine) {
         this.staticEngine = staticEngine;
         this.defaultEngine = dynamicEngine;

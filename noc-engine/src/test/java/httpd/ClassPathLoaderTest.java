@@ -34,7 +34,7 @@ public class ClassPathLoaderTest extends TestCase {
         assertEquals(true, in.read() > 0);
         in.close();
     }
-    
+
     public void testGetLength() throws IOException {
         Source o = loader.findSource("/TemplateLoader.class");
         long length = o.getLength();

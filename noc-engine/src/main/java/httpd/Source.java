@@ -12,7 +12,7 @@ public class Source {
         return loader.getLength(source);
     }
 
-    Source(String name,Object source, NestLoader loader) {
+    Source(String name, Object source, NestLoader loader) {
         this.name = name;
         this.source = source;
         this.loader = loader;

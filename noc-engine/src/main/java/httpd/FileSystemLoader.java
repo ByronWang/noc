@@ -19,7 +19,7 @@ public class FileSystemLoader implements NestLoader {
 
     @Override
     public Source findSource(String name) {
-        File file = new File(appHome.getPath() +  name);
+        File file = new File(appHome.getPath() + name);
         log.debug("findSrouce " + file.getPath());
         if (file.exists()) {
             log.debug("findSrouce " + file.getPath() + " --  SUCCEED");

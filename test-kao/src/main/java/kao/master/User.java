@@ -6,7 +6,7 @@ import noc.lang.Name;
 
 @DisplayName("用户")
 public class User {
-	Code 代码;
-	Name 名称;
-	Role 角色;
+    Code 代码;
+    Name 名称;
+    Role 角色;
 }

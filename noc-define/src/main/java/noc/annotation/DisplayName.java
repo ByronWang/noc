@@ -11,4 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { FIELD ,TYPE}) public @interface DisplayName {String value();}
+@Target({ FIELD, TYPE })
+public @interface DisplayName {
+    String value();
+}

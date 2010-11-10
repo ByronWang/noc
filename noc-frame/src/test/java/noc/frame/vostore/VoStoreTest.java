@@ -25,7 +25,7 @@ public class VoStoreTest extends TestCase {
     final DBVoPersister persister;
     final Connection conn;
     final VoStore voStroe;
-    
+
     public VoStoreTest() {
         try {
 
@@ -59,8 +59,8 @@ public class VoStoreTest extends TestCase {
             conn.commit();
 
             persister.setUp();
-            
-            voStroe = new VoPersistableStore(null, type,persister);
+
+            voStroe = new VoPersistableStore(null, type, persister);
             voStroe.setUp();
 
         } catch (IOException e) {
@@ -77,10 +77,9 @@ public class VoStoreTest extends TestCase {
     }
 
     public void test_List() {
-        List<Vo> lv =  voStroe.list();
-        assertEquals(0,lv.size());
+        List<Vo> lv = voStroe.list();
+        assertEquals(0, lv.size());
     }
-    
 
     public void testReturnData_Insert() {
 
@@ -101,7 +100,7 @@ public class VoStoreTest extends TestCase {
         vl = voStroe.list();
         assertEquals(1, vl.size());
     }
-    
+
     public void testReturnData_Update() {
 
         String keyName = type.getFields().get(0).getName();
@@ -109,14 +108,13 @@ public class VoStoreTest extends TestCase {
         List<Vo> vl = persister.list();
         assertEquals(1, vl.size());
         voStroe.setUp();
-        
+
         vl = voStroe.list();
         assertEquals(1, vl.size());
 
-        
         Vo v = voStroe.borrowData("key01");
         v.put(type.getFields().get(1).getName(), "update");
-        
+
         Vo rv = voStroe.returnData("key01", v);
         assertEquals(VoAgent.class, rv.getClass());
         assertEquals("key01", rv.get(keyName));
@@ -127,20 +125,20 @@ public class VoStoreTest extends TestCase {
         vl = voStroe.list();
         assertEquals(1, vl.size());
     }
-    
-//    
-//    public void testReadData() {
-//    }
-//
-//
-//    public void testBorrowData() {
-//    }
-//
-//    public void testSetUp() {
-//    }
-//
-//    public void testTearDown() {
-//    }
+
+    //
+    // public void testReadData() {
+    // }
+    //
+    //
+    // public void testBorrowData() {
+    // }
+    //
+    // public void testSetUp() {
+    // }
+    //
+    // public void testTearDown() {
+    // }
     static final String APP_DEFINE_PATH = "app_define_path";
     static final String DB_DRIVERCLASS = "driverclass";
     static final String DB_URL = "url";

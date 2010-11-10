@@ -37,6 +37,7 @@ public class EntityResource implements CachableResource<Object>, Resource {
 
     long lastModified = -1;
 
+    @Override
     public void update() {
         log.debug("update " + this.type.getName() + " - " + this.key);
 
@@ -49,6 +50,7 @@ public class EntityResource implements CachableResource<Object>, Resource {
         lastChecked = System.currentTimeMillis();
     }
 
+    @Override
     synchronized public void reload() {
         log.debug("Reload " + this.type.getName() + " - " + this.key);
 

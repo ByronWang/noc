@@ -3,11 +3,11 @@ package noc.lang;
 import noc.frame.ComparableScala;
 
 public interface Time extends ComparableScala<java.util.Date> {
-	Hour endureHour();
+    Hour endureHour();
 
-	Minute endureMinute();
+    Minute endureMinute();
 
-	Second endureSecond();
+    Second endureSecond();
 
-	Time plus(Time value);
+    Time plus(Time value);
 }
