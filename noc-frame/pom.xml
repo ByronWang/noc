@@ -7,6 +7,9 @@
 	<version>0.1.1</version>
 	<name>noc-frame</name>
 	<url>http://maven.apache.org</url>
+	<scm>
+		<url>https://github.com/wangshilian/noc.git/noc-engine</url>
+	</scm>
 	<build>
 		<plugins>
 			<plugin>
