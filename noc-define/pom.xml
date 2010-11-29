@@ -11,6 +11,10 @@
   <packaging>jar</packaging>
   <version>0.1.1</version>
   <name>noc-define</name>
+  <scm>
+  	<connection>scm:svn:git://github.com/wangshilian/noc.git</connection>
+  	<url>https://github.com/wangshilian/noc/raw/master/noc-define</url>
+  </scm>
   <url>http://maven.apache.org</url>
 	<build>
 		<plugins>
