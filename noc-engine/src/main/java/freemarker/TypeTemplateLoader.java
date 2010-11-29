@@ -115,7 +115,7 @@ public class TypeTemplateLoader extends FileTemplateLoader implements TemplateLo
             log.debug("START create Template : " + source.name);
 
             Map<String, Object> root = new HashMap<String, Object>();
-            root.put("type", typeStore.readData(source.typeName));
+            root.put("type", typeStore.getReadonly(source.typeName));
 
             File f = new File(templateWorkFolder, source.name);
             FileWriter fw = new FileWriter(f);

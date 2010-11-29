@@ -15,9 +15,9 @@ public class DataCenterConfiguration extends Findable<String, Store<String, ?>> 
 
     @Override
     protected Store<String, ?> find(String typeName) {
-        Type type = types.readData(typeName);
+        Type type = types.getReadonly(typeName);
         Store<String, ?> store = new VoStore(this, type);
-        store.setUp();
+        store.open();
         ;
         return store;
     }

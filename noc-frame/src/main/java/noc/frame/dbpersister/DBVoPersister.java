@@ -108,7 +108,7 @@ public class DBVoPersister implements Persister<String, Vo> {
     }
 
     @Override
-    public void setUp() {
+    public void open() {
         try {
             Statement st = conn.createStatement();
 
@@ -165,7 +165,7 @@ public class DBVoPersister implements Persister<String, Vo> {
     }
 
     @Override
-    public Vo returnData(String key, Vo value) {
+    public Vo update(String key, Vo value) {
 
         String[] keys = new String[keyColumns.length];
         for (int i = 0; i < keyColumns.length; i++) {
@@ -208,18 +208,18 @@ public class DBVoPersister implements Persister<String, Vo> {
     }
 
     @Override
-    public void tearDown() {
+    public void close() {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public Vo borrowData(String key) {
+    public Vo getForUpdate(String key) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Vo readData(String key) {
+    public Vo getReadonly(String key) {
         throw new UnsupportedOperationException();
     }
 }

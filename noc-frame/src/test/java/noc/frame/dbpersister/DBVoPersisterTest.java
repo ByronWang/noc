@@ -34,11 +34,11 @@ public class DBVoPersisterTest extends TestCase {
 
             // Load Type
             TypeReadonlyStore typeStore = new TypeReadonlyStore();
-            typeStore.setUp();
+            typeStore.open();
             String definePath = props.getProperty(APP_DEFINE_PATH);
             typeStore.load(definePath);
 
-            type = typeStore.readData(typeName);
+            type = typeStore.getReadonly(typeName);
 
             // Load db derby
             String db = "derby";
@@ -59,7 +59,7 @@ public class DBVoPersisterTest extends TestCase {
 			}
 
             persister = new DBVoPersister(conn, type, sqlhelper);
-            persister.setUp();
+            persister.open();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -76,7 +76,7 @@ public class DBVoPersisterTest extends TestCase {
 
     public void test_borrowData() {
         try {
-            persister.readData("");
+            persister.getReadonly("");
         } catch (Throwable e) {
             assertEquals(UnsupportedOperationException.class, e.getClass());
         }
@@ -84,7 +84,7 @@ public class DBVoPersisterTest extends TestCase {
 
     public void test_readData() {
         try {
-            persister.readData("");
+            persister.getReadonly("");
         } catch (Throwable e) {
             assertEquals(UnsupportedOperationException.class, e.getClass());
         }
@@ -106,7 +106,7 @@ public class DBVoPersisterTest extends TestCase {
 
         Vo v = new VOImp(type);
         v.put(keyName, "key01");
-        Vo rv = persister.returnData("key01", v);
+        Vo rv = persister.update("key01", v);
         assertEquals(DBReadOnlyVO.class, rv.getClass());
         assertEquals("key01", rv.get(keyName));
 
@@ -128,7 +128,7 @@ public class DBVoPersisterTest extends TestCase {
         VoAgent va = new VoAgent(v);
         va.put(type.getFields().get(1).getName(), "update");
 
-        Vo rv = persister.returnData("key01", va);
+        Vo rv = persister.update("key01", va);
 
         assertEquals(DBReadOnlyVO.class, rv.getClass());
         assertEquals("key01", rv.get(keyName));

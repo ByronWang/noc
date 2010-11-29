@@ -57,7 +57,7 @@ public class TemplateResource implements CachableResource<Template>, Resource {
         this.engine = engine;
         this.store = store;
         this.typeName = address.getPath().getSegments()[1];
-        this.type = store.readData(typeName);
+        this.type = store.getReadonly(typeName);
 
         this.address = address;
         this.path = address.getPath().toString() + "?" + address.getQuery().toString();

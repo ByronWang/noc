@@ -49,11 +49,11 @@ public class EntityResourceTest extends TestCase {
 
             // Prepare type
             typeStore = new TypeReadonlyStore();
-            typeStore.setUp();
+            typeStore.open();
             String definePath = props.getProperty(APP_DEFINE_PATH);
             typeStore.load(definePath);
 
-            type = typeStore.readData(typeName);
+            type = typeStore.getReadonly(typeName);
 
             // Prepare persister
             dbEngine = DbConfiguration.getEngine(props.getProperty(DB_DRIVERCLASS), props.getProperty(DB_URL),
@@ -71,11 +71,11 @@ public class EntityResourceTest extends TestCase {
             storeEngine = new DataCenterConfiguration(typeStore) {
                 @Override
                 protected Store<String, ?> find(String typeName) {
-                    Type type = types.readData(typeName);
+                    Type type = types.getReadonly(typeName);
                     Persister<String, Vo> p = dbEngine.getPersister(Vo.class, type);
-                    p.setUp();
+                    p.open();
                     Store<String, ?> store = new VoPersistableStore(this, type, p);
-                    store.setUp();
+                    store.open();
                     return store;
                 }
             };
@@ -125,10 +125,10 @@ public class EntityResourceTest extends TestCase {
 
             for (int i = 0; i < loop; i++) {
                 String key = "codevalue" + j + ":" + i;
-                Vo dest = (Vo) store.borrowData(null);
+                Vo dest = (Vo) store.getForUpdate(null);
                 form.put("code", key);
                 dest = VoHelper.putAll(form, dest, this.type);
-                store.returnData(dest.getIndentify(), dest);
+                store.update(dest.getId(), dest);
             }
             end = System.currentTimeMillis();
             costa = end - start;
@@ -139,9 +139,9 @@ public class EntityResourceTest extends TestCase {
             for (int i = 0; i < loop; i++) {
                 String key = "codevalue" + j + ":" + i;
                 form.put("code", key);
-                Vo dest = (Vo) store.borrowData(key);
+                Vo dest = (Vo) store.getForUpdate(key);
                 dest = VoHelper.putAll(form, dest, this.type);
-                store.returnData(dest.getIndentify(), dest);
+                store.update(dest.getId(), dest);
             }
             end = System.currentTimeMillis();
             costu = end - start;

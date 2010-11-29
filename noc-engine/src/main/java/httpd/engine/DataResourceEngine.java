@@ -47,11 +47,11 @@ public class DataResourceEngine implements Engine<Address, CachableResource<Obje
         storeEngine = new DataCenterConfiguration(typeStore) {
             @Override
             protected Store<String, ?> find(String typeName) {
-                Type type = types.readData(typeName);
+                Type type = types.getReadonly(typeName);
                 Persister<String, Vo> p = dbEngine.getPersister(Vo.class, type);
-                p.setUp();
+                p.open();
                 Store<String, ?> store = new VoPersistableStore(this, type, p);
-                store.setUp();
+                store.open();
                 return store;
             }
         };
@@ -78,17 +78,17 @@ public class DataResourceEngine implements Engine<Address, CachableResource<Obje
         String name = path.getName();
 
         if (name == null) {
-            CachableResource<Object> res = new TypeResource(typeStore.readData(typeName), storeEngine.get(typeName));
+            CachableResource<Object> res = new TypeResource(typeStore.getReadonly(typeName), storeEngine.get(typeName));
             return res;
         } else if (name.charAt(0) != '~') {
             String key = path.getName();
-            CachableResource<Object> res = new EntityResource(typeStore.readData(typeName), storeEngine.get(typeName),
+            CachableResource<Object> res = new EntityResource(typeStore.getReadonly(typeName), storeEngine.get(typeName),
                     key);
             return res;
         } else {
             String key = name.substring(1);
             if ("new".equals(key)) {
-                CachableResource<Object> res = new NewEmptyEntityResource(typeStore.readData(typeName), typeStore);
+                CachableResource<Object> res = new NewEmptyEntityResource(typeStore.getReadonly(typeName), typeStore);
                 return res;
             } else {
                 throw new UnsupportedOperationException(path.toString() + " - " + key);

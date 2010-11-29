@@ -57,7 +57,7 @@ public class DynamicResourceEngine implements Engine<Address, Resource> {
 
             TypeReadonlyStore typeStore;
             typeStore = new TypeReadonlyStore();
-            typeStore.setUp();
+            typeStore.open();
             String definePath = props.getProperty(APP_DEFINE_PATH);
             if (definePath.charAt(1) == ':' || definePath.charAt(0) == '/') {
                 typeStore.load(new File(props.getProperty(APP_DEFINE_PATH)));

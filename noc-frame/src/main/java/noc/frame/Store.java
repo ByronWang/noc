@@ -3,15 +3,15 @@ package noc.frame;
 import java.util.List;
 
 public interface Store<K, V> {// extends List<T> {
-    void setUp();
+    void open();
 
-    void tearDown();
+    void close();
 
-    V readData(K key);
+    V getReadonly(K key);
 
-    V borrowData(K key);
+    V getForUpdate(K key);
 
-    V returnData(K key, V v);
+    V update(K key, V v);
 
     List<V> list();
 }

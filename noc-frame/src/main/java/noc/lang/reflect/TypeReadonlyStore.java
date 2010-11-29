@@ -31,20 +31,20 @@ public class TypeReadonlyStore implements Store<String, Type> {
     }
 
     @Override
-    public void setUp() {
+    public void open() {
         try {
             reader = new TypeReader(this, pool.get(Scala.class.getName()));
 
-            Type boolType = readData(Bool.class.getName());
+            Type boolType = getReadonly(Bool.class.getName());
             this.types.put("boolean", boolType);
             this.types.put(boolType.getName(), boolType);
 
-            Type nameType = readData(Name.class.getName());
+            Type nameType = getReadonly(Name.class.getName());
             this.types.put("java.lang.String", nameType);
             this.types.put(nameType.getName(), nameType);
 
-            this.readData(Type.class.getName());
-            this.readData(Field.class.getName());
+            this.getReadonly(Type.class.getName());
+            this.getReadonly(Field.class.getName());
         } catch (NotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -81,7 +81,7 @@ public class TypeReadonlyStore implements Store<String, Type> {
                 String name = en.nextElement().getName();
                 if (name.endsWith(".class")) {
                     name = name.substring(0, name.length() - ".class".length()).replace('\\', '.').replace('/', '.');
-                    this.readData(name);
+                    this.getReadonly(name);
                 }
             }
         } catch (Exception e) {
@@ -100,7 +100,7 @@ public class TypeReadonlyStore implements Store<String, Type> {
 
                     name = name.substring(0, name.length() - ".class".length()).replace('\\', '.').replace('/', '.');
 
-                    this.readData(name);
+                    this.getReadonly(name);
                 } else if (f.isDirectory()) {
                     loadFolder(root, f);
                 }
@@ -129,7 +129,7 @@ public class TypeReadonlyStore implements Store<String, Type> {
     }
 
     @Override
-    public Type readData(String name) {
+    public Type getReadonly(String name) {
         try {
             Type type = types.get(name);
             if (type == null) {
@@ -164,17 +164,17 @@ public class TypeReadonlyStore implements Store<String, Type> {
     }
 
     @Override
-    public Type returnData(String key, Type v) {
+    public Type update(String key, Type v) {
         throw new UnsupportedOperationException(v.toString());
     }
 
     @Override
-    public Type borrowData(String key) {
+    public Type getForUpdate(String key) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void tearDown() {
+    public void close() {
         // TODO Auto-generated method stub
 
     }

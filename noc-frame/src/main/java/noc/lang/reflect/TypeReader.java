@@ -76,7 +76,7 @@ public class TypeReader {
         log.trace("DeclaringClass: " + clz.getDeclaringClass());
         if (clz.getDeclaringClass() != null) {
             type.master = Type.Eembedded;
-            type.declaringType = types.readData(clz.getDeclaringClass().getName());
+            type.declaringType = types.getReadonly(clz.getDeclaringClass().getName());
             type.standalone = false;
         } else {
             type.standalone = true;
@@ -165,20 +165,20 @@ public class TypeReader {
         if (fieldTypeClazz.isArray()) {
             log.trace("Is Array :" + fieldTypeClazz.getComponentType().getName());
             array = true;
-            fieldType = types.readData(fieldTypeClazz.getComponentType().getName());
+            fieldType = types.getReadonly(fieldTypeClazz.getComponentType().getName());
         } else if (fieldTypeClazz.getName().equals(java.util.List.class.getName())
                 || fieldTypeClazz.getName().equals(noc.lang.List.class.getName())) {
             log.trace("Is Generic field :" + fieldTypeClazz.getName());
             // Generic field
             array = true;
-            fieldType = types.readData(decorateActualTypeArguments(ctField).get(0));
+            fieldType = types.getReadonly(decorateActualTypeArguments(ctField).get(0));
         } else {
             log.trace("Normal :" + fieldTypeClazz.getName());
-            fieldType = types.readData(fieldTypeClazz.getName());
+            fieldType = types.getReadonly(fieldTypeClazz.getName());
         }
 
         if (ctField.hasAnnotation(RealType.class)) {
-            fieldType = types.readData(((RealType) ctField.getAnnotation(RealType.class)).value().getName());
+            fieldType = types.getReadonly(((RealType) ctField.getAnnotation(RealType.class)).value().getName());
             log.trace("change type to defined RealType :" + fieldType);
         }
 

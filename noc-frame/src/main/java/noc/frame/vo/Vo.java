@@ -1,6 +1,8 @@
 package noc.frame.vo;
 
-public interface Vo extends V {
+import noc.frame.Identifiable;
+
+public interface Vo extends V ,Identifiable {
     void put(String name, Object value);
 
     Object get(String name);
@@ -8,8 +10,4 @@ public interface Vo extends V {
     Object get(int i);
 
     int size();
-
-    String getIndentify();
-
-    // void add(V v);
 }

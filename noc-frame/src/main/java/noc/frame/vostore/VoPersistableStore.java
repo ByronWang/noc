@@ -2,6 +2,7 @@ package noc.frame.vostore;
 
 import java.util.List;
 
+import noc.frame.Agent;
 import noc.frame.Factory;
 import noc.frame.Persister;
 import noc.frame.vo.Vo;
@@ -22,42 +23,41 @@ public class VoPersistableStore extends VoStore {
     }
 
     @Override
-    public void setUp() {
-        super.setUp();
+    public void open() {
+        super.open();
 
         List<Vo> list = this.persister.list();
         log.debug("== Load init data from Persister ==");
         log.debug("  List Size : " + list.size());
         for (Vo v : list) {
-            this.items.put(v.getIndentify(), v);
+            this.items.put(v.getId(), v);
         }
     }
 
     @Override
-    public Vo borrowData(String key) {
+    public Vo getForUpdate(String key) {
         if (key == null) {
             return new VOImp(type);
         }
-        return new VoAgent(this.readData(key));
+        return new VoAgent(this.getReadonly(key));
     }
 
     @Override
     public Vo returnData(String key, Vo v) {
-        if (v instanceof VoAgent) {
-            VoAgent vo = (VoAgent) v;
+        if (v instanceof Agent) {
+            Agent vo = (Agent) v;
             if (vo.isBeModified()) {
-                Vo resultVo = persister.returnData(key, v);
+                Vo resultVo = persister.update(key, v);
                 items.put(key, resultVo);
                 return new VoAgent(resultVo);
             } else {
                 return v;
             }
         } else {
-            Vo resultVo = persister.returnData(key, v);
+            Vo resultVo = persister.update(key, v);
             items.put(key, resultVo);
             return new VoAgent(resultVo);
 
         }
     }
-
 }

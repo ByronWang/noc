@@ -35,11 +35,11 @@ public class VoStoreTest extends TestCase {
 
             // Load Type
             TypeReadonlyStore typeStore = new TypeReadonlyStore();
-            typeStore.setUp();
+            typeStore.open();
             String definePath = props.getProperty(APP_DEFINE_PATH);
             typeStore.load(definePath);
 
-            type = typeStore.readData(typeName);
+            type = typeStore.getReadonly(typeName);
 
             // Load db derby
             String db = "derby";
@@ -60,7 +60,7 @@ public class VoStoreTest extends TestCase {
 			}
 
             persister = new DBVoPersister(conn, type, sqlhelper);
-            persister.setUp();
+            persister.open();
 
             voStroe = new VoPersistableStore(null, type, persister);
             voStroe.setUp();
@@ -92,7 +92,7 @@ public class VoStoreTest extends TestCase {
 
         Vo v = new VOImp(type);
         v.put(keyName, "key01");
-        Vo rv = voStroe.returnData("key01", v);
+        Vo rv = voStroe.update("key01", v);
         assertEquals(VoAgent.class, rv.getClass());
         assertEquals("key01", rv.get(keyName));
 
@@ -114,10 +114,10 @@ public class VoStoreTest extends TestCase {
         vl = voStroe.list();
         assertEquals(1, vl.size());
 
-        Vo v = voStroe.borrowData("key01");
+        Vo v = voStroe.getForUpdate("key01");
         v.put(type.getFields().get(1).getName(), "update");
 
-        Vo rv = voStroe.returnData("key01", v);
+        Vo rv = voStroe.update("key01", v);
         assertEquals(VoAgent.class, rv.getClass());
         assertEquals("key01", rv.get(keyName));
 

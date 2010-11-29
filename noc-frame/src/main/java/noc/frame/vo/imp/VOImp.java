@@ -93,7 +93,7 @@ public class VOImp implements Vo {
     }
 
     @Override
-    public String getIndentify() {
+    public String getId() {
         if (!beModified) {
             return indentify;
         }

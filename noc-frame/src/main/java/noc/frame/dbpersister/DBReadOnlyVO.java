@@ -92,7 +92,7 @@ public class DBReadOnlyVO implements Vo {
     }
 
     @Override
-    public String getIndentify() {
+    public String getId() {
         return m_Indentify;
     }
 

@@ -27,7 +27,7 @@ public class EntityResource implements CachableResource<Object>, Resource {
         this.store = (Store<String, Object>) store;
         this.type = type;
         this.key = primaryKey;
-        this.underlyData = store.readData(primaryKey);
+        this.underlyData = store.getReadonly(primaryKey);
     }
 
     // For Cache Check file
@@ -88,11 +88,11 @@ public class EntityResource implements CachableResource<Object>, Resource {
                     update();
                 }
             } else if ("POST".equals(req.getMethod())) {
-                this.store.borrowData(null);
-                Vo dest = (Vo) store.borrowData(this.key);
+                this.store.getForUpdate(null);
+                Vo dest = (Vo) store.getForUpdate(this.key);
                 dest = VoHelper.putAll(req.getForm(), dest, this.type);
-                store.returnData(dest.getIndentify(), dest);
-                this.underlyData = store.readData(key);
+                store.update(dest.getId(), dest);
+                this.underlyData = store.getReadonly(key);
                 this.sourceLastModified = System.currentTimeMillis(); // TODO
                 this.lastModified = System.currentTimeMillis();
             }

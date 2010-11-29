@@ -90,11 +90,11 @@ public class TypeResource implements CachableResource<Object>, Resource {
             } else if ("POST".equals(req.getMethod())) {
                 // Form f = req.getForm();
                 // f.
-                this.store.borrowData(null);
-                Vo dest = (Vo) store.borrowData(null);
+                this.store.getForUpdate(null);
+                Vo dest = (Vo) store.getForUpdate(null);
                 PrintObejct.print(Request.class, req);
                 dest = VoHelper.putAll(req.getForm(), dest, this.type);
-                store.returnData(dest.getIndentify(), dest);
+                store.update(dest.getId(), dest);
                 this.underlyList = store.list();
                 lastModified = 2000;
                 this.sourceLastModified = System.currentTimeMillis(); // TODO
