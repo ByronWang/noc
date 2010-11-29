@@ -1,7 +1,8 @@
 /.metadata
-/*/.gitignore
 /*/*.log*
 /*/db
+/*/.project
+/*/.classpath
 /*/.settings
 /*/.externalToolBuilders
 /*/target
