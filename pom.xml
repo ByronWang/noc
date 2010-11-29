@@ -14,7 +14,7 @@
 		<module>test-ooj</module>
 	</modules>
 	<scm>
-		<connection>scm:svn:git://github.com/wangshilian/noc.git</connection>
+		<connection>scm:git:git://github.com/wangshilian/noc.git</connection>
 		<url>https://github.com/wangshilian/noc/raw/master</url>
 	</scm>
 	<build>
