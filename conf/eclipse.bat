@@ -1,4 +1,7 @@
 cd ..
+
+cmd /c mvn eclipse:configure-workspace -Declipse.workspace=../noc
+
 cd noc-define
 cmd /c mvn eclipse:clean
 cmd /c mvn eclipse:eclipse
