@@ -17,6 +17,21 @@
 		<connection>scm:git:git://github.com/wangshilian/noc.git</connection>
 		<url>https://github.com/wangshilian/noc/raw/master</url>
 	</scm>
+	<developers>
+		<developer>			
+            <id>wangshilian</id>  
+            <name>王世廉</name>  
+            <email>wangshilian@gmail.com</email>  
+            <roles>  
+                <role>Project Manager</role>  
+                <role>Architect</role>  
+            </roles>   
+            <properties>  
+                <dept>No</dept>  
+            </properties>  
+            <timezone>+8</timezone>  
+		</developer>
+	</developers>
 	<build>
 		<pluginManagement>
 			<plugins>
