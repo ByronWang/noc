@@ -6,4 +6,7 @@
 /*/.settings
 /*/.externalToolBuilders
 /*/target
-/*/.gitignore
+.gitignore
+.project
+.classpath
+.settings
