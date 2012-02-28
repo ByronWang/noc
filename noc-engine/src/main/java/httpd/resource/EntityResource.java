@@ -62,7 +62,7 @@ public class EntityResource implements CachableResource<Object>, Resource {
     }
 
     @Override
-    public long lastModified() {
+    public long getLastModified() {
         long now = System.currentTimeMillis();
         if (now - lastChecked >= delay) {
             update();

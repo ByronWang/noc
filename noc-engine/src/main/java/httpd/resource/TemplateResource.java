@@ -32,7 +32,7 @@ public class TemplateResource implements CachableResource<Template>, Resource {
     final protected Address address;
 
     final protected String refer;
-    protected String name;
+    String name;
     protected Template template;
     protected ByteArrayOutputStream templateSource;
 
@@ -42,17 +42,16 @@ public class TemplateResource implements CachableResource<Template>, Resource {
     protected Type type;
 
     // For Cache Check file
-    final protected int delay = 3000;
-
-    protected long lastChecked;
-
-    protected long sourceTemplateLastModified;
-
-    protected long lastModified;
+    final int delay = 3000;
+    
+    long lastChecked = -1;
+    long lastModified = -1;
+    
+    long sourceTemplateLastModified;
 
     final String path;
     final String actionPath;
-
+    
     public TemplateResource(Configuration engine, Store<String, Type> store, Address address, String refer) {
         this.engine = engine;
         this.store = store;
@@ -73,7 +72,7 @@ public class TemplateResource implements CachableResource<Template>, Resource {
 
         this.update();
     }
-
+    
     @Override
     public void update() {
         try {
@@ -177,7 +176,7 @@ public class TemplateResource implements CachableResource<Template>, Resource {
     }
 
     @Override
-    public long lastModified() {
+    public long getLastModified() {
         long now = System.currentTimeMillis();
         if (now - lastChecked >= delay) {
             update();

@@ -30,35 +30,34 @@ public class DynamicResource implements CachableResource<Object>, Resource {
     // final String sampleTemplateName;
     // Object underlyData;
 
+    // For Cache Check file
+    final int delay = 2000;
+    long lastChecked = -1;
+    long lastModified = -1;
+    
+    long dataLastModified = -1;
+    long presentationLastModified = -1;
+    
+    protected ByteArrayOutputStream bufferedResponse;
+
     public DynamicResource(Address address, CachableResource<?> dataResource,
             CachableResource<Template> presentationResource) {
         this.address = address;
         this.dataResource = dataResource;
         this.presentationResource = presentationResource;
     }
-
-    // For Cache Check file
-    final int delay = 2000;
-    long lastChecked = -1;
-
-    long dataLastModified = -1;
-    long presentationLastModified = -1;
-
-    long lastModified = -1;
-
-    protected ByteArrayOutputStream bufferedResponse;
-
+    
     @Override
     public void update() {
         // log.debug("update " + this.type.getName() + " - " + this.key);
 
-        long tempLastModified = dataResource.lastModified(); // TODO
+        long tempLastModified = dataResource.getLastModified(); // TODO
                                                              // underlyFile.lastModified();
         if (tempLastModified - dataLastModified > 1000) {
             reload();
         }
 
-        tempLastModified = dataResource.lastModified(); // TODO
+        tempLastModified = dataResource.getLastModified(); // TODO
         // underlyFile.lastModified();
         if (tempLastModified - presentationLastModified > 1000) {
             reload();
@@ -73,8 +72,8 @@ public class DynamicResource implements CachableResource<Object>, Resource {
         // this.key);
 
         try {
-            long tempDataResourceLastModified = dataResource.lastModified();
-            long tempPresentionResourceLastModified = presentationResource.lastModified();
+            long tempDataResourceLastModified = dataResource.getLastModified();
+            long tempPresentionResourceLastModified = presentationResource.getLastModified();
 
             if (tempDataResourceLastModified - this.dataLastModified <= 1000
                     && tempPresentionResourceLastModified - this.presentationLastModified <= 1000) {
@@ -117,7 +116,7 @@ public class DynamicResource implements CachableResource<Object>, Resource {
     }
 
     @Override
-    public long lastModified() {
+    public long getLastModified() {
         long now = System.currentTimeMillis();
         if (now - lastChecked >= delay) {
             update();

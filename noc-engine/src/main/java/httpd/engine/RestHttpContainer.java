@@ -1,11 +1,5 @@
 package httpd.engine;
 
-import help.PrintObejct;
-import httpd.ClassPathLoader;
-import httpd.FileSystemLoader;
-import httpd.MultiLoader;
-
-import java.io.File;
 import java.io.IOException;
 
 import org.simpleframework.http.Address;
@@ -14,17 +8,17 @@ import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
 import org.simpleframework.http.resource.Resource;
 
+import util.PrintObejct;
+
+import com.google.inject.Inject;
+
 import frame.Engine;
 
-public class ResourceContainer implements Container {
+public class RestHttpContainer implements Container {
     private final Engine<Address, Resource> engine;
 
-    public ResourceContainer() {
-        this(new ResourceEngine(new MultiLoader(new FileSystemLoader(new File("htdocs")), new ClassPathLoader(
-                ResourceEngine.class.getClassLoader(), "htdocs"))));
-    }
-
-    public ResourceContainer(Engine<Address, Resource> engine) {
+    @Inject
+    public RestHttpContainer(ResourceEngine engine) {
         this.engine = engine;
     }
 

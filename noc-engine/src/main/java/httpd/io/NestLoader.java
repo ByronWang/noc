@@ -1,7 +1,8 @@
-package httpd;
+package httpd.io;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 
 interface NestLoader extends Loader {
 
@@ -11,5 +12,5 @@ interface NestLoader extends Loader {
 
     InputStream getInputStream(Object source) throws IOException;
 
-    void closeSource(Object source) throws IOException;
+    void close(Object source) throws IOException;
 }

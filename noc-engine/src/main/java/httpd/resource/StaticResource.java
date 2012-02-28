@@ -1,7 +1,7 @@
 package httpd.resource;
 
-import httpd.Loader;
-import httpd.Source;
+import httpd.io.Loader;
+import httpd.io.Source;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,20 +24,21 @@ public class StaticResource implements CachableResource<Source>, Resource {
     private final String mime;
     Loader loader;
 
+    // For Cache Check file
+    final int delay = 6000;
+    
+    long lastChecked = -1;
+    long lastModified = -1;
+    
+    long sourceLastModified = -1;
+    
     public StaticResource(Source source, Address address) {
         this.underlySource = source;
         this.mime = theMimeTypes.get(address.getPath().getExtension());
 
         this.update();
     }
-
-    // For Cache Check file
-    final int delay = 6000;
-    long lastChecked = -1;
-    long sourceLastModified = -1;
-
-    long lastModified = -1;
-
+    
     @Override
     public void update() {
         log.debug("check update " + this.underlySource.getName());
@@ -62,7 +63,7 @@ public class StaticResource implements CachableResource<Source>, Resource {
     }
 
     @Override
-    public long lastModified() {
+    public long getLastModified() {
         long now = System.currentTimeMillis();
         if (now - lastChecked >= delay) {
             update();

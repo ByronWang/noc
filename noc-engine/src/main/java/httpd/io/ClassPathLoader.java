@@ -1,4 +1,4 @@
-package httpd;
+package httpd.io;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,7 +45,7 @@ public class ClassPathLoader implements NestLoader {
     }
 
     @Override
-    public void closeSource(Object source) throws IOException {
+    public void close(Object source) throws IOException {
         ;
     }
 

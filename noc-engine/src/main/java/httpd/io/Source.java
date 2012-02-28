@@ -1,4 +1,4 @@
-package httpd;
+package httpd.io;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +30,7 @@ public class Source {
         return loader.getInputStream(source);
     }
 
-    public void closeSource() throws IOException {
-        loader.closeSource(source);
+    public void close() throws IOException {
+        loader.close(source);
     }
 }

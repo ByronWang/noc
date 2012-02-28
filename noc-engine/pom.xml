@@ -14,23 +14,7 @@
 	<build>
 		<finalName>noc-engine</finalName>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>httpd.server.NanoServer</mainClass>
-							<packageName>httpd.server</packageName>
-							<addClasspath>true</addClasspath>
-						</manifest>
-						<manifestEntries>
-							<mode>development</mode>
-							<url>${pom.url}</url>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
+
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.0.2</version>
@@ -39,11 +23,6 @@
 					<target>1.6</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<version>6.1.25</version>
 			</plugin>
 		</plugins>
 	</build>
@@ -68,7 +47,6 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.16</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.simpleframework</groupId>
@@ -84,7 +62,6 @@
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derby</artifactId>
 			<version>10.6.2.1</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.noc.app</groupId>
@@ -96,6 +73,11 @@
 			<artifactId>test-kao</artifactId>
 			<version>0.1.1</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>3.0</version>
 		</dependency>
 	</dependencies>
 </project>

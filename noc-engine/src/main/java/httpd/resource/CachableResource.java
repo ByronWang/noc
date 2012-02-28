@@ -9,5 +9,5 @@ public interface CachableResource<T> extends Resource {
 
     T getUnderlyObject();
 
-    long lastModified();
+    long getLastModified();
 }

@@ -1,24 +1,29 @@
-package httpd;
+package httpd.io;
 
+import httpd.io.FileSystemLoader;
+import httpd.io.NestLoader;
+import httpd.io.Source;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 import junit.framework.TestCase;
 
-public class ClassPathLoaderTest_2 extends TestCase {
+public class FileSystemLoaderTest extends TestCase {
 
-    Loader loader;
+    NestLoader loader;
 
     @Override
     protected void setUp() throws Exception {
-        loader = new ClassPathLoader(this.getClass().getClassLoader(), "htdocs");
+        loader = new FileSystemLoader(new File("src/main/resources/htdocs"));
     }
 
     public void testClassPathLoader() {
     }
 
     public void testFindSource() throws IOException {
-        Object o = loader.findSource("/login.htm");
+        Source o = loader.findSource("/login.htm");
         assertNotNull(o);
     }
 
@@ -37,7 +42,7 @@ public class ClassPathLoaderTest_2 extends TestCase {
 
     public void testCloseSource() throws IOException {
         Source o = loader.findSource("/login.htm");
-        o.closeSource();
+        o.close();
     }
 
 }

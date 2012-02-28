@@ -1,6 +1,5 @@
 package httpd.engine;
 
-import httpd.Loader;
 import httpd.resource.StaticResource;
 
 import java.util.HashMap;
@@ -11,6 +10,8 @@ import org.apache.commons.logging.LogFactory;
 import org.simpleframework.http.Address;
 import org.simpleframework.http.resource.Resource;
 
+import com.google.inject.Inject;
+
 import frame.Engine;
 
 public class ResourceEngine implements Engine<Address, Resource> {
@@ -19,10 +20,7 @@ public class ResourceEngine implements Engine<Address, Resource> {
     Engine<Address, Resource> defaultEngine;
     Engine<Address, Resource> staticEngine;
 
-    public ResourceEngine(Loader loader) {
-        this(new StaticResourceEngine(loader), new DynamicResourceEngine(loader, "htdocs"));
-    }
-
+    @Inject
     public ResourceEngine(StaticResourceEngine staticEngine, DynamicResourceEngine dynamicEngine) {
         this.staticEngine = staticEngine;
         this.defaultEngine = dynamicEngine;
@@ -33,7 +31,7 @@ public class ResourceEngine implements Engine<Address, Resource> {
         this.register("images", staticEngine);
         this.register("noc", staticEngine);
         this.register("tempalte", staticEngine);
-        this.register("p", dynamicEngine.getPresentationEngine());
+        // this.register("p", dynamicEngine.getPresentationEngine());
 
         resources = new HashMap<String, Resource>(1024 * 4);
 

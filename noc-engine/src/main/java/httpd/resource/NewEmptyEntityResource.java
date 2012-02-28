@@ -35,7 +35,7 @@ public class NewEmptyEntityResource implements CachableResource<Object>, Resourc
     }
 
     @Override
-    public long lastModified() {
+    public long getLastModified() {
         return this.lastModified;
     }
 

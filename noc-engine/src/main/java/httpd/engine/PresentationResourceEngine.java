@@ -4,9 +4,12 @@ import httpd.resource.CachableResource;
 import httpd.resource.TemplateResource;
 import noc.frame.Store;
 import noc.lang.reflect.Type;
+import noc.lang.reflect.TypeReadonlyStore;
 
 import org.simpleframework.http.Address;
 import org.simpleframework.http.Path;
+
+import com.google.inject.Inject;
 
 import frame.Engine;
 import freemarker.template.Configuration;
@@ -17,7 +20,8 @@ public class PresentationResourceEngine implements Engine<Address, CachableResou
     Configuration templateEngine;
     Store<String, Type> typeStore;
 
-    public PresentationResourceEngine(Configuration templateEngine, Store<String, Type> typeStore) {
+    @Inject
+    public PresentationResourceEngine(Configuration templateEngine, TypeReadonlyStore typeStore) {
         this.templateEngine = templateEngine;
         this.typeStore = typeStore;
     }
@@ -50,5 +54,4 @@ public class PresentationResourceEngine implements Engine<Address, CachableResou
             return res;
         }
     }
-
 }

@@ -1,4 +1,4 @@
-package httpd;
+package httpd.io;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,9 +20,9 @@ public class FileSystemLoader implements NestLoader {
     @Override
     public Source findSource(String name) {
         File file = new File(appHome.getPath() + name);
-        log.debug("findSrouce " + file.getPath());
+        log.debug("find source " + file.getPath());
         if (file.exists()) {
-            log.debug("findSrouce " + file.getPath() + " --  SUCCEED");
+            log.debug("find source " + file.getPath() + " --  SUCCEED");
             return new Source(name, file, this);
         }
         return null;
@@ -41,7 +41,7 @@ public class FileSystemLoader implements NestLoader {
     }
 
     @Override
-    public void closeSource(Object source) throws IOException {
+    public void close(Object source) throws IOException {
         ;
     }
 

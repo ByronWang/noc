@@ -60,8 +60,10 @@ public class TypeReadonlyStore implements Store<String, Type> {
 
     public void load(File path) {
         if (path.isDirectory()) {
+            this.appendClassPath(path.getPath());            
             loadFolder(path, path);
         } else if (path.getName().endsWith(".jar")) {
+            this.appendClassPath(path.getPath());
             loadJar(path);
         } else {
             throw new RuntimeException();
@@ -73,7 +75,6 @@ public class TypeReadonlyStore implements Store<String, Type> {
     }
 
     public void loadJar(File f) {
-        this.appendClassPath(f.getPath());
         try {
             JarFile jf = new JarFile(f);
             Enumeration<JarEntry> en = jf.entries();

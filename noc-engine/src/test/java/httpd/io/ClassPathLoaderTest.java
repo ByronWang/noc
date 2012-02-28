@@ -1,4 +1,7 @@
-package httpd;
+package httpd.io;
+
+import httpd.io.ClassPathLoader;
+import httpd.io.Source;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,7 +46,7 @@ public class ClassPathLoaderTest extends TestCase {
 
     public void testCloseSource() throws IOException {
         Source o = loader.findSource("/TemplateLoader.class");
-        o.closeSource();
+        o.close();
     }
 
 }

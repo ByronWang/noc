@@ -6,6 +6,14 @@
 	<packaging>pom</packaging>
 	<name>Noc Parent Project</name>
 	<version>1-SNAPSHOT</version>
+	<dependencies>
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>3.0</version>
+			<classifier>no_aop</classifier>
+		</dependency>
+	</dependencies>
 	<modules>
 		<module>noc-define</module>
 		<module>noc-frame</module>
@@ -20,7 +28,7 @@
 	<developers>
 		<developer>			
             <id>wangshilian</id>  
-            <name>王世廉</name>  
+            <name>王世�?/name>  
             <email>wangshilian@gmail.com</email>  
             <roles>  
                 <role>Project Manager</role>  

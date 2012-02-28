@@ -1,4 +1,4 @@
-package httpd;
+package httpd.io;
 
 public class MultiLoader implements Loader {
     final protected Loader[] loaders;

@@ -1,6 +1,5 @@
 package httpd.resource;
 
-import help.PrintObejct;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,6 +13,8 @@ import org.apache.commons.logging.LogFactory;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.resource.Resource;
+
+import util.PrintObejct;
 
 public class TypeResource implements CachableResource<Object>, Resource {
     private static final Log log = LogFactory.getLog(TypeResource.class);
@@ -62,7 +63,7 @@ public class TypeResource implements CachableResource<Object>, Resource {
     }
 
     @Override
-    public long lastModified() {
+    public long getLastModified() {
         long now = System.currentTimeMillis();
         if (now - lastChecked >= delay) {
             update();

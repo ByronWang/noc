@@ -16,7 +16,7 @@ import noc.frame.Store;
 import noc.frame.dbpersister.DbConfiguration;
 import noc.frame.dbpersister.SqlHelper;
 import noc.frame.vo.Vo;
-import noc.frame.vostore.DataCenterConfiguration;
+import noc.frame.vostore.DataCenter;
 import noc.frame.vostore.VoPersistableStore;
 import noc.lang.reflect.Type;
 import noc.lang.reflect.TypeReadonlyStore;
@@ -24,7 +24,7 @@ import freemarker.template.Configuration;
 
 public class EntityResourceTest extends TestCase {
 
-    DataCenterConfiguration storeEngine;
+    DataCenter storeEngine;
     DbConfiguration dbEngine;
 
     Configuration templateEngine;
@@ -68,7 +68,7 @@ public class EntityResourceTest extends TestCase {
             }
 
             // Prepare store engine
-            storeEngine = new DataCenterConfiguration(typeStore) {
+            storeEngine = new DataCenter(typeStore) {
                 @Override
                 protected Store<String, ?> find(String typeName) {
                     Type type = types.readData(typeName);
